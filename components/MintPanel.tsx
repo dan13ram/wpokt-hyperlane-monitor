@@ -132,6 +132,7 @@ export const MintPanel: React.FC = () => {
             <Th>Created At</Th>
             <Th>Status</Th>
             <Th>Action</Th>
+            <Th>Mint Tx Hash</Th>
           </Tr>
         </Thead>
         {mints.map(mint => (
@@ -158,6 +159,9 @@ export const MintPanel: React.FC = () => {
                 </Button>
               )}
               {mint.status !== 'signed' && <Text>N/A</Text>}
+            </Td>
+            <Td>
+              {mint.mint_tx_hash && <CopyText>{mint.mint_tx_hash}</CopyText>}
             </Td>
           </Tr>
         ))}
