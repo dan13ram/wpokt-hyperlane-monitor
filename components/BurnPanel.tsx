@@ -19,7 +19,7 @@ import useAllBurns from '@/hooks/useAllBurns';
 import { WRAPPED_POCKET_ABI } from '@/utils/abis';
 import { WRAPPED_POCKET_ADDRESS } from '@/utils/constants';
 
-import { CopyText } from './CopyText';
+import { HashDisplay } from './HashDisplay';
 
 export const BurnPanel: React.FC = () => {
   const { burns } = useAllBurns();
@@ -119,9 +119,7 @@ export const BurnPanel: React.FC = () => {
             <Th>Transaction Hash</Th>
             <Th>Block Number</Th>
             <Th>Sender Address</Th>
-            <Th>Sender Chain ID</Th>
             <Th>Recipient Address</Th>
-            <Th>Recipient Chain ID</Th>
             <Th>Amount</Th>
             <Th>Created At</Th>
             <Th>Status</Th>
@@ -131,22 +129,28 @@ export const BurnPanel: React.FC = () => {
         {burns.map(burn => (
           <Tr key={burn._id.toString()}>
             <Td>
-              <CopyText>{burn.transaction_hash}</CopyText>
+              <HashDisplay chainId={burn.sender_chain_id}>
+                {burn.transaction_hash}
+              </HashDisplay>
             </Td>
             <Td>{burn.block_number}</Td>
             <Td>
-              <CopyText>{burn.sender_address}</CopyText>
+              <HashDisplay chainId={burn.sender_chain_id}>
+                {burn.sender_address}
+              </HashDisplay>
             </Td>
-            <Td>{burn.sender_chain_id}</Td>
             <Td>
-              <CopyText>{burn.recipient_address}</CopyText>
+              <HashDisplay chainId={burn.recipient_chain_id}>
+                {burn.recipient_address}
+              </HashDisplay>
             </Td>
-            <Td>{burn.recipient_chain_id}</Td>
             <Td>{burn.amount}</Td>
             <Td>{new Date(burn.created_at).toLocaleString()}</Td>
             <Td>{burn.status}</Td>
             <Td>
-              <CopyText>{burn.return_tx_hash}</CopyText>
+              <HashDisplay chainId={burn.recipient_chain_id}>
+                {burn.return_tx_hash}
+              </HashDisplay>
             </Td>
           </Tr>
         ))}

@@ -1,9 +1,7 @@
 import { ObjectId } from 'mongodb';
 
 import { dbPromise } from '@/lib/mongodb';
-import { InvalidMint } from '@/types';
-
-const INVALID_MINTS_COLLECTION = 'invalid_mints';
+import { CollectionInvalidMints, InvalidMint } from '@/types';
 
 export const getInvalidMintFromId = async (
   id: string,
@@ -12,7 +10,7 @@ export const getInvalidMintFromId = async (
     const client = await dbPromise;
 
     const invalid_mint = await client
-      .collection(INVALID_MINTS_COLLECTION)
+      .collection(CollectionInvalidMints)
       .findOne({ _id: new ObjectId(id) });
 
     return invalid_mint as InvalidMint | null;
@@ -27,7 +25,7 @@ export const getAllInvalidMints = async (): Promise<InvalidMint[]> => {
     const client = await dbPromise;
 
     const invalid_mints = await client
-      .collection(INVALID_MINTS_COLLECTION)
+      .collection(CollectionInvalidMints)
       .find({}, { sort: { created_at: -1 } })
       .toArray();
 

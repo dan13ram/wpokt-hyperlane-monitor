@@ -23,7 +23,7 @@ import {
   POKT_MULTISIG_ADDRESS,
 } from '@/utils/constants';
 
-import { CopyText } from './CopyText';
+import { HashDisplay } from './HashDisplay';
 
 export const MintPanel: React.FC = () => {
   const { mints } = useAllMints();
@@ -124,10 +124,9 @@ export const MintPanel: React.FC = () => {
           <Tr>
             <Th>Transaction Hash</Th>
             <Th>Height</Th>
+            <Th>Confirmations</Th>
             <Th>Sender Address</Th>
-            <Th>Sender Chain ID</Th>
             <Th>Recipient Address</Th>
-            <Th>Recipient Chain ID</Th>
             <Th>Amount</Th>
             <Th>Created At</Th>
             <Th>Status</Th>
@@ -138,30 +137,41 @@ export const MintPanel: React.FC = () => {
         {mints.map(mint => (
           <Tr key={mint._id.toString()}>
             <Td>
-              <CopyText>{mint.transaction_hash}</CopyText>
+              <HashDisplay chainId={mint.sender_chain_id}>
+                {mint.transaction_hash}
+              </HashDisplay>
             </Td>
             <Td>{mint.height}</Td>
+            <Td>{mint.confirmations}</Td>
             <Td>
-              <CopyText>{mint.sender_address}</CopyText>
+              <HashDisplay chainId={mint.sender_chain_id}>
+                {mint.sender_address}
+              </HashDisplay>
             </Td>
-            <Td>{mint.sender_chain_id}</Td>
             <Td>
-              <CopyText>{mint.recipient_address}</CopyText>
+              <HashDisplay chainId={mint.recipient_chain_id}>
+                {mint.recipient_address}
+              </HashDisplay>
             </Td>
-            <Td>{mint.recipient_chain_id}</Td>
             <Td>{mint.amount}</Td>
             <Td>{new Date(mint.created_at).toLocaleString()}</Td>
             <Td>{mint.status}</Td>
             <Td>
-              {mint.status === 'signed' && (
+              {mint.status === 'signed' ||
+              (mint.status === 'confirmed' && mint.signatures.length >= 2) ? (
                 <Button isLoading={isLoading} onClick={() => mintTokens(mint)}>
                   Mint
                 </Button>
+              ) : (
+                <Text>N/A</Text>
               )}
-              {mint.status !== 'signed' && <Text>N/A</Text>}
             </Td>
             <Td>
-              {mint.mint_tx_hash && <CopyText>{mint.mint_tx_hash}</CopyText>}
+              {mint.mint_tx_hash && (
+                <HashDisplay chainId={mint.recipient_chain_id}>
+                  {mint.mint_tx_hash}
+                </HashDisplay>
+              )}
             </Td>
           </Tr>
         ))}

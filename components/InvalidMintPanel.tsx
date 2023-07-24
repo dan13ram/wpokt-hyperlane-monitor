@@ -2,7 +2,7 @@ import { Table, Td, Th, Thead, Tr, VStack } from '@chakra-ui/react';
 
 import useAllInvalidMints from '@/hooks/useAllInvalidMints';
 
-import { CopyText } from './CopyText';
+import { HashDisplay } from './HashDisplay';
 
 export const InvalidMintPanel: React.FC = () => {
   const { invalidMints } = useAllInvalidMints();
@@ -14,6 +14,7 @@ export const InvalidMintPanel: React.FC = () => {
           <Tr>
             <Th>Transaction Hash</Th>
             <Th>Height</Th>
+            <Th>Confirmations</Th>
             <Th>Sender Address</Th>
             <Th>Sender Chain ID</Th>
             <Th>Amount</Th>
@@ -25,18 +26,25 @@ export const InvalidMintPanel: React.FC = () => {
         {invalidMints.map(invalidMint => (
           <Tr key={invalidMint._id.toString()}>
             <Td>
-              <CopyText>{invalidMint.transaction_hash}</CopyText>
+              <HashDisplay chainId={invalidMint.sender_chain_id}>
+                {invalidMint.transaction_hash}
+              </HashDisplay>
             </Td>
             <Td>{invalidMint.height}</Td>
+            <Td>{invalidMint.confirmations}</Td>
             <Td>
-              <CopyText>{invalidMint.sender_address}</CopyText>
+              <HashDisplay chainId={invalidMint.sender_chain_id}>
+                {invalidMint.sender_address}
+              </HashDisplay>
             </Td>
             <Td>{invalidMint.sender_chain_id}</Td>
             <Td>{invalidMint.amount}</Td>
             <Td>{new Date(invalidMint.created_at).toLocaleString()}</Td>
             <Td>{invalidMint.status}</Td>
             <Td>
-              <CopyText>{invalidMint.return_tx_hash}</CopyText>
+              <HashDisplay chainId={invalidMint.sender_chain_id}>
+                {invalidMint.return_tx_hash}
+              </HashDisplay>
             </Td>
           </Tr>
         ))}

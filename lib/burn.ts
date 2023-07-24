@@ -1,16 +1,14 @@
 import { ObjectId } from 'mongodb';
 
 import { dbPromise } from '@/lib/mongodb';
-import { Burn } from '@/types';
-
-const BURNS_COLLECTION = 'burns';
+import { Burn, CollectionBurns } from '@/types';
 
 export const getBurnFromId = async (id: string): Promise<Burn | null> => {
   try {
     const client = await dbPromise;
 
     const burn = await client
-      .collection(BURNS_COLLECTION)
+      .collection(CollectionBurns)
       .findOne({ _id: new ObjectId(id) });
 
     return burn as Burn | null;
@@ -25,7 +23,7 @@ export const getAllBurns = async (): Promise<Burn[]> => {
     const client = await dbPromise;
 
     const burns = await client
-      .collection(BURNS_COLLECTION)
+      .collection(CollectionBurns)
       .find({}, { sort: { created_at: -1 } })
       .toArray();
 

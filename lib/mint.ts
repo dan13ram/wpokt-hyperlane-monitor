@@ -1,16 +1,14 @@
 import { ObjectId } from 'mongodb';
 
 import { dbPromise } from '@/lib/mongodb';
-import { Mint } from '@/types';
-
-const MINTS_COLLECTION = 'mints';
+import { CollectionMints, Mint } from '@/types';
 
 export const getMintFromId = async (id: string): Promise<Mint | null> => {
   try {
     const client = await dbPromise;
 
     const mint = await client
-      .collection(MINTS_COLLECTION)
+      .collection(CollectionMints)
       .findOne({ _id: new ObjectId(id) });
 
     return mint as Mint | null;
@@ -25,7 +23,7 @@ export const getAllMints = async (): Promise<Mint[]> => {
     const client = await dbPromise;
 
     const mints = await client
-      .collection(MINTS_COLLECTION)
+      .collection(CollectionMints)
       .find({}, { sort: { created_at: -1 } })
       .toArray();
 
