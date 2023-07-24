@@ -16,7 +16,6 @@ export const InvalidMintPanel: React.FC = () => {
             <Th>Height</Th>
             <Th>Confirmations</Th>
             <Th>Sender Address</Th>
-            <Th>Sender Chain ID</Th>
             <Th>Amount</Th>
             <Th>Created At</Th>
             <Th>Status</Th>
@@ -37,7 +36,6 @@ export const InvalidMintPanel: React.FC = () => {
                 {invalidMint.sender_address}
               </HashDisplay>
             </Td>
-            <Td>{invalidMint.sender_chain_id}</Td>
             <Td>{invalidMint.amount}</Td>
             <Td>{new Date(invalidMint.created_at).toLocaleString()}</Td>
             <Td>{invalidMint.status}</Td>

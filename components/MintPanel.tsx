@@ -1,6 +1,7 @@
 import {
   Button,
   Code,
+  Divider,
   Link,
   Table,
   Td,
@@ -105,19 +106,26 @@ export const MintPanel: React.FC = () => {
 
   return (
     <VStack align="stretch">
-      <Text>To get started please send POKT tokens to our vault address</Text>
-      <Text>VAULT ADDRESS: {POKT_MULTISIG_ADDRESS}</Text>
+      <VStack align="stretch" py={8}>
+        <Text>To get started please send POKT tokens to our vault address</Text>
+        <Text>VAULT ADDRESS: {POKT_MULTISIG_ADDRESS}</Text>
 
-      <Text>Use the `pocket` CLI to send tokens to the vault address</Text>
-      <Text>Sample command:</Text>
-      <Code>
-        {`pocket accounts send-tx 92d75da9086b557764432b66b7d3703c1492771a 7FB0A18CEB4E803F22911F5B85E2727BB3BDF04B 20000000 testnet 10000 '{"address":"0x3F9B2fea60325d733e61bC76598725c5430cD751","chain_id":"5"}'  --remoteCLIURL https://node2.testnet.pokt.network`}
-      </Code>
+        <Text>Use the `pocket` CLI to send tokens to the vault address</Text>
+        <Text>Sample command:</Text>
+        <Code p={6}>
+          {`$ pocket accounts send-tx 92d75da9086b557764432b66b7d3703c1492771a 7FB0A18CEB4E803F22911F5B85E2727BB3BDF04B 20000000 testnet 10000 '{"address":"0x3F9B2fea60325d733e61bC76598725c5430cD751","chain_id":"5"}'  --remoteCLIURL https://node2.testnet.pokt.network`}
+        </Code>
 
-      <Text>
-        Once you have sent the tokens, find your transaction below and click the
-        Mint button
-      </Text>
+        <Text>
+          Once you have sent the tokens, find your transaction below and click
+          the Mint button
+        </Text>
+        <Text>
+          It may take upto 30 minutes for the transaction to be confirmed
+        </Text>
+      </VStack>
+
+      <Divider />
 
       <Table maxW="100%">
         <Thead>

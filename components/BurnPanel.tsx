@@ -1,5 +1,6 @@
 import {
   Button,
+  Divider,
   Input,
   Link,
   Table,
@@ -91,27 +92,31 @@ export const BurnPanel: React.FC = () => {
 
   return (
     <VStack align="stretch">
-      <Text>
-        To burn your tokens, enter the amount of wPOKT you want to burn and
-        click the Burn button
-      </Text>
-      <VStack align="start" maxW="30rem">
-        <Input
-          placeholder="Amount"
-          type="number"
-          value={value}
-          onChange={e => setValue(e.target.value)}
-        />
-        <Input
-          placeholder="Recipient Address"
-          type="text"
-          value={address}
-          onChange={e => setAddress(e.target.value)}
-        />
-        <Button isLoading={isLoading} onClick={burnTokens}>
-          Burn
-        </Button>
+      <VStack align="stretch" py={8}>
+        <Text>
+          To burn your tokens, enter the amount of wPOKT you want to burn and
+          click the Burn button
+        </Text>
+        <VStack align="start" maxW="30rem">
+          <Input
+            placeholder="Amount"
+            type="number"
+            value={value}
+            onChange={e => setValue(e.target.value)}
+          />
+          <Input
+            placeholder="Recipient Address"
+            type="text"
+            value={address}
+            onChange={e => setAddress(e.target.value)}
+          />
+          <Button isLoading={isLoading} onClick={burnTokens}>
+            Burn
+          </Button>
+        </VStack>
       </VStack>
+
+      <Divider />
 
       <Table maxW="100%">
         <Thead>

@@ -2,6 +2,7 @@ import { ObjectId } from 'mongodb';
 
 import { dbPromise } from '@/lib/mongodb';
 import { CollectionInvalidMints, InvalidMint } from '@/types';
+import { POKT_MULTISIG_ADDRESS } from '@/utils/constants';
 
 export const getInvalidMintFromId = async (
   id: string,
@@ -11,7 +12,7 @@ export const getInvalidMintFromId = async (
 
     const invalid_mint = await client
       .collection(CollectionInvalidMints)
-      .findOne({ _id: new ObjectId(id) });
+      .findOne({ _id: new ObjectId(id), vault_address: POKT_MULTISIG_ADDRESS });
 
     return invalid_mint as InvalidMint | null;
   } catch (error) {
@@ -26,7 +27,12 @@ export const getAllInvalidMints = async (): Promise<InvalidMint[]> => {
 
     const invalid_mints = await client
       .collection(CollectionInvalidMints)
-      .find({}, { sort: { created_at: -1 } })
+      .find(
+        {
+          vault_address: POKT_MULTISIG_ADDRESS,
+        },
+        { sort: { created_at: -1 } },
+      )
       .toArray();
 
     return invalid_mints as InvalidMint[];

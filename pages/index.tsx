@@ -10,6 +10,7 @@ import {
 import { utils } from 'ethers';
 
 import { BurnPanel } from '@/components/BurnPanel';
+import { HealthPanel } from '@/components/HealthPanel';
 import { InvalidMintPanel } from '@/components/InvalidMintPanel';
 import { MintPanel } from '@/components/MintPanel';
 import { useWPOKTBalance } from '@/hooks/useWPOKTBalance';
@@ -25,6 +26,7 @@ const WrappedPocketPage: React.FC = () => {
           <Tab>Mint</Tab>
           <Tab>Burn</Tab>
           <Tab>Invalid Mints</Tab>
+          <Tab>Validators</Tab>
         </TabList>
         <TabPanels>
           <TabPanel>
@@ -35,6 +37,9 @@ const WrappedPocketPage: React.FC = () => {
           </TabPanel>
           <TabPanel>
             <InvalidMintPanel />
+          </TabPanel>
+          <TabPanel>
+            <HealthPanel />
           </TabPanel>
         </TabPanels>
       </Tabs>
