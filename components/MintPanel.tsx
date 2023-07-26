@@ -12,7 +12,7 @@ import {
   useToast,
   VStack,
 } from '@chakra-ui/react';
-import { Contract } from 'ethers';
+import { Contract, utils } from 'ethers';
 import { useCallback, useState } from 'react';
 import { useSigner } from 'wagmi';
 
@@ -27,7 +27,7 @@ import {
 import { HashDisplay } from './HashDisplay';
 
 export const MintPanel: React.FC = () => {
-  const { mints } = useAllMints();
+  const { mints, reload, loading } = useAllMints();
 
   const toast = useToast();
 
@@ -127,63 +127,75 @@ export const MintPanel: React.FC = () => {
 
       <Divider />
 
-      <Table maxW="100%">
-        <Thead>
-          <Tr>
-            <Th>Transaction Hash</Th>
-            <Th>Height</Th>
-            <Th>Confirmations</Th>
-            <Th>Sender Address</Th>
-            <Th>Recipient Address</Th>
-            <Th>Amount</Th>
-            <Th>Created At</Th>
-            <Th>Status</Th>
-            <Th>Action</Th>
-            <Th>Mint Tx Hash</Th>
-          </Tr>
-        </Thead>
-        {mints.map(mint => (
-          <Tr key={mint._id.toString()}>
-            <Td>
-              <HashDisplay chainId={mint.sender_chain_id}>
-                {mint.transaction_hash}
-              </HashDisplay>
-            </Td>
-            <Td>{mint.height}</Td>
-            <Td>{mint.confirmations}</Td>
-            <Td>
-              <HashDisplay chainId={mint.sender_chain_id}>
-                {mint.sender_address}
-              </HashDisplay>
-            </Td>
-            <Td>
-              <HashDisplay chainId={mint.recipient_chain_id}>
-                {mint.recipient_address}
-              </HashDisplay>
-            </Td>
-            <Td>{mint.amount}</Td>
-            <Td>{new Date(mint.created_at).toLocaleString()}</Td>
-            <Td>{mint.status}</Td>
-            <Td>
-              {mint.status === 'signed' ||
-              (mint.status === 'confirmed' && mint.signatures.length >= 2) ? (
-                <Button isLoading={isLoading} onClick={() => mintTokens(mint)}>
-                  Mint
-                </Button>
-              ) : (
-                <Text>N/A</Text>
-              )}
-            </Td>
-            <Td>
-              {mint.mint_tx_hash && (
-                <HashDisplay chainId={mint.recipient_chain_id}>
-                  {mint.mint_tx_hash}
-                </HashDisplay>
-              )}
-            </Td>
-          </Tr>
-        ))}
-      </Table>
+      {!loading && (
+        <VStack align="stretch" overflowX="auto">
+          <Table maxW="100%">
+            <Thead>
+              <Tr>
+                <Th>Transaction Hash</Th>
+                <Th>Height</Th>
+                <Th>Confirmations</Th>
+                <Th>Sender Address</Th>
+                <Th>Recipient Address</Th>
+                <Th>Amount</Th>
+                <Th>Created At</Th>
+                <Th>Status</Th>
+                <Th>Action</Th>
+                <Th>Mint Tx Hash</Th>
+              </Tr>
+            </Thead>
+            {mints.map(mint => (
+              <Tr key={mint._id.toString()}>
+                <Td>
+                  <HashDisplay chainId={mint.sender_chain_id}>
+                    {mint.transaction_hash}
+                  </HashDisplay>
+                </Td>
+                <Td>{mint.height}</Td>
+                <Td>{mint.confirmations}</Td>
+                <Td>
+                  <HashDisplay chainId={mint.sender_chain_id}>
+                    {mint.sender_address}
+                  </HashDisplay>
+                </Td>
+                <Td>
+                  <HashDisplay chainId={mint.recipient_chain_id}>
+                    {mint.recipient_address}
+                  </HashDisplay>
+                </Td>
+                <Td>{utils.formatUnits(mint.amount, 6)}</Td>
+                <Td>{new Date(mint.created_at).toLocaleString()}</Td>
+                <Td>{mint.status}</Td>
+                <Td>
+                  {mint.status === 'signed' ||
+                  (mint.status === 'confirmed' &&
+                    mint.signatures.length >= 2) ? (
+                    <Button
+                      isLoading={isLoading}
+                      onClick={() => mintTokens(mint)}
+                    >
+                      Mint
+                    </Button>
+                  ) : (
+                    <Text>N/A</Text>
+                  )}
+                </Td>
+                <Td>
+                  {mint.mint_tx_hash && (
+                    <HashDisplay chainId={mint.recipient_chain_id}>
+                      {mint.mint_tx_hash}
+                    </HashDisplay>
+                  )}
+                </Td>
+              </Tr>
+            ))}
+          </Table>
+        </VStack>
+      )}
+
+      <Button isLoading={loading} onClick={() => reload()}>
+        Reload
+      </Button>
     </VStack>
   );
 };

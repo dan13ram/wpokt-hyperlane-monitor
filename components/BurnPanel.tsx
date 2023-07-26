@@ -23,7 +23,7 @@ import { WRAPPED_POCKET_ADDRESS } from '@/utils/constants';
 import { HashDisplay } from './HashDisplay';
 
 export const BurnPanel: React.FC = () => {
-  const { burns } = useAllBurns();
+  const { burns, reload, loading } = useAllBurns();
 
   const toast = useToast();
 
@@ -99,13 +99,13 @@ export const BurnPanel: React.FC = () => {
         </Text>
         <VStack align="start" maxW="30rem">
           <Input
-            placeholder="Amount"
+            placeholder="Burn Amount"
             type="number"
             value={value}
             onChange={e => setValue(e.target.value)}
           />
           <Input
-            placeholder="Recipient Address"
+            placeholder="Recipient Pocket Address"
             type="text"
             value={address}
             onChange={e => setAddress(e.target.value)}
@@ -118,50 +118,58 @@ export const BurnPanel: React.FC = () => {
 
       <Divider />
 
-      <Table maxW="100%">
-        <Thead>
-          <Tr>
-            <Th>Transaction Hash</Th>
-            <Th>Block Number</Th>
-            <Th>Confirmations</Th>
-            <Th>Sender Address</Th>
-            <Th>Recipient Address</Th>
-            <Th>Amount</Th>
-            <Th>Created At</Th>
-            <Th>Status</Th>
-            <Th>Return Tx Hash</Th>
-          </Tr>
-        </Thead>
-        {burns.map(burn => (
-          <Tr key={burn._id.toString()}>
-            <Td>
-              <HashDisplay chainId={burn.sender_chain_id}>
-                {burn.transaction_hash}
-              </HashDisplay>
-            </Td>
-            <Td>{burn.block_number}</Td>
-            <Td>{burn.confirmations}</Td>
-            <Td>
-              <HashDisplay chainId={burn.sender_chain_id}>
-                {burn.sender_address}
-              </HashDisplay>
-            </Td>
-            <Td>
-              <HashDisplay chainId={burn.recipient_chain_id}>
-                {burn.recipient_address}
-              </HashDisplay>
-            </Td>
-            <Td>{burn.amount}</Td>
-            <Td>{new Date(burn.created_at).toLocaleString()}</Td>
-            <Td>{burn.status}</Td>
-            <Td>
-              <HashDisplay chainId={burn.recipient_chain_id}>
-                {burn.return_tx_hash}
-              </HashDisplay>
-            </Td>
-          </Tr>
-        ))}
-      </Table>
+      {!loading && (
+        <VStack align="stretch" overflowX="auto">
+          <Table maxW="100%">
+            <Thead>
+              <Tr>
+                <Th>Transaction Hash</Th>
+                <Th>Block Number</Th>
+                <Th>Confirmations</Th>
+                <Th>Sender Address</Th>
+                <Th>Recipient Address</Th>
+                <Th>Amount</Th>
+                <Th>Created At</Th>
+                <Th>Status</Th>
+                <Th>Return Tx Hash</Th>
+              </Tr>
+            </Thead>
+            {burns.map(burn => (
+              <Tr key={burn._id.toString()}>
+                <Td>
+                  <HashDisplay chainId={burn.sender_chain_id}>
+                    {burn.transaction_hash}
+                  </HashDisplay>
+                </Td>
+                <Td>{burn.block_number}</Td>
+                <Td>{burn.confirmations}</Td>
+                <Td>
+                  <HashDisplay chainId={burn.sender_chain_id}>
+                    {burn.sender_address}
+                  </HashDisplay>
+                </Td>
+                <Td>
+                  <HashDisplay chainId={burn.recipient_chain_id}>
+                    {burn.recipient_address}
+                  </HashDisplay>
+                </Td>
+                <Td>{utils.formatUnits(burn.amount, 6)}</Td>
+                <Td>{new Date(burn.created_at).toLocaleString()}</Td>
+                <Td>{burn.status}</Td>
+                <Td>
+                  <HashDisplay chainId={burn.recipient_chain_id}>
+                    {burn.return_tx_hash}
+                  </HashDisplay>
+                </Td>
+              </Tr>
+            ))}
+          </Table>
+        </VStack>
+      )}
+
+      <Button isLoading={loading} onClick={() => reload()}>
+        Reload
+      </Button>
     </VStack>
   );
 };

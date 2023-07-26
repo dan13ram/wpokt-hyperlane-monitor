@@ -2,6 +2,8 @@ import { Button, Heading, HStack, Text, VStack } from '@chakra-ui/react';
 import { Web3Button, Web3Modal } from '@web3modal/react';
 import { PropsWithChildren, useCallback, useMemo } from 'react';
 import { useAccount, useNetwork, useSwitchNetwork } from 'wagmi';
+import { utils } from 'ethers';
+import { useWPOKTBalance } from '@/hooks/useWPOKTBalance';
 
 import { WagmiProvider } from '@/components/WagmiProvider';
 import { DEFAULT_CHAIN, ethereumClient, projectId } from '@/lib/web3';
@@ -53,6 +55,28 @@ const WagmiConnectionManager: React.FC<PropsWithChildren> = ({ children }) => {
   return <>{children}</>;
 };
 
+const Header: React.FC = () => {
+  const balance = useWPOKTBalance();
+  const { address } = useAccount();
+  const { chain } = useNetwork();
+
+  const isConnected = useMemo(
+    () => !!address && !!chain && chain.id === DEFAULT_CHAIN.id,
+    [address, chain],
+  );
+  return (
+    <HStack w="100%" justifyContent="space-between" spacing={4} py={4}>
+      <Heading size="md">WPOKT Demo</Heading>
+      <HStack spacing={4}>
+        {isConnected && (
+          <Text> Balance: {utils.formatUnits(balance, 6)} WPOKT</Text>
+        )}
+        <Web3Button />
+      </HStack>
+    </HStack>
+  );
+};
+
 export const WagmiWrapper: React.FC<PropsWithChildren> = ({ children }) => {
   return (
     <WagmiProvider>
@@ -63,10 +87,7 @@ export const WagmiWrapper: React.FC<PropsWithChildren> = ({ children }) => {
         maxW={PAGE_MAX_WIDTH}
         marginX="auto"
       >
-        <HStack w="100%" justifyContent="space-between" spacing={4} py={4}>
-          <Heading size="md">WPOKT Demo</Heading>
-          <Web3Button />
-        </HStack>
+        <Header />
         <WagmiConnectionManager>{children}</WagmiConnectionManager>
       </VStack>
       <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
