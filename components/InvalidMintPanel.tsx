@@ -1,9 +1,9 @@
 import { Button, Table, Td, Th, Thead, Tr, VStack } from '@chakra-ui/react';
+import { utils } from 'ethers';
 
 import useAllInvalidMints from '@/hooks/useAllInvalidMints';
 
 import { HashDisplay } from './HashDisplay';
-import { utils } from 'ethers';
 
 export const InvalidMintPanel: React.FC = () => {
   const { invalidMints, reload, loading } = useAllInvalidMints();

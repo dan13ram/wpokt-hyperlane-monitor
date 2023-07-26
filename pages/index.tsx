@@ -8,12 +8,12 @@ import {
   Text,
   VStack,
 } from '@chakra-ui/react';
+import Image from 'next/image';
 
 import { BurnPanel } from '@/components/BurnPanel';
 import { HealthPanel } from '@/components/HealthPanel';
 import { InvalidMintPanel } from '@/components/InvalidMintPanel';
 import { MintPanel } from '@/components/MintPanel';
-import Image from 'next/image';
 
 const WrappedPocketPage: React.FC = () => {
   return (

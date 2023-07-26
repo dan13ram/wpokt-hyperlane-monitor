@@ -42,65 +42,66 @@ export const HealthPanel: React.FC = () => {
 
   return (
     <VStack align="stretch">
-      {!loading &&
-      <VStack align="stretch" overflowX="auto">
-        <Table maxW="100%">
-          <Thead>
-            <Tr>
-              <Th>Hostname</Th>
-              <Th>Last Sync At</Th>
-              <Th>Next Sync</Th>
-              <Th>Status</Th>
-              {healths[0]?.service_healths
-                .filter(({ name }) => name !== 'health')
-                .map(serviceHealth => (
-                  <Th key={serviceHealth.name}>{serviceHealth.name}</Th>
-                ))}
-            </Tr>
-          </Thead>
-          {healths.map(health => {
-            const healthCheckService = health.service_healths.find(
-              ({ name }) => name === 'health',
-            );
-            return (
-              <Tr key={health._id.toString()}>
-                <Td>{health.hostname}</Td>
-                <Td>
-                  {healthCheckService
-                    ? new Date(
-                        healthCheckService.last_sync_time,
-                      ).toLocaleString()
-                    : new Date(health.created_at).toLocaleString()}
-                </Td>
-                <Td>
-                  <TimeDisplay
-                    time={
-                      healthCheckService?.next_sync_time ||
-                      new Date(health.created_at).getTime() + 300 * 1000
-                    }
-                  />
-                </Td>
-                <Td>
-                  {new Date(health.created_at).getTime() >
-                  Date.now() - 1000 * 60 * 10
-                    ? 'Online'
-                    : 'Offline'}
-                </Td>
-                {health.service_healths
+      {!loading && (
+        <VStack align="stretch" overflowX="auto">
+          <Table maxW="100%">
+            <Thead>
+              <Tr>
+                <Th>Hostname</Th>
+                <Th>Last Sync At</Th>
+                <Th>Next Sync</Th>
+                <Th>Status</Th>
+                {healths[0]?.service_healths
                   .filter(({ name }) => name !== 'health')
                   .map(serviceHealth => (
-                    <Td key={serviceHealth.name}>
-                      Synced at{' '}
-                      {new Date(
-                        serviceHealth.last_sync_time,
-                      ).toLocaleTimeString()}
-                    </Td>
+                    <Th key={serviceHealth.name}>{serviceHealth.name}</Th>
                   ))}
               </Tr>
-            );
-          })}
-        </Table>
-      </VStack>}
+            </Thead>
+            {healths.map(health => {
+              const healthCheckService = health.service_healths.find(
+                ({ name }) => name === 'health',
+              );
+              return (
+                <Tr key={health._id.toString()}>
+                  <Td>{health.hostname}</Td>
+                  <Td>
+                    {healthCheckService
+                      ? new Date(
+                          healthCheckService.last_sync_time,
+                        ).toLocaleString()
+                      : new Date(health.created_at).toLocaleString()}
+                  </Td>
+                  <Td>
+                    <TimeDisplay
+                      time={
+                        healthCheckService?.next_sync_time ||
+                        new Date(health.created_at).getTime() + 300 * 1000
+                      }
+                    />
+                  </Td>
+                  <Td>
+                    {new Date(health.created_at).getTime() >
+                    Date.now() - 1000 * 60 * 10
+                      ? 'Online'
+                      : 'Offline'}
+                  </Td>
+                  {health.service_healths
+                    .filter(({ name }) => name !== 'health')
+                    .map(serviceHealth => (
+                      <Td key={serviceHealth.name}>
+                        Synced at{' '}
+                        {new Date(
+                          serviceHealth.last_sync_time,
+                        ).toLocaleTimeString()}
+                      </Td>
+                    ))}
+                </Tr>
+              );
+            })}
+          </Table>
+        </VStack>
+      )}
 
       <Button isLoading={loading} onClick={() => reload()}>
         Reload

@@ -1,11 +1,11 @@
 import { Button, Heading, HStack, Text, VStack } from '@chakra-ui/react';
 import { Web3Button, Web3Modal } from '@web3modal/react';
+import { utils } from 'ethers';
 import { PropsWithChildren, useCallback, useMemo } from 'react';
 import { useAccount, useNetwork, useSwitchNetwork } from 'wagmi';
-import { utils } from 'ethers';
-import { useWPOKTBalance } from '@/hooks/useWPOKTBalance';
 
 import { WagmiProvider } from '@/components/WagmiProvider';
+import { useWPOKTBalance } from '@/hooks/useWPOKTBalance';
 import { DEFAULT_CHAIN, ethereumClient, projectId } from '@/lib/web3';
 import { PAGE_MAX_WIDTH, PAGE_PADDING_X } from '@/utils/theme';
 

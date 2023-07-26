@@ -1,4 +1,4 @@
-import { HStack, Tag, Text } from '@chakra-ui/react';
+import { HStack, Text } from '@chakra-ui/react';
 import Image from 'next/image';
 import { useMemo } from 'react';
 
