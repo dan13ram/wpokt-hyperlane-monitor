@@ -1,4 +1,13 @@
-import { Button, Table, Td, Th, Thead, Tr, VStack } from '@chakra-ui/react';
+import {
+  Button,
+  Divider,
+  Table,
+  Td,
+  Th,
+  Thead,
+  Tr,
+  VStack,
+} from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 
 import useHealth from '@/hooks/useHealth';
@@ -42,13 +51,14 @@ export const HealthPanel: React.FC = () => {
 
   return (
     <VStack align="stretch">
+      <Divider />
       {!loading && (
         <VStack align="stretch" overflowX="auto">
           <Table maxW="100%">
             <Thead>
               <Tr>
                 <Th>Hostname</Th>
-                <Th>Last Sync At</Th>
+                <Th>Last Sync</Th>
                 <Th>Next Sync</Th>
                 <Th>Status</Th>
                 {healths[0]?.service_healths
@@ -90,7 +100,7 @@ export const HealthPanel: React.FC = () => {
                     .filter(({ name }) => name !== 'health')
                     .map(serviceHealth => (
                       <Td key={serviceHealth.name}>
-                        Synced at{' '}
+                        Last Synced{' '}
                         {new Date(
                           serviceHealth.last_sync_time,
                         ).toLocaleTimeString()}

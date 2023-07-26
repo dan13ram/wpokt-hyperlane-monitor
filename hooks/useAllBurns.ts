@@ -14,12 +14,11 @@ export default function useAllBurns(): {
   loading: boolean;
   error: Error | null;
 } {
-  const { data, error, mutate } = useSWR('/api/burns/all', fetcher);
-  const loading = data === undefined;
+  const { data, error, mutate, isLoading, isValidating } = useSWR('/api/burns/all', fetcher);
 
   return {
     burns: data || [],
-    loading,
+    loading: data === undefined || isLoading || isValidating,
     error,
     reload: mutate,
   };

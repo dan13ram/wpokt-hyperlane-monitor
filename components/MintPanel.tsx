@@ -150,7 +150,7 @@ export const MintPanel: React.FC = () => {
                 <Th>Recipient Address</Th>
                 <Th>Amount</Th>
                 <Th>Nonce</Th>
-                <Th>Created At</Th>
+                <Th>Created</Th>
                 <Th>Status</Th>
                 <Th>Action</Th>
                 <Th>Mint Tx Hash</Th>

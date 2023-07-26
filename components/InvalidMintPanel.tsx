@@ -1,4 +1,13 @@
-import { Button, Table, Td, Th, Thead, Tr, VStack } from '@chakra-ui/react';
+import {
+  Button,
+  Divider,
+  Table,
+  Td,
+  Th,
+  Thead,
+  Tr,
+  VStack,
+} from '@chakra-ui/react';
 import { utils } from 'ethers';
 
 import useAllInvalidMints from '@/hooks/useAllInvalidMints';
@@ -10,6 +19,7 @@ export const InvalidMintPanel: React.FC = () => {
 
   return (
     <VStack align="stretch">
+      <Divider />
       {!loading && (
         <VStack align="stretch" overflowX="auto">
           <Table maxW="100%">
@@ -20,7 +30,7 @@ export const InvalidMintPanel: React.FC = () => {
                 <Th>Confirmations</Th>
                 <Th>Sender Address</Th>
                 <Th>Amount</Th>
-                <Th>Created At</Th>
+                <Th>Created</Th>
                 <Th>Status</Th>
                 <Th>Return Tx Hash</Th>
               </Tr>

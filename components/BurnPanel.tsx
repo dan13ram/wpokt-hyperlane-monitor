@@ -129,7 +129,7 @@ export const BurnPanel: React.FC = () => {
                 <Th>Sender Address</Th>
                 <Th>Recipient Address</Th>
                 <Th>Amount</Th>
-                <Th>Created At</Th>
+                <Th>Created</Th>
                 <Th>Status</Th>
                 <Th>Return Tx Hash</Th>
               </Tr>
