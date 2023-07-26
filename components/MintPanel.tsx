@@ -18,6 +18,7 @@ import { useCallback, useState } from 'react';
 import { useSigner } from 'wagmi';
 
 import useAllMints from '@/hooks/useAllMints';
+import { useWPOKTNonce } from '@/hooks/useWPOKTNonce';
 import { Mint } from '@/types';
 import { MINT_CONTROLLER_ABI } from '@/utils/abis';
 import {
@@ -26,7 +27,6 @@ import {
 } from '@/utils/constants';
 
 import { HashDisplay } from './HashDisplay';
-import { useWPOKTNonce } from '@/hooks/useWPOKTNonce';
 
 export const MintPanel: React.FC = () => {
   const { mints, reload, loading } = useAllMints();
@@ -110,21 +110,29 @@ export const MintPanel: React.FC = () => {
   return (
     <VStack align="stretch">
       <VStack align="stretch" py={8}>
-        <Text>To get started please send POKT tokens to our vault address</Text>
-        <Text>VAULT ADDRESS: {POKT_MULTISIG_ADDRESS}</Text>
+        <Text>
+          To get started please send POKT tokens to our vault address:{' '}
+          <strong>{POKT_MULTISIG_ADDRESS}</strong>
+        </Text>
 
-        <Text>Use the `pocket` CLI to send tokens to the vault address</Text>
-        <Text>Sample command:</Text>
+        <Text>
+          Use the{' '}
+          <Link
+            isExternal
+            href="https://docs.pokt.network/node/environment/#source"
+            color="blue.500"
+          >
+            pocket CLI
+          </Link>{' '}
+          to send tokens to the vault address. A sample command is given below:
+        </Text>
         <Code p={6}>
           {`$ pocket accounts send-tx 92d75da9086b557764432b66b7d3703c1492771a 7FB0A18CEB4E803F22911F5B85E2727BB3BDF04B 20000000 testnet 10000 '{"address":"0x3F9B2fea60325d733e61bC76598725c5430cD751","chain_id":"5"}'  --remoteCLIURL https://node2.testnet.pokt.network`}
         </Code>
 
         <Text>
           Once you have sent the tokens, find your transaction below and click
-          the Mint button
-        </Text>
-        <Text>
-          It may take upto 30 minutes for the transaction to be confirmed
+          the Mint button to complete the bridging process.
         </Text>
       </VStack>
 
@@ -191,9 +199,14 @@ export const MintPanel: React.FC = () => {
                         }
                       >
                         <Button
-                          isLoading={isLoading}
+                          isLoading={
+                            isMintNotReady || isMintCompleted
+                              ? false
+                              : isLoading
+                          }
                           onClick={() => mintTokens(mint)}
                           isDisabled={isMintNotReady || isMintCompleted}
+                          colorScheme="blue"
                         >
                           Mint
                         </Button>
@@ -216,7 +229,7 @@ export const MintPanel: React.FC = () => {
         </VStack>
       )}
 
-      <Button isLoading={loading} onClick={() => reload()}>
+      <Button isLoading={loading} onClick={() => reload()} colorScheme="blue">
         Reload
       </Button>
     </VStack>

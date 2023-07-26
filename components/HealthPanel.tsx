@@ -103,7 +103,7 @@ export const HealthPanel: React.FC = () => {
         </VStack>
       )}
 
-      <Button isLoading={loading} onClick={() => reload()}>
+      <Button isLoading={loading} onClick={() => reload()} colorScheme="blue">
         Reload
       </Button>
     </VStack>

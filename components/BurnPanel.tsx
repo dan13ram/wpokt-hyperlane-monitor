@@ -110,7 +110,7 @@ export const BurnPanel: React.FC = () => {
             value={address}
             onChange={e => setAddress(e.target.value)}
           />
-          <Button isLoading={isLoading} onClick={burnTokens}>
+          <Button isLoading={isLoading} onClick={burnTokens} colorScheme="blue">
             Burn
           </Button>
         </VStack>
@@ -167,7 +167,7 @@ export const BurnPanel: React.FC = () => {
         </VStack>
       )}
 
-      <Button isLoading={loading} onClick={() => reload()}>
+      <Button isLoading={loading} onClick={() => reload()} colorScheme="blue">
         Reload
       </Button>
     </VStack>
