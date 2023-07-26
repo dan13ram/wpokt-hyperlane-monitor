@@ -3,6 +3,7 @@ import {
   Divider,
   Table,
   Td,
+  Text,
   Th,
   Thead,
   Tr,
@@ -27,7 +28,6 @@ export const InvalidMintPanel: React.FC = () => {
               <Tr>
                 <Th>Transaction Hash</Th>
                 <Th>Height</Th>
-                <Th>Confirmations</Th>
                 <Th>Sender Address</Th>
                 <Th>Amount</Th>
                 <Th>Memo</Th>
@@ -44,7 +44,6 @@ export const InvalidMintPanel: React.FC = () => {
                   </HashDisplay>
                 </Td>
                 <Td>{invalidMint.height}</Td>
-                <Td>{invalidMint.confirmations}</Td>
                 <Td>
                   <HashDisplay chainId={invalidMint.sender_chain_id}>
                     {invalidMint.sender_address}
@@ -53,11 +52,20 @@ export const InvalidMintPanel: React.FC = () => {
                 <Td>{utils.formatUnits(invalidMint.amount, 6)}</Td>
                 <Td>{invalidMint.memo}</Td>
                 <Td>{new Date(invalidMint.created_at).toLocaleString()}</Td>
-                <Td>{invalidMint.status}</Td>
                 <Td>
-                  <HashDisplay chainId={invalidMint.sender_chain_id}>
-                    {invalidMint.return_tx_hash}
-                  </HashDisplay>
+                  {invalidMint.status}
+                  {invalidMint.status === 'pending' && (
+                    <Text as="span" ml={1}>
+                      ({invalidMint.confirmations}/1)
+                    </Text>
+                  )}
+                </Td>
+                <Td>
+                  {invalidMint.return_tx_hash && (
+                    <HashDisplay chainId={invalidMint.sender_chain_id}>
+                      {invalidMint.return_tx_hash}
+                    </HashDisplay>
+                  )}
                 </Td>
               </Tr>
             ))}

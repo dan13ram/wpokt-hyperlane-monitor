@@ -145,7 +145,6 @@ export const MintPanel: React.FC = () => {
               <Tr>
                 <Th>Transaction Hash</Th>
                 <Th>Height</Th>
-                <Th>Confirmations</Th>
                 <Th>Sender Address</Th>
                 <Th>Recipient Address</Th>
                 <Th>Amount</Th>
@@ -170,7 +169,6 @@ export const MintPanel: React.FC = () => {
                     </HashDisplay>
                   </Td>
                   <Td>{mint.height}</Td>
-                  <Td>{mint.confirmations}</Td>
                   <Td>
                     <HashDisplay chainId={mint.sender_chain_id}>
                       {mint.sender_address}
@@ -184,7 +182,14 @@ export const MintPanel: React.FC = () => {
                   <Td>{utils.formatUnits(mint.amount, 6)}</Td>
                   <Td>{mint.nonce}</Td>
                   <Td>{new Date(mint.created_at).toLocaleString()}</Td>
-                  <Td>{mint.status}</Td>
+                  <Td>
+                    {mint.status}
+                    {mint.status === 'pending' && (
+                      <Text as="span" ml={1}>
+                        ({mint.confirmations}/1)
+                      </Text>
+                    )}
+                  </Td>
                   <Td>
                     {mint.status === 'signed' ||
                     (mint.status === 'confirmed' &&
