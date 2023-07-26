@@ -157,10 +157,10 @@ export const MintPanel: React.FC = () => {
               </Tr>
             </Thead>
             {mints.map(mint => {
-              const isMintNotReady = BigNumber.from(mint.nonce).gt(
-                nonce.add(1),
-              );
-              const isMintCompleted = BigNumber.from(mint.nonce).lte(nonce);
+              const isMintNotReady =
+                !mint.nonce || BigNumber.from(mint.nonce).gt(nonce.add(1));
+              const isMintCompleted =
+                !!mint.nonce && BigNumber.from(mint.nonce).lte(nonce);
 
               return (
                 <Tr key={mint._id.toString()}>
