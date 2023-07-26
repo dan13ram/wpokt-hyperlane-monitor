@@ -57,7 +57,7 @@ export const HealthPanel: React.FC = () => {
           <Table maxW="100%">
             <Thead>
               <Tr>
-                <Th>Hostname</Th>
+                <Th>Validator ID</Th>
                 <Th>Last Sync</Th>
                 <Th>Next Sync</Th>
                 <Th>Status</Th>
@@ -74,7 +74,7 @@ export const HealthPanel: React.FC = () => {
               );
               return (
                 <Tr key={health._id.toString()}>
-                  <Td>{health.hostname}</Td>
+                  <Td>{health.validator_id}</Td>
                   <Td>
                     {healthCheckService
                       ? new Date(

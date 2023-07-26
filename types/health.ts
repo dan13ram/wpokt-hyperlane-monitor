@@ -11,6 +11,7 @@ export type Health = WithId<{
   eth_address: string;
   wpokt_address: string;
   hostname: string;
+  validator_id: string;
   healthy: boolean;
   created_at: Date;
   service_healths: ServiceHealth[];

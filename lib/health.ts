@@ -7,7 +7,7 @@ export const getAllHealths = async (): Promise<Health[]> => {
 
     const healths = await client
       .collection(CollectionHealthChecks)
-      .find({})
+      .find({}, { sort: { validator_id: 1 } })
       .toArray();
 
     return healths as Health[];
