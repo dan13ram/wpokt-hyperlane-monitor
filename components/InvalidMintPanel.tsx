@@ -30,6 +30,7 @@ export const InvalidMintPanel: React.FC = () => {
                 <Th>Confirmations</Th>
                 <Th>Sender Address</Th>
                 <Th>Amount</Th>
+                <Th>Memo</Th>
                 <Th>Created</Th>
                 <Th>Status</Th>
                 <Th>Return Tx Hash</Th>
@@ -50,6 +51,7 @@ export const InvalidMintPanel: React.FC = () => {
                   </HashDisplay>
                 </Td>
                 <Td>{utils.formatUnits(invalidMint.amount, 6)}</Td>
+                <Td>{invalidMint.memo}</Td>
                 <Td>{new Date(invalidMint.created_at).toLocaleString()}</Td>
                 <Td>{invalidMint.status}</Td>
                 <Td>
