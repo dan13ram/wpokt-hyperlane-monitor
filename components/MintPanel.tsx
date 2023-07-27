@@ -14,11 +14,11 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { BigNumber, Contract, utils } from 'ethers';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useSigner } from 'wagmi';
 
 import useAllMints from '@/hooks/useAllMints';
-import { useWPOKTNonce } from '@/hooks/useWPOKTNonce';
+import { useWPOKTNonceMap } from '@/hooks/useWPOKTNonce';
 import { Mint } from '@/types';
 import { MINT_CONTROLLER_ABI } from '@/utils/abis';
 import {
@@ -28,9 +28,23 @@ import {
 
 import { HashDisplay } from './HashDisplay';
 
+function uniqueValues(array: string[]): string[] {
+  const map: Record<string, boolean> = {};
+  array.forEach(item => {
+    map[item] = true;
+  });
+  return Object.keys(map);
+}
+
 export const MintPanel: React.FC = () => {
   const { mints, reload, loading } = useAllMints();
-  const nonce = useWPOKTNonce();
+
+  const addresses = useMemo(
+    () => uniqueValues(mints.map(mint => mint.recipient_address)),
+    [mints],
+  );
+
+  const nonceMap = useWPOKTNonceMap(addresses);
 
   const toast = useToast();
 
@@ -156,10 +170,13 @@ export const MintPanel: React.FC = () => {
               </Tr>
             </Thead>
             {mints.map(mint => {
-              const isMintNotReady =
-                !mint.nonce || BigNumber.from(mint.nonce).gt(nonce.add(1));
-              const isMintCompleted =
-                !!mint.nonce && BigNumber.from(mint.nonce).lte(nonce);
+              const nonce = nonceMap[mint.recipient_address.toLowerCase()];
+              const isMintNotReady = nonce
+                ? !mint.nonce || BigNumber.from(mint.nonce).gt(nonce.add(1))
+                : true;
+              const isMintCompleted = nonce
+                ? !!mint.nonce && BigNumber.from(mint.nonce).lte(nonce)
+                : true;
 
               return (
                 <Tr key={mint._id.toString()}>
@@ -191,9 +208,10 @@ export const MintPanel: React.FC = () => {
                     )}
                   </Td>
                   <Td>
-                    {mint.status === 'signed' ||
-                    (mint.status === 'confirmed' &&
-                      mint.signatures.length >= 2) ? (
+                    {!!nonce &&
+                    (mint.status === 'signed' ||
+                      (mint.status === 'confirmed' &&
+                        mint.signatures.length >= 2)) ? (
                       <Tooltip
                         label={
                           isMintNotReady

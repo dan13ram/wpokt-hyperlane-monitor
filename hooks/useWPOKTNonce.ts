@@ -36,3 +36,40 @@ export const useWPOKTNonce = (refreshCount = 0): BigNumber => {
 
   return bnNonce;
 };
+
+export const useWPOKTNonceMap = (
+  addresses: string[],
+  refreshCount = 0,
+): Record<string, BigNumber> => {
+  const { data: signer } = useSigner();
+
+  const [bnNonceMap, setBnNonceMap] = useState<Record<string, BigNumber>>({});
+
+  const fetchNonce = useCallback(async () => {
+    if (!signer) return;
+    try {
+      const contract = new Contract(
+        WRAPPED_POCKET_ADDRESS,
+        WRAPPED_POCKET_ABI,
+        signer,
+      );
+      const nonceMap: Record<string, BigNumber> = {};
+      for (const address of addresses) {
+        nonceMap[address.toLowerCase()] = await contract.getUserNonce(address);
+      }
+      setBnNonceMap(nonceMap);
+    } catch (error) {
+      console.error(error);
+    }
+  }, [addresses, signer]);
+
+  useEffect(() => {
+    if (addresses && addresses.length > 0 && signer) {
+      fetchNonce();
+    }
+    const refreshInterval = setInterval(fetchNonce, 10000);
+    return () => clearInterval(refreshInterval);
+  }, [addresses, fetchNonce, refreshCount, signer]);
+
+  return bnNonceMap;
+};
