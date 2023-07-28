@@ -2,7 +2,11 @@ import { Text, Tooltip, useClipboard } from '@chakra-ui/react';
 
 import { shortenHex } from '@/utils/helpers';
 
-export const CopyText: React.FC<{ children: string }> = ({ children }) => {
+export const CopyText: React.FC<{
+  children: string;
+  shorten?: boolean;
+  maxChars?: number;
+}> = ({ children, shorten = true, maxChars = 10 }) => {
   const { onCopy, hasCopied } = useClipboard(children);
   return (
     <Tooltip
@@ -12,7 +16,7 @@ export const CopyText: React.FC<{ children: string }> = ({ children }) => {
       closeOnClick={false}
     >
       <Text onClick={onCopy} cursor="pointer">
-        {shortenHex(children)}
+        {shorten ? shortenHex(children, maxChars) : children}
       </Text>
     </Tooltip>
   );

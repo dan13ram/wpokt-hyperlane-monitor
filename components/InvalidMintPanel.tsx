@@ -15,7 +15,9 @@ import {
 import { utils } from 'ethers';
 
 import useAllInvalidMints from '@/hooks/useAllInvalidMints';
+import { humanFormattedDate } from '@/utils/helpers';
 
+import { CopyText } from './CopyText';
 import { HashDisplay } from './HashDisplay';
 
 export const InvalidMintPanel: React.FC = () => {
@@ -34,7 +36,7 @@ export const InvalidMintPanel: React.FC = () => {
                 <Th>Sender Address</Th>
                 <Th>Amount</Th>
                 <Th>Invalid Memo</Th>
-                <Th>Created</Th>
+                <Th>Created At</Th>
                 <Th>Status</Th>
                 <Th>Return Tx Hash</Th>
               </Tr>
@@ -54,9 +56,13 @@ export const InvalidMintPanel: React.FC = () => {
                 </Td>
                 <Td>{utils.formatUnits(invalidMint.amount, 6)}</Td>
                 <Td>
-                  <Text maxW="12rem">{invalidMint.memo}</Text>
+                  <CopyText maxChars={20}>{invalidMint.memo}</CopyText>
                 </Td>
-                <Td>{new Date(invalidMint.created_at).toLocaleString()}</Td>
+                <Td>
+                  <Text whiteSpace="nowrap">
+                    {humanFormattedDate(new Date(invalidMint.created_at))}
+                  </Text>
+                </Td>
                 <Td>
                   <Tooltip
                     label={

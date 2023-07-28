@@ -22,6 +22,7 @@ import { useSigner } from 'wagmi';
 import useAllBurns from '@/hooks/useAllBurns';
 import { WRAPPED_POCKET_ABI } from '@/utils/abis';
 import { WRAPPED_POCKET_ADDRESS } from '@/utils/constants';
+import { humanFormattedDate } from '@/utils/helpers';
 
 import { HashDisplay } from './HashDisplay';
 
@@ -97,26 +98,42 @@ export const BurnPanel: React.FC = () => {
     <VStack align="stretch">
       <VStack align="stretch" py={8}>
         <Text>
-          To burn your tokens, enter the amount of wPOKT you want to burn and
-          click the Burn button
-        </Text>
-        <VStack align="start" maxW="30rem">
-          <Input
-            placeholder="Burn Amount"
-            type="number"
-            value={value}
-            onChange={e => setValue(e.target.value)}
-          />
-          <Input
-            placeholder="Recipient Pocket Address"
-            type="text"
-            value={address}
-            onChange={e => setAddress(e.target.value)}
-          />
-          <Button isLoading={isLoading} onClick={burnTokens} colorScheme="blue">
+          {`To burn your wPOKT tokens, follow these simple steps:`}
+          <br />
+          <br />
+          {`Step 1: Enter Burn Amount and Recipient Pocket Address`}
+          <br />
+          {`In the input fields below, enter the amount of wPOKT tokens you want to burn and the recipient's Pocket address.`}
+          <VStack align="start" maxW="30rem" my={4}>
+            <Input
+              placeholder="Burn Amount"
+              type="number"
+              value={value}
+              onChange={e => setValue(e.target.value)}
+            />
+            <Input
+              placeholder="Recipient Pocket Address"
+              type="text"
+              value={address}
+              onChange={e => setAddress(e.target.value)}
+            />
+          </VStack>
+          {`Step 2: Click the "Burn" Button`}
+          <br />
+          {`After entering the required information, click the "Burn" button to initiate the burning process.`}
+          <Button
+            isLoading={isLoading}
+            onClick={burnTokens}
+            colorScheme="blue"
+            maxW="30rem"
+            px={8}
+            my={4}
+            display="flex"
+          >
             Burn
           </Button>
-        </VStack>
+          {`That's it! Your wPOKT tokens will be burned, and the equivalent POKT tokens on the Pocket Testnet will be transferred to the recipient address.`}
+        </Text>
       </VStack>
 
       <Divider />
@@ -131,7 +148,7 @@ export const BurnPanel: React.FC = () => {
                 <Th>Sender Address</Th>
                 <Th>Recipient Address</Th>
                 <Th>Amount</Th>
-                <Th>Created</Th>
+                <Th>Created At</Th>
                 <Th>Status</Th>
                 <Th>Return Tx Hash</Th>
               </Tr>
@@ -155,7 +172,11 @@ export const BurnPanel: React.FC = () => {
                   </HashDisplay>
                 </Td>
                 <Td>{utils.formatUnits(burn.amount, 6)}</Td>
-                <Td>{new Date(burn.created_at).toLocaleString()}</Td>
+                <Td>
+                  <Text whiteSpace="nowrap">
+                    {humanFormattedDate(new Date(burn.created_at))}
+                  </Text>
+                </Td>
                 <Td>
                   <Tooltip
                     label={

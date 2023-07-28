@@ -1,4 +1,4 @@
-import { QuestionIcon } from '@chakra-ui/icons';
+import { CheckIcon, CopyIcon, QuestionIcon } from '@chakra-ui/icons';
 import {
   Button,
   Code,
@@ -8,10 +8,12 @@ import {
   Table,
   Td,
   Text,
+  Textarea,
   Th,
   Thead,
   Tooltip,
   Tr,
+  useClipboard,
   useToast,
   VStack,
 } from '@chakra-ui/react';
@@ -27,16 +29,11 @@ import {
   MINT_CONTROLLER_ADDRESS,
   POKT_MULTISIG_ADDRESS,
 } from '@/utils/constants';
+import { humanFormattedDate, uniqueValues } from '@/utils/helpers';
 
 import { HashDisplay } from './HashDisplay';
 
-function uniqueValues(array: string[]): string[] {
-  const map: Record<string, boolean> = {};
-  array.forEach(item => {
-    map[item] = true;
-  });
-  return Object.keys(map);
-}
+const CLI_CODE = `pocket accounts send-tx 92d75da9086b557764432b66b7d3703c1492771a ${POKT_MULTISIG_ADDRESS} 20000000 testnet 10000 '{"address":"0x3F9B2fea60325d733e61bC76598725c5430cD751","chain_id":"5"}'  --remoteCLIURL https://node2.testnet.pokt.network`;
 
 export const MintPanel: React.FC = () => {
   const { mints, reload, loading } = useAllMints();
@@ -126,32 +123,69 @@ export const MintPanel: React.FC = () => {
     [signer, toast],
   );
 
+  const { onCopy, hasCopied, value, setValue } = useClipboard(CLI_CODE);
+
   return (
     <VStack align="stretch">
       <VStack align="stretch" py={8}>
         <Text>
-          To get started please send POKT tokens to our vault address:{' '}
-          <strong>{POKT_MULTISIG_ADDRESS}</strong>
-        </Text>
-
-        <Text>
-          Use the{' '}
+          {`To get started with minting wPOKT tokens, please follow these steps:`}
+          <br />
+          <br />
+          {`Step 1: Send POKT tokens to our Vault Address:`}
+          <br />
+          {`Send POKT tokens to our vault address: `}
+          <strong>7FB0A18CEB4E803F22911F5B85E2727BB3BDF04B.</strong> You can use
+          {`the `}
           <Link
             isExternal
             href="https://docs.pokt.network/node/environment/#source"
             color="blue.500"
           >
-            pocket CLI
+            Pocket CLI
           </Link>{' '}
-          to send tokens to the vault address. A sample command is given below:
-        </Text>
-        <Code p={6}>
-          {`$ pocket accounts send-tx 92d75da9086b557764432b66b7d3703c1492771a 7FB0A18CEB4E803F22911F5B85E2727BB3BDF04B 20000000 testnet 10000 '{"address":"0x3F9B2fea60325d733e61bC76598725c5430cD751","chain_id":"5"}'  --remoteCLIURL https://node2.testnet.pokt.network`}
-        </Code>
-
-        <Text>
-          Once you have sent the tokens, find your transaction below and click
-          the Mint button to complete the bridging process.
+          {`to send tokens to the vault address. Here's a sample command:`}
+          <Code my={4} p={0} borderRadius="4px" w="100%">
+            <HStack
+              borderTopRadius="4px"
+              align="center"
+              justify="space-between"
+              pl={4}
+              pr={2}
+              py={1}
+              bg="blue.100"
+            >
+              <Text fontSize="xs" fontWeight="bold">
+                shell
+              </Text>
+              <Button
+                variant="ghost"
+                size="xs"
+                onClick={() => onCopy()}
+                leftIcon={hasCopied ? <CheckIcon /> : <CopyIcon />}
+              >
+                {hasCopied ? 'Copied!' : 'Copy code'}
+              </Button>
+            </HStack>
+            <Textarea
+              p={6}
+              m={0}
+              value={value}
+              onChange={e => setValue(e.target.value)}
+              h="auto"
+            />
+          </Code>
+          {`Step 2: Monitor Your Transaction:`}
+          <br />
+          {`Once you have sent the POKT tokens, you can find your transaction details below. Please wait for the transaction to be confirmed on the Pocket Testnet before proceeding to the next step.`}
+          <br />
+          <br />
+          {`Step 3: Complete the Bridging Process:`}
+          <br />
+          {`Once your transaction is confirmed, click the "Mint" button to complete the bridging process and mint wPOKT tokens on the Ethereum Goerli Testnet.`}
+          <br />
+          <br />
+          {`Happy minting!`}
         </Text>
       </VStack>
 
@@ -168,7 +202,7 @@ export const MintPanel: React.FC = () => {
                 <Th>Recipient Address</Th>
                 <Th>Amount</Th>
                 <Th>Nonce</Th>
-                <Th>Created</Th>
+                <Th>Created At</Th>
                 <Th>Status</Th>
                 <Th>Action</Th>
                 <Th>Mint Tx Hash</Th>
@@ -203,7 +237,11 @@ export const MintPanel: React.FC = () => {
                   </Td>
                   <Td>{utils.formatUnits(mint.amount, 6)}</Td>
                   <Td>{mint.nonce}</Td>
-                  <Td>{new Date(mint.created_at).toLocaleString()}</Td>
+                  <Td>
+                    <Text whiteSpace="nowrap">
+                      {humanFormattedDate(new Date(mint.created_at))}
+                    </Text>
+                  </Td>
                   <Td>
                     <Tooltip
                       label={

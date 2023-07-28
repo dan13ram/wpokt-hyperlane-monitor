@@ -14,6 +14,7 @@ import {
 import { useEffect, useState } from 'react';
 
 import useHealth from '@/hooks/useHealth';
+import { humanFormattedDate } from '@/utils/helpers';
 
 import { HashDisplay } from './HashDisplay';
 
@@ -93,7 +94,11 @@ export const HealthPanel: React.FC = () => {
                   <Td>
                     <HashDisplay chainId="5">{health.eth_address}</HashDisplay>
                   </Td>
-                  <Td>{new Date(lastSyncTime).toLocaleString()}</Td>
+                  <Td>
+                    <Text whiteSpace="nowrap">
+                      {humanFormattedDate(new Date(lastSyncTime))}
+                    </Text>
+                  </Td>
                   <Td>
                     <TimeDisplay time={nextSyncTime} />
                   </Td>
