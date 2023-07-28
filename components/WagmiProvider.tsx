@@ -1,4 +1,4 @@
-import { Spinner } from '@chakra-ui/react';
+import { Spinner, VStack } from '@chakra-ui/react';
 import { PropsWithChildren } from 'react';
 import { WagmiConfig } from 'wagmi';
 
@@ -11,6 +11,8 @@ export const WagmiProvider: React.FC<PropsWithChildren> = ({ children }) => {
   return isMounted ? (
     <WagmiConfig client={wagmiClient}>{children}</WagmiConfig>
   ) : (
-    <Spinner />
+    <VStack w="100vw" h="100vh" justify="center" align="center">
+      <Spinner color="blue.500" thickness="5px" w="5rem" h="5rem" speed="1s" />
+    </VStack>
   );
 };
