@@ -53,6 +53,7 @@ export const MintPanel: React.FC = () => {
   const { data: signer } = useSigner();
 
   const [isLoading, setIsLoading] = useState(false);
+  const [currentMintId, setCurrentMintId] = useState<string | null>(null);
 
   const mintTokens = useCallback(
     async (mint: Mint) => {
@@ -70,6 +71,7 @@ export const MintPanel: React.FC = () => {
 
       try {
         setIsLoading(true);
+        setCurrentMintId(mint._id.toString());
         const mintController = new Contract(
           MINT_CONTROLLER_ADDRESS,
           MINT_CONTROLLER_ABI,
@@ -118,6 +120,7 @@ export const MintPanel: React.FC = () => {
         });
       } finally {
         setIsLoading(false);
+        setCurrentMintId(null);
       }
     },
     [signer, toast],
@@ -233,9 +236,7 @@ export const MintPanel: React.FC = () => {
                       >
                         <Button
                           isLoading={
-                            isMintNotReady || isMintCompleted
-                              ? false
-                              : isLoading
+                            isLoading && mint._id.toString() === currentMintId
                           }
                           onClick={() => mintTokens(mint)}
                           isDisabled={isMintNotReady || isMintCompleted}
