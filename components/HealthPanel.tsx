@@ -12,6 +12,8 @@ import { useEffect, useState } from 'react';
 
 import useHealth from '@/hooks/useHealth';
 
+import { HashDisplay } from './HashDisplay';
+
 const TimeDisplay: React.FC<{ time: number | string | Date }> = ({ time }) => {
   const [, forceUpdate] = useState(0);
 
@@ -58,14 +60,11 @@ export const HealthPanel: React.FC = () => {
             <Thead>
               <Tr>
                 <Th>Validator ID</Th>
-                <Th>Last Sync</Th>
-                <Th>Next Sync</Th>
+                <Th>Pokt Address</Th>
+                <Th>Eth Address</Th>
+                <Th>Last Health Check At</Th>
+                <Th>Next Health Check In</Th>
                 <Th>Status</Th>
-                {healths[0]?.service_healths
-                  .filter(({ name }) => name !== 'health')
-                  .map(serviceHealth => (
-                    <Th key={serviceHealth.name}>{serviceHealth.name}</Th>
-                  ))}
               </Tr>
             </Thead>
             {healths.map(health => {
@@ -75,6 +74,14 @@ export const HealthPanel: React.FC = () => {
               return (
                 <Tr key={health._id.toString()}>
                   <Td>{health.validator_id}</Td>
+                  <Td>
+                    <HashDisplay chainId="testnet">
+                      {health.pokt_address}
+                    </HashDisplay>
+                  </Td>
+                  <Td>
+                    <HashDisplay chainId="5">{health.eth_address}</HashDisplay>
+                  </Td>
                   <Td>
                     {healthCheckService
                       ? new Date(
@@ -96,16 +103,6 @@ export const HealthPanel: React.FC = () => {
                       ? 'Online'
                       : 'Offline'}
                   </Td>
-                  {health.service_healths
-                    .filter(({ name }) => name !== 'health')
-                    .map(serviceHealth => (
-                      <Td key={serviceHealth.name}>
-                        Last Synced{' '}
-                        {new Date(
-                          serviceHealth.last_sync_time,
-                        ).toLocaleTimeString()}
-                      </Td>
-                    ))}
                 </Tr>
               );
             })}
