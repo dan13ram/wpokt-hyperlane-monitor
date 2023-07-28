@@ -1,8 +1,11 @@
 import {
+  Box,
   Button,
   Divider,
+  HStack,
   Table,
   Td,
+  Text,
   Th,
   Thead,
   Tr,
@@ -71,6 +74,14 @@ export const HealthPanel: React.FC = () => {
               const healthCheckService = health.service_healths.find(
                 ({ name }) => name === 'health',
               );
+              const lastSyncTime =
+                healthCheckService?.last_sync_time || health.updated_at;
+              const isOnline =
+                new Date(lastSyncTime).getTime() > Date.now() - 1000 * 60 * 10;
+              const nextSyncTime =
+                healthCheckService?.next_sync_time ||
+                new Date(lastSyncTime).getTime() + 300 * 1000;
+
               return (
                 <Tr key={health._id.toString()}>
                   <Td>{health.validator_id}</Td>
@@ -82,26 +93,20 @@ export const HealthPanel: React.FC = () => {
                   <Td>
                     <HashDisplay chainId="5">{health.eth_address}</HashDisplay>
                   </Td>
+                  <Td>{new Date(lastSyncTime).toLocaleString()}</Td>
                   <Td>
-                    {healthCheckService
-                      ? new Date(
-                          healthCheckService.last_sync_time,
-                        ).toLocaleString()
-                      : new Date(health.created_at).toLocaleString()}
+                    <TimeDisplay time={nextSyncTime} />
                   </Td>
                   <Td>
-                    <TimeDisplay
-                      time={
-                        healthCheckService?.next_sync_time ||
-                        new Date(health.created_at).getTime() + 300 * 1000
-                      }
-                    />
-                  </Td>
-                  <Td>
-                    {new Date(health.created_at).getTime() >
-                    Date.now() - 1000 * 60 * 10
-                      ? 'Online'
-                      : 'Offline'}
+                    <HStack>
+                      <Box
+                        w="10px"
+                        h="10px"
+                        borderRadius="50%"
+                        bg={isOnline ? 'green.500' : 'red.500'}
+                      />
+                      <Text>{isOnline ? 'Online' : 'Offline'}</Text>
+                    </HStack>
                   </Td>
                 </Tr>
               );

@@ -14,6 +14,7 @@ export type Health = WithId<{
   validator_id: string;
   healthy: boolean;
   created_at: Date;
+  updated_at: Date;
   service_healths: ServiceHealth[];
 }>;
 
