@@ -65,8 +65,8 @@ export const HealthPanel: React.FC = () => {
                 <Th>Validator ID</Th>
                 <Th>Pokt Address</Th>
                 <Th>Eth Address</Th>
-                <Th>Last Health Check At</Th>
-                <Th>Next Health Check In</Th>
+                <Th>Last Health Check</Th>
+                <Th>Next Health Check</Th>
                 <Th>Status</Th>
               </Tr>
             </Thead>

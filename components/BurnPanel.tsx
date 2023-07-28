@@ -157,12 +157,6 @@ export const BurnPanel: React.FC = () => {
                 <Td>{utils.formatUnits(burn.amount, 6)}</Td>
                 <Td>{new Date(burn.created_at).toLocaleString()}</Td>
                 <Td>
-                  {burn.status}
-                  {burn.status === 'pending' && (
-                    <Text as="span" ml={1}>
-                      ({burn.confirmations}/8)
-                    </Text>
-                  )}
                   <Tooltip
                     label={
                       burn.status === 'pending'
