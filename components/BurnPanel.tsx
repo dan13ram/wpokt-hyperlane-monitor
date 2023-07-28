@@ -1,6 +1,8 @@
+import { QuestionIcon } from '@chakra-ui/icons';
 import {
   Button,
   Divider,
+  HStack,
   Input,
   Link,
   Table,
@@ -8,6 +10,7 @@ import {
   Text,
   Th,
   Thead,
+  Tooltip,
   Tr,
   useToast,
   VStack,
@@ -160,6 +163,20 @@ export const BurnPanel: React.FC = () => {
                       ({burn.confirmations}/8)
                     </Text>
                   )}
+                  <Tooltip
+                    label={
+                      burn.status === 'pending'
+                        ? `The transaction has ${burn.confirmations} confirmations out of a total of 8 required.`
+                        : ''
+                    }
+                  >
+                    <HStack spacing={1}>
+                      <Text>{burn.status}</Text>
+                      {burn.status === 'pending' && (
+                        <QuestionIcon fontSize="xs" />
+                      )}
+                    </HStack>
+                  </Tooltip>
                 </Td>
                 <Td>
                   {burn.return_tx_hash && (

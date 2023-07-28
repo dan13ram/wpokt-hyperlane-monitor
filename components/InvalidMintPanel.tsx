@@ -1,11 +1,14 @@
+import { QuestionIcon } from '@chakra-ui/icons';
 import {
   Button,
   Divider,
+  HStack,
   Table,
   Td,
   Text,
   Th,
   Thead,
+  Tooltip,
   Tr,
   VStack,
 } from '@chakra-ui/react';
@@ -53,12 +56,20 @@ export const InvalidMintPanel: React.FC = () => {
                 <Td>{invalidMint.memo}</Td>
                 <Td>{new Date(invalidMint.created_at).toLocaleString()}</Td>
                 <Td>
-                  {invalidMint.status}
-                  {invalidMint.status === 'pending' && (
-                    <Text as="span" ml={1}>
-                      ({invalidMint.confirmations}/1)
-                    </Text>
-                  )}
+                  <Tooltip
+                    label={
+                      invalidMint.status === 'pending'
+                        ? `The transaction has ${invalidMint.confirmations} confirmations out of a total of 1 required.`
+                        : ''
+                    }
+                  >
+                    <HStack spacing={1}>
+                      <Text>{invalidMint.status}</Text>
+                      {invalidMint.status === 'pending' && (
+                        <QuestionIcon fontSize="xs" />
+                      )}
+                    </HStack>
+                  </Tooltip>
                 </Td>
                 <Td>
                   {invalidMint.return_tx_hash && (

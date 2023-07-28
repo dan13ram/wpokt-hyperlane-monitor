@@ -1,7 +1,9 @@
+import { QuestionIcon } from '@chakra-ui/icons';
 import {
   Button,
   Code,
   Divider,
+  HStack,
   Link,
   Table,
   Td,
@@ -200,12 +202,20 @@ export const MintPanel: React.FC = () => {
                   <Td>{mint.nonce}</Td>
                   <Td>{new Date(mint.created_at).toLocaleString()}</Td>
                   <Td>
-                    {mint.status}
-                    {mint.status === 'pending' && (
-                      <Text as="span" ml={1}>
-                        ({mint.confirmations}/1)
-                      </Text>
-                    )}
+                    <Tooltip
+                      label={
+                        mint.status === 'pending'
+                          ? `The transaction has ${mint.confirmations} confirmations out of a total of 1 required.`
+                          : ''
+                      }
+                    >
+                      <HStack spacing={1}>
+                        <Text>{mint.status}</Text>
+                        {mint.status === 'pending' && (
+                          <QuestionIcon fontSize="xs" />
+                        )}
+                      </HStack>
+                    </Tooltip>
                   </Td>
                   <Td>
                     {!!nonce &&
