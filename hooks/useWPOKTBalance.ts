@@ -1,38 +1,37 @@
-import { BigNumber, Contract } from 'ethers';
 import { useCallback, useEffect, useState } from 'react';
-import { useAccount, useSigner } from 'wagmi';
+import { useAccount, usePublicClient } from 'wagmi';
 
 import { WRAPPED_POCKET_ADDRESS } from '@/utils/constants';
 import { WRAPPED_POCKET_ABI } from '@/utils/abis';
 
-export const useWPOKTBalance = (refreshCount = 0): BigNumber => {
+export const useWPOKTBalance = (refreshCount = 0): bigint => {
   const { address } = useAccount();
-  const { data: signer } = useSigner();
 
-  const [bnBalance, setBnBalance] = useState(BigNumber.from(0));
+  const [bnBalance, setBnBalance] = useState(BigInt(0));
+
+  const publicClient = usePublicClient();
 
   const fetchBalance = useCallback(async () => {
-    if (!(address && signer)) return;
+    if (!address || !publicClient) return;
     try {
-      const contract = new Contract(
-        WRAPPED_POCKET_ADDRESS,
-        WRAPPED_POCKET_ABI,
-        signer,
-      );
-      const balance = await contract.balanceOf(address);
-      setBnBalance(balance);
+      const balance = await publicClient.readContract({
+        address: WRAPPED_POCKET_ADDRESS,
+        abi: WRAPPED_POCKET_ABI,
+        functionName: 'balanceOf',
+        args: [address],
+      });
+
+      setBnBalance(balance as bigint);
     } catch (error) {
       console.error(error);
     }
-  }, [address, signer]);
+  }, [address, publicClient]);
 
   useEffect(() => {
-    if (address && signer) {
-      fetchBalance();
-    }
+    fetchBalance();
     const refreshInterval = setInterval(fetchBalance, 10000);
     return () => clearInterval(refreshInterval);
-  }, [address, fetchBalance, refreshCount, signer]);
+  }, [fetchBalance, refreshCount]);
 
   return bnBalance;
 };

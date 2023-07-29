@@ -12,7 +12,7 @@ import {
   Tr,
   VStack,
 } from '@chakra-ui/react';
-import { utils } from 'ethers';
+import { formatUnits } from 'viem';
 
 import useAllInvalidMints from '@/hooks/useAllInvalidMints';
 import { humanFormattedDate } from '@/utils/helpers';
@@ -54,7 +54,7 @@ export const InvalidMintPanel: React.FC = () => {
                     {invalidMint.sender_address}
                   </HashDisplay>
                 </Td>
-                <Td>{utils.formatUnits(invalidMint.amount, 6)}</Td>
+                <Td>{formatUnits(BigInt(invalidMint.amount), 6)}</Td>
                 <Td>
                   <CopyText maxChars={20}>{invalidMint.memo}</CopyText>
                 </Td>

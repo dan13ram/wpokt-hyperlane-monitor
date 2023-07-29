@@ -1,10 +1,11 @@
 import {
   EthereumClient,
-  modalConnectors,
-  walletConnectProvider,
+  w3mConnectors,
+  w3mProvider,
 } from '@web3modal/ethereum';
-import { configureChains, createClient } from 'wagmi';
+import { configureChains, createConfig } from 'wagmi';
 import { goerli } from 'wagmi/chains';
+import { publicProvider } from 'wagmi/providers/public';
 
 if (!process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID) {
   throw new Error(
@@ -16,19 +17,16 @@ export const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID;
 
 export const DEFAULT_CHAIN = goerli;
 
-const chains = [DEFAULT_CHAIN];
+const { publicClient, webSocketPublicClient } = configureChains(
+  [DEFAULT_CHAIN],
+  [w3mProvider({ projectId }), publicProvider()],
+);
 
-const { provider } = configureChains(chains, [
-  walletConnectProvider({ projectId }),
-]);
-
-export const wagmiClient = createClient({
+export const wagmiConfig = createConfig({
   autoConnect: true,
-  connectors: modalConnectors({
-    appName: 'web3Modal',
-    chains,
-  }),
-  provider,
+  connectors: w3mConnectors({ projectId, chains: [DEFAULT_CHAIN] }),
+  publicClient,
+  webSocketPublicClient,
 });
 
-export const ethereumClient = new EthereumClient(wagmiClient, chains);
+export const ethereumClient = new EthereumClient(wagmiConfig, [DEFAULT_CHAIN]);

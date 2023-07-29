@@ -3,13 +3,13 @@ import { PropsWithChildren } from 'react';
 import { WagmiConfig } from 'wagmi';
 
 import { useIsMounted } from '@/hooks/useMounted';
-import { wagmiClient } from '@/lib/web3';
+import { wagmiConfig } from '@/lib/web3';
 
 export const WagmiProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const isMounted = useIsMounted();
 
   return isMounted ? (
-    <WagmiConfig client={wagmiClient}>{children}</WagmiConfig>
+    <WagmiConfig config={wagmiConfig}>{children}</WagmiConfig>
   ) : (
     <VStack w="100vw" h="100vh" justify="center" align="center">
       <Spinner color="blue.500" thickness="5px" w="5rem" h="5rem" speed="1s" />

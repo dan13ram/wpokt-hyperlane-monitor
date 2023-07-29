@@ -17,9 +17,9 @@ import {
   useToast,
   VStack,
 } from '@chakra-ui/react';
-import { BigNumber, Contract, utils } from 'ethers';
 import { useCallback, useMemo, useState } from 'react';
-import { useSigner } from 'wagmi';
+import { formatUnits } from 'viem';
+import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
 
 import useAllMints from '@/hooks/useAllMints';
 import { useWPOKTNonceMap } from '@/hooks/useWPOKTNonce';
@@ -47,14 +47,14 @@ export const MintPanel: React.FC = () => {
 
   const toast = useToast();
 
-  const { data: signer } = useSigner();
-
   const [isLoading, setIsLoading] = useState(false);
   const [currentMintId, setCurrentMintId] = useState<string | null>(null);
+  const publicClient = usePublicClient();
+  const { data: walletClient } = useWalletClient();
+  const account = useAccount();
 
   const mintTokens = useCallback(
     async (mint: Mint) => {
-      if (!signer) return;
       if (!mint.data || !mint.signatures) {
         toast({
           title: 'Error',
@@ -65,22 +65,20 @@ export const MintPanel: React.FC = () => {
         });
         return;
       }
+      if (!account.address || !walletClient || !publicClient) return;
 
       try {
         setIsLoading(true);
         setCurrentMintId(mint._id.toString());
-        const mintController = new Contract(
-          MINT_CONTROLLER_ADDRESS,
-          MINT_CONTROLLER_ABI,
-          signer,
-        );
+        const txHash = await walletClient.writeContract({
+          account: account.address,
+          address: MINT_CONTROLLER_ADDRESS,
+          abi: MINT_CONTROLLER_ABI,
+          functionName: 'mintWrappedPocket',
+          args: [mint.data, mint.signatures],
+        });
 
-        const tx = await mintController.mintWrappedPocket(
-          mint.data,
-          mint.signatures,
-        );
-
-        const txLink = `https://goerli.etherscan.io/tx/${tx.hash}`;
+        const txLink = `https://goerli.etherscan.io/tx/${txHash}`;
         toast.closeAll();
         toast({
           title: 'Transaction sent',
@@ -96,12 +94,14 @@ export const MintPanel: React.FC = () => {
           duration: null,
           isClosable: false,
         });
-        await tx.wait();
+        await publicClient.waitForTransactionReceipt({
+          hash: txHash,
+        });
         toast.closeAll();
         toast({
           title: 'Transaction successful. You tokens are bridged!',
           status: 'success',
-          duration: 2000,
+          duration: 5000,
           isClosable: true,
         });
       } catch (error) {
@@ -120,7 +120,7 @@ export const MintPanel: React.FC = () => {
         setCurrentMintId(null);
       }
     },
-    [signer, toast],
+    [toast, account.address, walletClient, publicClient],
   );
 
   const { onCopy, hasCopied, value, setValue } = useClipboard(CLI_CODE);
@@ -211,10 +211,10 @@ export const MintPanel: React.FC = () => {
             {mints.map(mint => {
               const nonce = nonceMap[mint.recipient_address.toLowerCase()];
               const isMintNotReady = nonce
-                ? !mint.nonce || BigNumber.from(mint.nonce).gt(nonce.add(1))
+                ? !mint.nonce || Number(mint.nonce) > Number(nonce) + 1
                 : true;
               const isMintCompleted = nonce
-                ? !!mint.nonce && BigNumber.from(mint.nonce).lte(nonce)
+                ? !!mint.nonce && Number(mint.nonce) < Number(nonce)
                 : true;
 
               return (
@@ -235,7 +235,7 @@ export const MintPanel: React.FC = () => {
                       {mint.recipient_address}
                     </HashDisplay>
                   </Td>
-                  <Td>{utils.formatUnits(mint.amount, 6)}</Td>
+                  <Td>{formatUnits(BigInt(mint.amount), 6)}</Td>
                   <Td>{mint.nonce}</Td>
                   <Td>
                     <Text whiteSpace="nowrap">

@@ -1,7 +1,7 @@
 import { Button, Heading, HStack, Text, VStack } from '@chakra-ui/react';
 import { Web3Button, Web3Modal } from '@web3modal/react';
-import { utils } from 'ethers';
 import { PropsWithChildren, useCallback, useMemo } from 'react';
+import { formatUnits } from 'viem';
 import { useAccount, useNetwork, useSwitchNetwork } from 'wagmi';
 
 import { WagmiProvider } from '@/components/WagmiProvider';
@@ -68,9 +68,7 @@ const Header: React.FC = () => {
     <HStack w="100%" justifyContent="space-between" spacing={4} py={4}>
       <Heading size="md">WPOKT Demo</Heading>
       <HStack spacing={4}>
-        {isConnected && (
-          <Text> Balance: {utils.formatUnits(balance, 6)} WPOKT</Text>
-        )}
+        {isConnected && <Text> Balance: {formatUnits(balance, 6)} WPOKT</Text>}
         <Web3Button />
       </HStack>
     </HStack>

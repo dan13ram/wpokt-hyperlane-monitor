@@ -15,9 +15,9 @@ import {
   useToast,
   VStack,
 } from '@chakra-ui/react';
-import { Contract, utils } from 'ethers';
 import { useCallback, useState } from 'react';
-import { useSigner } from 'wagmi';
+import { formatUnits, getAddress, parseUnits } from 'viem';
+import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
 
 import useAllBurns from '@/hooks/useAllBurns';
 import { WRAPPED_POCKET_ABI } from '@/utils/abis';
@@ -31,28 +31,29 @@ export const BurnPanel: React.FC = () => {
 
   const toast = useToast();
 
-  const { data: signer } = useSigner();
-
   const [isLoading, setIsLoading] = useState(false);
 
   const [value, setValue] = useState('');
   const [address, setAddress] = useState('');
+  const account = useAccount();
+  const publicClient = usePublicClient();
+  const { data: walletClient } = useWalletClient();
 
   const burnTokens = useCallback(async () => {
-    if (!signer) return;
+    if (!account.address || !walletClient || !publicClient) return;
     try {
       setIsLoading(true);
-      const amount = utils.parseUnits(value, 6);
-      const recipient = utils.getAddress('0x' + address);
-      const burnController = new Contract(
-        WRAPPED_POCKET_ADDRESS,
-        WRAPPED_POCKET_ABI,
-        signer,
-      );
+      const amount = parseUnits(value, 6);
+      const recipient = getAddress('0x' + address);
+      const txHash = await walletClient.writeContract({
+        account: account.address,
+        address: WRAPPED_POCKET_ADDRESS,
+        abi: WRAPPED_POCKET_ABI,
+        functionName: 'burnAndBridge',
+        args: [amount, recipient],
+      });
 
-      const tx = await burnController.burnAndBridge(amount, recipient);
-
-      const txLink = `https://goerli.etherscan.io/tx/${tx.hash}`;
+      const txLink = `https://goerli.etherscan.io/tx/${txHash}`;
       toast.closeAll();
       toast({
         title: 'Transaction sent',
@@ -68,14 +69,17 @@ export const BurnPanel: React.FC = () => {
         duration: null,
         isClosable: false,
       });
-      await tx.wait();
+      await publicClient.waitForTransactionReceipt({
+        hash: txHash,
+      });
+
       toast.closeAll();
       toast({
         title: 'Transaction successful. Your tokens are burnt!',
         description:
           'Please wait upto 30 min to recieve your POKT in your wallet',
         status: 'success',
-        duration: 2000,
+        duration: 5000,
         isClosable: true,
       });
     } catch (error) {
@@ -92,7 +96,7 @@ export const BurnPanel: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [signer, value, address, toast]);
+  }, [account, value, address, toast, publicClient, walletClient]);
 
   return (
     <VStack align="stretch">
@@ -171,7 +175,7 @@ export const BurnPanel: React.FC = () => {
                     {burn.recipient_address}
                   </HashDisplay>
                 </Td>
-                <Td>{utils.formatUnits(burn.amount, 6)}</Td>
+                <Td>{formatUnits(BigInt(burn.amount), 6)}</Td>
                 <Td>
                   <Text whiteSpace="nowrap">
                     {humanFormattedDate(new Date(burn.created_at))}

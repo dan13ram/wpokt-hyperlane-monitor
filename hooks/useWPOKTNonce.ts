@@ -1,75 +1,40 @@
-import { BigNumber, Contract } from 'ethers';
 import { useCallback, useEffect, useState } from 'react';
-import { useAccount, useSigner } from 'wagmi';
 
 import { WRAPPED_POCKET_ADDRESS } from '@/utils/constants';
 import { WRAPPED_POCKET_ABI } from '@/utils/abis';
-
-export const useWPOKTNonce = (refreshCount = 0): BigNumber => {
-  const { address } = useAccount();
-  const { data: signer } = useSigner();
-
-  const [bnNonce, setBnNonce] = useState(BigNumber.from(0));
-
-  const fetchNonce = useCallback(async () => {
-    if (!(address && signer)) return;
-    try {
-      const contract = new Contract(
-        WRAPPED_POCKET_ADDRESS,
-        WRAPPED_POCKET_ABI,
-        signer,
-      );
-      const nonce = await contract.getUserNonce(address);
-      setBnNonce(nonce);
-    } catch (error) {
-      console.error(error);
-    }
-  }, [address, signer]);
-
-  useEffect(() => {
-    if (address && signer) {
-      fetchNonce();
-    }
-    const refreshInterval = setInterval(fetchNonce, 10000);
-    return () => clearInterval(refreshInterval);
-  }, [address, fetchNonce, refreshCount, signer]);
-
-  return bnNonce;
-};
+import { usePublicClient } from 'wagmi';
 
 export const useWPOKTNonceMap = (
   addresses: string[],
   refreshCount = 0,
-): Record<string, BigNumber> => {
-  const { data: signer } = useSigner();
-
-  const [bnNonceMap, setBnNonceMap] = useState<Record<string, BigNumber>>({});
+): Record<string, bigint> => {
+  const [bnNonceMap, setBnNonceMap] = useState<Record<string, bigint>>({});
+  const publicClient = usePublicClient();
 
   const fetchNonce = useCallback(async () => {
-    if (!signer) return;
+    if (!addresses || addresses.length == 0 || !publicClient) return;
+
     try {
-      const contract = new Contract(
-        WRAPPED_POCKET_ADDRESS,
-        WRAPPED_POCKET_ABI,
-        signer,
-      );
-      const nonceMap: Record<string, BigNumber> = {};
+      const nonceMap: Record<string, bigint> = {};
       for (const address of addresses) {
-        nonceMap[address.toLowerCase()] = await contract.getUserNonce(address);
+        nonceMap[address.toLowerCase()] = (await publicClient.readContract({
+          address: WRAPPED_POCKET_ADDRESS,
+          abi: WRAPPED_POCKET_ABI,
+          functionName: 'getUserNonce',
+          args: [address],
+        })) as bigint;
       }
       setBnNonceMap(nonceMap);
     } catch (error) {
       console.error(error);
     }
-  }, [addresses, signer]);
+  }, [addresses, publicClient]);
 
   useEffect(() => {
-    if (addresses && addresses.length > 0 && signer) {
-      fetchNonce();
-    }
+    fetchNonce();
     const refreshInterval = setInterval(fetchNonce, 10000);
     return () => clearInterval(refreshInterval);
-  }, [addresses, fetchNonce, refreshCount, signer]);
+  }, [fetchNonce, refreshCount]);
 
   return bnNonceMap;
 };
