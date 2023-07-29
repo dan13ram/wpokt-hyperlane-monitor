@@ -43,7 +43,8 @@ export const MintPanel: React.FC = () => {
     [mints],
   );
 
-  const nonceMap = useWPOKTNonceMap(addresses);
+  const [refreshCount, refresh] = useState(0);
+  const nonceMap = useWPOKTNonceMap(addresses, refreshCount);
 
   const toast = useToast();
 
@@ -104,6 +105,7 @@ export const MintPanel: React.FC = () => {
           duration: 5000,
           isClosable: true,
         });
+        refresh(c => c + 1);
       } catch (error) {
         toast.closeAll();
         // eslint-disable-next-line no-console
@@ -120,7 +122,7 @@ export const MintPanel: React.FC = () => {
         setCurrentMintId(null);
       }
     },
-    [toast, account.address, walletClient, publicClient],
+    [toast, account.address, walletClient, publicClient, refresh],
   );
 
   const { onCopy, hasCopied, value, setValue } = useClipboard(CLI_CODE);
@@ -211,10 +213,10 @@ export const MintPanel: React.FC = () => {
             {mints.map(mint => {
               const nonce = nonceMap[mint.recipient_address.toLowerCase()];
               const isMintNotReady = nonce
-                ? !mint.nonce || Number(mint.nonce) > Number(nonce) + 1
+                ? !mint.nonce || BigInt(mint.nonce) > nonce + BigInt(1)
                 : true;
               const isMintCompleted = nonce
-                ? !!mint.nonce && Number(mint.nonce) < Number(nonce)
+                ? !!mint.nonce && BigInt(mint.nonce) <= nonce
                 : true;
 
               return (
