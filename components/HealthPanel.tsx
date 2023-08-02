@@ -18,8 +18,6 @@ import { humanFormattedDate } from '@/utils/helpers';
 
 import { HashDisplay } from './HashDisplay';
 
-const HEALTH_CHECK_NAME = 'HEALTH';
-
 const TimeDisplay: React.FC<{ time: number | string | Date }> = ({ time }) => {
   const [, forceUpdate] = useState(0);
 
@@ -74,15 +72,10 @@ export const HealthPanel: React.FC = () => {
               </Tr>
             </Thead>
             {healths.map(health => {
-              const healthCheckService = health.service_healths.find(
-                ({ name }) => name === HEALTH_CHECK_NAME,
-              );
-              const lastSyncTime =
-                healthCheckService?.last_sync_time || health.updated_at;
+              const lastSyncTime = health.updated_at;
               const isOnline =
                 new Date(lastSyncTime).getTime() > Date.now() - 1000 * 60 * 10;
               const nextSyncTime =
-                healthCheckService?.next_sync_time ||
                 new Date(lastSyncTime).getTime() + 300 * 1000;
 
               return (
