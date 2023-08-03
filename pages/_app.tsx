@@ -17,7 +17,7 @@ export default function App({
     <>
       <Head>
         <meta content="width=device-width, initial-scale=1" name="viewport" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <title>WPOKT Demo</title>
       </Head>
       <ChakraProvider resetCSS theme={theme}>

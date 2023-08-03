@@ -6,6 +6,7 @@ import {
   HStack,
   Link,
   Table,
+  Tbody,
   Td,
   Text,
   Textarea,
@@ -147,36 +148,38 @@ export const MintPanel: React.FC = () => {
             Pocket CLI
           </Link>{' '}
           {`to send tokens to the vault address. Here's a sample command:`}
-          <Code my={4} p={0} borderRadius="4px" w="100%">
-            <HStack
-              borderTopRadius="4px"
-              align="center"
-              justify="space-between"
-              pl={4}
-              pr={2}
-              py={1}
-              bg="blue.100"
+        </Text>
+        <Code my={4} p={0} borderRadius="4px" w="100%">
+          <HStack
+            borderTopRadius="4px"
+            align="center"
+            justify="space-between"
+            pl={4}
+            pr={2}
+            py={1}
+            bg="blue.100"
+          >
+            <Text fontSize="xs" fontWeight="bold" as="span">
+              shell
+            </Text>
+            <Button
+              variant="ghost"
+              size="xs"
+              onClick={() => onCopy()}
+              leftIcon={hasCopied ? <CheckIcon /> : <CopyIcon />}
             >
-              <Text fontSize="xs" fontWeight="bold">
-                shell
-              </Text>
-              <Button
-                variant="ghost"
-                size="xs"
-                onClick={() => onCopy()}
-                leftIcon={hasCopied ? <CheckIcon /> : <CopyIcon />}
-              >
-                {hasCopied ? 'Copied!' : 'Copy code'}
-              </Button>
-            </HStack>
-            <Textarea
-              p={6}
-              m={0}
-              value={value}
-              onChange={e => setValue(e.target.value)}
-              h="auto"
-            />
-          </Code>
+              {hasCopied ? 'Copied!' : 'Copy code'}
+            </Button>
+          </HStack>
+          <Textarea
+            p={6}
+            m={0}
+            value={value}
+            onChange={e => setValue(e.target.value)}
+            h="auto"
+          />
+        </Code>
+        <Text>
           {`Step 2: Monitor Your Transaction:`}
           <br />
           {`Once you have sent the POKT tokens, you can find your transaction details below. Please wait for the transaction to be confirmed on the Pocket Testnet before proceeding to the next step.`}
@@ -210,95 +213,97 @@ export const MintPanel: React.FC = () => {
                 <Th>Mint Tx Hash</Th>
               </Tr>
             </Thead>
-            {mints.map(mint => {
-              const nonce = nonceMap[mint.recipient_address.toLowerCase()];
-              const isMintNotReady = nonce
-                ? !mint.nonce || BigInt(mint.nonce) > nonce + BigInt(1)
-                : true;
-              const isMintCompleted = nonce
-                ? !!mint.nonce && BigInt(mint.nonce) <= nonce
-                : true;
+            <Tbody>
+              {mints.map(mint => {
+                const nonce = nonceMap[mint.recipient_address.toLowerCase()];
+                const isMintNotReady = nonce
+                  ? !mint.nonce || BigInt(mint.nonce) > nonce + BigInt(1)
+                  : true;
+                const isMintCompleted = nonce
+                  ? !!mint.nonce && BigInt(mint.nonce) <= nonce
+                  : true;
 
-              return (
-                <Tr key={mint._id.toString()}>
-                  <Td>
-                    <HashDisplay chainId={mint.sender_chain_id}>
-                      {mint.transaction_hash}
-                    </HashDisplay>
-                  </Td>
-                  <Td>{mint.height}</Td>
-                  <Td>
-                    <HashDisplay chainId={mint.sender_chain_id}>
-                      {mint.sender_address}
-                    </HashDisplay>
-                  </Td>
-                  <Td>
-                    <HashDisplay chainId={mint.recipient_chain_id}>
-                      {mint.recipient_address}
-                    </HashDisplay>
-                  </Td>
-                  <Td>{formatUnits(BigInt(mint.amount), 6)}</Td>
-                  <Td>{mint.nonce}</Td>
-                  <Td>
-                    <Text whiteSpace="nowrap">
-                      {humanFormattedDate(new Date(mint.created_at))}
-                    </Text>
-                  </Td>
-                  <Td>
-                    <Tooltip
-                      label={
-                        mint.status === 'pending'
-                          ? `The transaction has ${mint.confirmations} confirmations out of a total of 1 required.`
-                          : ''
-                      }
-                    >
-                      <HStack spacing={1}>
-                        <Text>{mint.status}</Text>
-                        {mint.status === 'pending' && (
-                          <QuestionIcon fontSize="xs" />
-                        )}
-                      </HStack>
-                    </Tooltip>
-                  </Td>
-                  <Td>
-                    {!!nonce &&
-                    (mint.status === 'signed' ||
-                      (mint.status === 'confirmed' &&
-                        mint.signatures.length >= 2)) ? (
+                return (
+                  <Tr key={mint._id.toString()}>
+                    <Td>
+                      <HashDisplay chainId={mint.sender_chain_id}>
+                        {mint.transaction_hash}
+                      </HashDisplay>
+                    </Td>
+                    <Td>{mint.height}</Td>
+                    <Td>
+                      <HashDisplay chainId={mint.sender_chain_id}>
+                        {mint.sender_address}
+                      </HashDisplay>
+                    </Td>
+                    <Td>
+                      <HashDisplay chainId={mint.recipient_chain_id}>
+                        {mint.recipient_address}
+                      </HashDisplay>
+                    </Td>
+                    <Td>{formatUnits(BigInt(mint.amount), 6)}</Td>
+                    <Td>{mint.nonce}</Td>
+                    <Td>
+                      <Text whiteSpace="nowrap">
+                        {humanFormattedDate(new Date(mint.created_at))}
+                      </Text>
+                    </Td>
+                    <Td>
                       <Tooltip
                         label={
-                          isMintNotReady
-                            ? 'Please complete previous mints first'
-                            : isMintCompleted
-                            ? 'Mint completed, please wait for validators to mark it as complete'
+                          mint.status === 'pending'
+                            ? `The transaction has ${mint.confirmations} confirmations out of a total of 1 required.`
                             : ''
                         }
                       >
-                        <Button
-                          isLoading={
-                            isLoading && mint._id.toString() === currentMintId
-                          }
-                          onClick={() => mintTokens(mint)}
-                          isDisabled={isMintNotReady || isMintCompleted}
-                          colorScheme="blue"
-                        >
-                          Mint
-                        </Button>
+                        <HStack spacing={1}>
+                          <Text>{mint.status}</Text>
+                          {mint.status === 'pending' && (
+                            <QuestionIcon fontSize="xs" />
+                          )}
+                        </HStack>
                       </Tooltip>
-                    ) : (
-                      <Text>N/A</Text>
-                    )}
-                  </Td>
-                  <Td>
-                    {mint.mint_tx_hash && (
-                      <HashDisplay chainId={mint.recipient_chain_id}>
-                        {mint.mint_tx_hash}
-                      </HashDisplay>
-                    )}
-                  </Td>
-                </Tr>
-              );
-            })}
+                    </Td>
+                    <Td>
+                      {!!nonce &&
+                      (mint.status === 'signed' ||
+                        (mint.status === 'confirmed' &&
+                          mint.signatures.length >= 2)) ? (
+                        <Tooltip
+                          label={
+                            isMintNotReady
+                              ? 'Please complete previous mints first'
+                              : isMintCompleted
+                              ? 'Mint completed, please wait for validators to mark it as complete'
+                              : ''
+                          }
+                        >
+                          <Button
+                            isLoading={
+                              isLoading && mint._id.toString() === currentMintId
+                            }
+                            onClick={() => mintTokens(mint)}
+                            isDisabled={isMintNotReady || isMintCompleted}
+                            colorScheme="blue"
+                          >
+                            Mint
+                          </Button>
+                        </Tooltip>
+                      ) : (
+                        <Text>N/A</Text>
+                      )}
+                    </Td>
+                    <Td>
+                      {mint.mint_tx_hash && (
+                        <HashDisplay chainId={mint.recipient_chain_id}>
+                          {mint.mint_tx_hash}
+                        </HashDisplay>
+                      )}
+                    </Td>
+                  </Tr>
+                );
+              })}
+            </Tbody>
           </Table>
         </VStack>
       )}

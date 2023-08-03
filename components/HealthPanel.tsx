@@ -4,6 +4,7 @@ import {
   Divider,
   HStack,
   Table,
+  Tbody,
   Td,
   Text,
   Th,
@@ -71,46 +72,51 @@ export const HealthPanel: React.FC = () => {
                 <Th>Status</Th>
               </Tr>
             </Thead>
-            {healths.map(health => {
-              const lastSyncTime = health.updated_at;
-              const isOnline =
-                new Date(lastSyncTime).getTime() > Date.now() - 1000 * 60 * 10;
-              const nextSyncTime =
-                new Date(lastSyncTime).getTime() + 300 * 1000;
+            <Tbody>
+              {healths.map(health => {
+                const lastSyncTime = health.updated_at;
+                const isOnline =
+                  new Date(lastSyncTime).getTime() >
+                  Date.now() - 1000 * 60 * 10;
+                const nextSyncTime =
+                  new Date(lastSyncTime).getTime() + 300 * 1000;
 
-              return (
-                <Tr key={health._id.toString()}>
-                  <Td>{health.validator_id}</Td>
-                  <Td>
-                    <HashDisplay chainId="testnet">
-                      {health.pokt_address}
-                    </HashDisplay>
-                  </Td>
-                  <Td>
-                    <HashDisplay chainId="5">{health.eth_address}</HashDisplay>
-                  </Td>
-                  <Td>
-                    <Text whiteSpace="nowrap">
-                      {humanFormattedDate(new Date(lastSyncTime))}
-                    </Text>
-                  </Td>
-                  <Td>
-                    <TimeDisplay time={nextSyncTime} />
-                  </Td>
-                  <Td>
-                    <HStack>
-                      <Box
-                        w="10px"
-                        h="10px"
-                        borderRadius="50%"
-                        bg={isOnline ? 'green.500' : 'red.500'}
-                      />
-                      <Text>{isOnline ? 'Online' : 'Offline'}</Text>
-                    </HStack>
-                  </Td>
-                </Tr>
-              );
-            })}
+                return (
+                  <Tr key={health._id.toString()}>
+                    <Td>{health.validator_id}</Td>
+                    <Td>
+                      <HashDisplay chainId="testnet">
+                        {health.pokt_address}
+                      </HashDisplay>
+                    </Td>
+                    <Td>
+                      <HashDisplay chainId="5">
+                        {health.eth_address}
+                      </HashDisplay>
+                    </Td>
+                    <Td>
+                      <Text whiteSpace="nowrap">
+                        {humanFormattedDate(new Date(lastSyncTime))}
+                      </Text>
+                    </Td>
+                    <Td>
+                      <TimeDisplay time={nextSyncTime} />
+                    </Td>
+                    <Td>
+                      <HStack>
+                        <Box
+                          w="10px"
+                          h="10px"
+                          borderRadius="50%"
+                          bg={isOnline ? 'green.500' : 'red.500'}
+                        />
+                        <Text>{isOnline ? 'Online' : 'Offline'}</Text>
+                      </HStack>
+                    </Td>
+                  </Tr>
+                );
+              })}
+            </Tbody>
           </Table>
         </VStack>
       )}

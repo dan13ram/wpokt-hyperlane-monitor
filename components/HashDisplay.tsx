@@ -15,11 +15,19 @@ export const HashDisplay: React.FC<{ children: string; chainId: string }> = ({
     if (chainId === '5') {
       networkLabel = 'goerli';
       networkLogo = '/eth-logo.png';
-      logoProps = { width: 10, height: 10 };
+      logoProps = {
+        width: 9,
+        height: 14,
+        style: { height: '14px', width: '9px' },
+      };
     } else if (chainId === 'testnet') {
       networkLabel = 'testnet';
       networkLogo = '/pokt-logo.png';
-      logoProps = { width: 14, height: 14 };
+      logoProps = {
+        width: 14,
+        height: 14,
+        style: { height: 'auto', width: '14px' },
+      };
     }
 
     return { label: networkLabel, logo: networkLogo, props: logoProps };
@@ -37,7 +45,7 @@ export const HashDisplay: React.FC<{ children: string; chainId: string }> = ({
         borderRadius="full"
       >
         {logo && <Image src={logo} alt={label} {...props} />}
-        <Text>{label}</Text>
+        <Text as="span">{label}</Text>
       </HStack>
     </HStack>
   );

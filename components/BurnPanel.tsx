@@ -6,6 +6,7 @@ import {
   Input,
   Link,
   Table,
+  Tbody,
   Td,
   Text,
   Th,
@@ -108,20 +109,22 @@ export const BurnPanel: React.FC = () => {
           {`Step 1: Enter Burn Amount and Recipient Pocket Address`}
           <br />
           {`In the input fields below, enter the amount of wPOKT tokens you want to burn and the recipient's Pocket address.`}
-          <VStack align="start" maxW="30rem" my={4}>
-            <Input
-              placeholder="Burn Amount"
-              type="number"
-              value={value}
-              onChange={e => setValue(e.target.value)}
-            />
-            <Input
-              placeholder="Recipient Pocket Address"
-              type="text"
-              value={address}
-              onChange={e => setAddress(e.target.value)}
-            />
-          </VStack>
+        </Text>
+        <VStack align="start" maxW="30rem" my={4}>
+          <Input
+            placeholder="Burn Amount"
+            type="number"
+            value={value}
+            onChange={e => setValue(e.target.value)}
+          />
+          <Input
+            placeholder="Recipient Pocket Address"
+            type="text"
+            value={address}
+            onChange={e => setAddress(e.target.value)}
+          />
+        </VStack>
+        <Text>
           {`Step 2: Click the "Burn" Button`}
           <br />
           {`After entering the required information, click the "Burn" button to initiate the burning process.`}
@@ -157,55 +160,57 @@ export const BurnPanel: React.FC = () => {
                 <Th>Return Tx Hash</Th>
               </Tr>
             </Thead>
-            {burns.map(burn => (
-              <Tr key={burn._id.toString()}>
-                <Td>
-                  <HashDisplay chainId={burn.sender_chain_id}>
-                    {burn.transaction_hash}
-                  </HashDisplay>
-                </Td>
-                <Td>{burn.block_number}</Td>
-                <Td>
-                  <HashDisplay chainId={burn.sender_chain_id}>
-                    {burn.sender_address}
-                  </HashDisplay>
-                </Td>
-                <Td>
-                  <HashDisplay chainId={burn.recipient_chain_id}>
-                    {burn.recipient_address}
-                  </HashDisplay>
-                </Td>
-                <Td>{formatUnits(BigInt(burn.amount), 6)}</Td>
-                <Td>
-                  <Text whiteSpace="nowrap">
-                    {humanFormattedDate(new Date(burn.created_at))}
-                  </Text>
-                </Td>
-                <Td>
-                  <Tooltip
-                    label={
-                      burn.status === 'pending'
-                        ? `The transaction has ${burn.confirmations} confirmations out of a total of 8 required.`
-                        : ''
-                    }
-                  >
-                    <HStack spacing={1}>
-                      <Text>{burn.status}</Text>
-                      {burn.status === 'pending' && (
-                        <QuestionIcon fontSize="xs" />
-                      )}
-                    </HStack>
-                  </Tooltip>
-                </Td>
-                <Td>
-                  {burn.return_tx_hash && (
-                    <HashDisplay chainId={burn.recipient_chain_id}>
-                      {burn.return_tx_hash}
+            <Tbody>
+              {burns.map(burn => (
+                <Tr key={burn._id.toString()}>
+                  <Td>
+                    <HashDisplay chainId={burn.sender_chain_id}>
+                      {burn.transaction_hash}
                     </HashDisplay>
-                  )}
-                </Td>
-              </Tr>
-            ))}
+                  </Td>
+                  <Td>{burn.block_number}</Td>
+                  <Td>
+                    <HashDisplay chainId={burn.sender_chain_id}>
+                      {burn.sender_address}
+                    </HashDisplay>
+                  </Td>
+                  <Td>
+                    <HashDisplay chainId={burn.recipient_chain_id}>
+                      {burn.recipient_address}
+                    </HashDisplay>
+                  </Td>
+                  <Td>{formatUnits(BigInt(burn.amount), 6)}</Td>
+                  <Td>
+                    <Text whiteSpace="nowrap">
+                      {humanFormattedDate(new Date(burn.created_at))}
+                    </Text>
+                  </Td>
+                  <Td>
+                    <Tooltip
+                      label={
+                        burn.status === 'pending'
+                          ? `The transaction has ${burn.confirmations} confirmations out of a total of 8 required.`
+                          : ''
+                      }
+                    >
+                      <HStack spacing={1}>
+                        <Text>{burn.status}</Text>
+                        {burn.status === 'pending' && (
+                          <QuestionIcon fontSize="xs" />
+                        )}
+                      </HStack>
+                    </Tooltip>
+                  </Td>
+                  <Td>
+                    {burn.return_tx_hash && (
+                      <HashDisplay chainId={burn.recipient_chain_id}>
+                        {burn.return_tx_hash}
+                      </HashDisplay>
+                    )}
+                  </Td>
+                </Tr>
+              ))}
+            </Tbody>
           </Table>
         </VStack>
       )}

@@ -4,6 +4,7 @@ import {
   Divider,
   HStack,
   Table,
+  Tbody,
   Td,
   Text,
   Th,
@@ -41,53 +42,55 @@ export const InvalidMintPanel: React.FC = () => {
                 <Th>Return Tx Hash</Th>
               </Tr>
             </Thead>
-            {invalidMints.map(invalidMint => (
-              <Tr key={invalidMint._id.toString()}>
-                <Td>
-                  <HashDisplay chainId={invalidMint.sender_chain_id}>
-                    {invalidMint.transaction_hash}
-                  </HashDisplay>
-                </Td>
-                <Td>{invalidMint.height}</Td>
-                <Td>
-                  <HashDisplay chainId={invalidMint.sender_chain_id}>
-                    {invalidMint.sender_address}
-                  </HashDisplay>
-                </Td>
-                <Td>{formatUnits(BigInt(invalidMint.amount), 6)}</Td>
-                <Td>
-                  <CopyText maxChars={20}>{invalidMint.memo}</CopyText>
-                </Td>
-                <Td>
-                  <Text whiteSpace="nowrap">
-                    {humanFormattedDate(new Date(invalidMint.created_at))}
-                  </Text>
-                </Td>
-                <Td>
-                  <Tooltip
-                    label={
-                      invalidMint.status === 'pending'
-                        ? `The transaction has ${invalidMint.confirmations} confirmations out of a total of 1 required.`
-                        : ''
-                    }
-                  >
-                    <HStack spacing={1}>
-                      <Text>{invalidMint.status}</Text>
-                      {invalidMint.status === 'pending' && (
-                        <QuestionIcon fontSize="xs" />
-                      )}
-                    </HStack>
-                  </Tooltip>
-                </Td>
-                <Td>
-                  {invalidMint.return_tx_hash && (
+            <Tbody>
+              {invalidMints.map(invalidMint => (
+                <Tr key={invalidMint._id.toString()}>
+                  <Td>
                     <HashDisplay chainId={invalidMint.sender_chain_id}>
-                      {invalidMint.return_tx_hash}
+                      {invalidMint.transaction_hash}
                     </HashDisplay>
-                  )}
-                </Td>
-              </Tr>
-            ))}
+                  </Td>
+                  <Td>{invalidMint.height}</Td>
+                  <Td>
+                    <HashDisplay chainId={invalidMint.sender_chain_id}>
+                      {invalidMint.sender_address}
+                    </HashDisplay>
+                  </Td>
+                  <Td>{formatUnits(BigInt(invalidMint.amount), 6)}</Td>
+                  <Td>
+                    <CopyText maxChars={20}>{invalidMint.memo}</CopyText>
+                  </Td>
+                  <Td>
+                    <Text whiteSpace="nowrap">
+                      {humanFormattedDate(new Date(invalidMint.created_at))}
+                    </Text>
+                  </Td>
+                  <Td>
+                    <Tooltip
+                      label={
+                        invalidMint.status === 'pending'
+                          ? `The transaction has ${invalidMint.confirmations} confirmations out of a total of 1 required.`
+                          : ''
+                      }
+                    >
+                      <HStack spacing={1}>
+                        <Text>{invalidMint.status}</Text>
+                        {invalidMint.status === 'pending' && (
+                          <QuestionIcon fontSize="xs" />
+                        )}
+                      </HStack>
+                    </Tooltip>
+                  </Td>
+                  <Td>
+                    {invalidMint.return_tx_hash && (
+                      <HashDisplay chainId={invalidMint.sender_chain_id}>
+                        {invalidMint.return_tx_hash}
+                      </HashDisplay>
+                    )}
+                  </Td>
+                </Tr>
+              ))}
+            </Tbody>
           </Table>
         </VStack>
       )}

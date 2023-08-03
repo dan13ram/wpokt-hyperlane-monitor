@@ -29,6 +29,8 @@ const WrappedPocketPage: React.FC = () => {
             display: 'inline-block',
             marginLeft: 5,
             marginRight: 5,
+            width: 'auto',
+            height: 'auto',
           }}
         />
         Pocket Testnet and WPOKT on
@@ -36,11 +38,13 @@ const WrappedPocketPage: React.FC = () => {
           src="/eth-logo.png"
           alt="ETH"
           width={10}
-          height={10}
+          height={16}
           style={{
             display: 'inline-block',
             marginLeft: 5,
             marginRight: 5,
+            width: '10px',
+            height: '16px',
           }}
         />
         Ethereum Goerli.
