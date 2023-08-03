@@ -1,4 +1,4 @@
-import { HStack, Text } from '@chakra-ui/react';
+import { HStack } from '@chakra-ui/react';
 import Image from 'next/image';
 import { useMemo } from 'react';
 
@@ -34,19 +34,17 @@ export const HashDisplay: React.FC<{ children: string; chainId: string }> = ({
   }, [chainId]);
 
   return (
-    <HStack display="inline-flex" alignItems="center" spacing={2}>
+    <HStack
+      spacing={logo ? 1 : 0}
+      bg="gray.100"
+      flexShrink={0}
+      px={2}
+      py={1}
+      borderRadius="full"
+      display="inline-flex"
+    >
+      {logo && <Image src={logo} alt={label} {...props} />}
       <CopyText>{children}</CopyText>
-      <HStack
-        spacing={logo ? 1 : 0}
-        fontSize="xs"
-        bg="gray.100"
-        flexShrink={0}
-        px={1}
-        borderRadius="full"
-      >
-        {logo && <Image src={logo} alt={label} {...props} />}
-        <Text as="span">{label}</Text>
-      </HStack>
     </HStack>
   );
 };

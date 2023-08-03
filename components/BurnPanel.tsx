@@ -150,10 +150,10 @@ export const BurnPanel: React.FC = () => {
           <Table maxW="100%">
             <Thead>
               <Tr>
-                <Th>Transaction Hash</Th>
+                <Th>Tx Hash</Th>
                 <Th>Block Number</Th>
-                <Th>Sender Address</Th>
-                <Th>Recipient Address</Th>
+                <Th>Sender</Th>
+                <Th>Recipient</Th>
                 <Th>Amount</Th>
                 <Th>Created At</Th>
                 <Th>Status</Th>

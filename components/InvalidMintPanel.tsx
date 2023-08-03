@@ -32,9 +32,9 @@ export const InvalidMintPanel: React.FC = () => {
           <Table maxW="100%">
             <Thead>
               <Tr>
-                <Th>Transaction Hash</Th>
+                <Th>Tx Hash</Th>
                 <Th>Height</Th>
-                <Th>Sender Address</Th>
+                <Th>Sender</Th>
                 <Th>Amount</Th>
                 <Th>Invalid Memo</Th>
                 <Th>Created At</Th>

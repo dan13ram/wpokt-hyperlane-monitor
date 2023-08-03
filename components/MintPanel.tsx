@@ -201,10 +201,10 @@ export const MintPanel: React.FC = () => {
           <Table maxW="100%">
             <Thead>
               <Tr>
-                <Th>Transaction Hash</Th>
+                <Th>Tx Hash</Th>
                 <Th>Height</Th>
-                <Th>Sender Address</Th>
-                <Th>Recipient Address</Th>
+                <Th>Sender</Th>
+                <Th>Recipient</Th>
                 <Th>Amount</Th>
                 <Th>Nonce</Th>
                 <Th>Created At</Th>
