@@ -162,10 +162,6 @@ export const BurnPanel: React.FC = () => {
                   ),
                 },
                 {
-                  label: 'Block Number',
-                  value: burn.block_number,
-                },
-                {
                   label: 'Sender',
                   value: (
                     <HashDisplay chainId={burn.sender_chain_id}>
@@ -231,7 +227,6 @@ export const BurnPanel: React.FC = () => {
             <Thead>
               <Tr>
                 <Th>Tx Hash</Th>
-                <Th>Block Number</Th>
                 <Th>Sender</Th>
                 <Th>Recipient</Th>
                 <Th>Amount</Th>
@@ -248,7 +243,6 @@ export const BurnPanel: React.FC = () => {
                       {burn.transaction_hash}
                     </HashDisplay>
                   </Td>
-                  <Td>{burn.block_number}</Td>
                   <Td>
                     <HashDisplay chainId={burn.sender_chain_id}>
                       {burn.sender_address}

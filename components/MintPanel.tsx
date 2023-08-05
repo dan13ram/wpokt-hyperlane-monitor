@@ -237,10 +237,6 @@ export const MintPanel: React.FC = () => {
                     ),
                   },
                   {
-                    label: 'Height',
-                    value: mint.height,
-                  },
-                  {
                     label: 'Sender',
                     value: (
                       <HashDisplay chainId={mint.sender_chain_id}>
@@ -328,6 +324,9 @@ export const MintPanel: React.FC = () => {
                               isDisabled={isMintNotReady || isMintCompleted}
                               colorScheme="blue"
                               maxH="2rem"
+                              minW="8.5rem"
+                              maxW="9rem"
+                              w="100%"
                             >
                               Mint
                             </Button>
@@ -353,7 +352,6 @@ export const MintPanel: React.FC = () => {
             <Thead>
               <Tr>
                 <Th>Tx Hash</Th>
-                <Th>Height</Th>
                 <Th>Sender</Th>
                 <Th>Recipient</Th>
                 <Th>Amount</Th>
@@ -382,7 +380,6 @@ export const MintPanel: React.FC = () => {
                         {mint.transaction_hash}
                       </HashDisplay>
                     </Td>
-                    <Td>{mint.height}</Td>
                     <Td>
                       <HashDisplay chainId={mint.sender_chain_id}>
                         {mint.sender_address}
@@ -452,6 +449,9 @@ export const MintPanel: React.FC = () => {
                                 isDisabled={isMintNotReady || isMintCompleted}
                                 colorScheme="blue"
                                 maxH="2rem"
+                                minW="8.5rem"
+                                maxW="9rem"
+                                w="100%"
                               >
                                 Mint
                               </Button>
