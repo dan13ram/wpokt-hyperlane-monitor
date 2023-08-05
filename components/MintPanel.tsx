@@ -40,7 +40,16 @@ export const MintPanel: React.FC = () => {
   const { mints, reload, loading } = useAllMints();
 
   const addresses = useMemo(
-    () => uniqueValues(mints.map(mint => mint.recipient_address)),
+    () =>
+      uniqueValues(
+        mints
+          .filter(
+            mint =>
+              mint.status === 'signed' ||
+              (mint.status === 'confirmed' && mint.signatures.length >= 2),
+          )
+          .map(mint => mint.recipient_address),
+      ),
     [mints],
   );
 
@@ -216,12 +225,14 @@ export const MintPanel: React.FC = () => {
             <Tbody>
               {mints.map(mint => {
                 const nonce = nonceMap[mint.recipient_address.toLowerCase()];
-                const isMintNotReady = nonce
-                  ? !mint.nonce || BigInt(mint.nonce) > nonce + BigInt(1)
-                  : true;
-                const isMintCompleted = nonce
-                  ? !!mint.nonce && BigInt(mint.nonce) <= nonce
-                  : true;
+                const isMintNotReady =
+                  nonce != null
+                    ? !mint.nonce || BigInt(mint.nonce) > nonce + BigInt(1)
+                    : true;
+                const isMintCompleted =
+                  nonce != null
+                    ? !!mint.nonce && BigInt(mint.nonce) <= nonce
+                    : true;
 
                 return (
                   <Tr key={mint._id.toString()}>
@@ -265,7 +276,7 @@ export const MintPanel: React.FC = () => {
                       </Tooltip>
                     </Td>
                     <Td>
-                      {!!nonce &&
+                      {nonce != null &&
                       (mint.status === 'signed' ||
                         (mint.status === 'confirmed' &&
                           mint.signatures.length >= 2)) ? (
