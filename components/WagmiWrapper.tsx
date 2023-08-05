@@ -76,7 +76,7 @@ const Header: React.FC = () => {
       <Heading size="md">WPOKT Demo</Heading>
       <HStack spacing={4}>
         {isConnected && (
-          <Text>
+          <Text as="div">
             Balance:{' '}
             {loading ? (
               <Spinner thickness="2px" speed="0.65s" size="xs" />

@@ -292,8 +292,12 @@ export const MintPanel: React.FC = () => {
                     ),
                   },
                   {
-                    label: 'Action',
-                    value: (
+                    label: 'Mint Tx Hash',
+                    value: mint.mint_tx_hash ? (
+                      <HashDisplay chainId={mint.recipient_chain_id}>
+                        {mint.mint_tx_hash}
+                      </HashDisplay>
+                    ) : (
                       <>
                         {loadingNonce ? (
                           <Spinner
@@ -334,16 +338,6 @@ export const MintPanel: React.FC = () => {
                       </>
                     ),
                   },
-                  {
-                    label: 'Mint Tx Hash',
-                    value: mint.mint_tx_hash ? (
-                      <HashDisplay chainId={mint.recipient_chain_id}>
-                        {mint.mint_tx_hash}
-                      </HashDisplay>
-                    ) : (
-                      'N/A'
-                    ),
-                  },
                 ]}
               />
             );
@@ -366,7 +360,6 @@ export const MintPanel: React.FC = () => {
                 <Th>Nonce</Th>
                 <Th>Created At</Th>
                 <Th>Status</Th>
-                <Th>Action</Th>
                 <Th>Mint Tx Hash</Th>
               </Tr>
             </Thead>
@@ -424,49 +417,49 @@ export const MintPanel: React.FC = () => {
                       </Tooltip>
                     </Td>
                     <Td>
-                      {loadingNonce ? (
-                        <Spinner
-                          thickness="2px"
-                          speed="0.65s"
-                          size="sm"
-                          color="blue.500"
-                        />
-                      ) : nonce != null &&
-                        (mint.status === 'signed' ||
-                          (mint.status === 'confirmed' &&
-                            mint.signatures.length >= 2)) ? (
-                        <Tooltip
-                          label={
-                            isMintNotReady
-                              ? 'Please complete previous mints first'
-                              : isMintCompleted
-                              ? 'Mint completed, please wait for validators to mark it as complete'
-                              : ''
-                          }
-                        >
-                          <Button
-                            isLoading={
-                              isLoading && mint._id.toString() === currentMintId
-                            }
-                            onClick={() => mintTokens(mint)}
-                            isDisabled={isMintNotReady || isMintCompleted}
-                            colorScheme="blue"
-                            maxH="2rem"
-                          >
-                            Mint
-                          </Button>
-                        </Tooltip>
-                      ) : (
-                        <Text>N/A</Text>
-                      )}
-                    </Td>
-                    <Td>
                       {mint.mint_tx_hash ? (
                         <HashDisplay chainId={mint.recipient_chain_id}>
                           {mint.mint_tx_hash}
                         </HashDisplay>
                       ) : (
-                        'N/A'
+                        <>
+                          {loadingNonce ? (
+                            <Spinner
+                              thickness="2px"
+                              speed="0.65s"
+                              size="sm"
+                              color="blue.500"
+                            />
+                          ) : nonce != null &&
+                            (mint.status === 'signed' ||
+                              (mint.status === 'confirmed' &&
+                                mint.signatures.length >= 2)) ? (
+                            <Tooltip
+                              label={
+                                isMintNotReady
+                                  ? 'Please complete previous mints first'
+                                  : isMintCompleted
+                                  ? 'Mint completed, please wait for validators to mark it as complete'
+                                  : ''
+                              }
+                            >
+                              <Button
+                                isLoading={
+                                  isLoading &&
+                                  mint._id.toString() === currentMintId
+                                }
+                                onClick={() => mintTokens(mint)}
+                                isDisabled={isMintNotReady || isMintCompleted}
+                                colorScheme="blue"
+                                maxH="2rem"
+                              >
+                                Mint
+                              </Button>
+                            </Tooltip>
+                          ) : (
+                            <Text>N/A</Text>
+                          )}
+                        </>
                       )}
                     </Td>
                   </Tr>
