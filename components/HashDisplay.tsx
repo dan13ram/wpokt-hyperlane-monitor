@@ -35,15 +35,19 @@ export const HashDisplay: React.FC<{ children: string; chainId: string }> = ({
 
   return (
     <HStack
-      spacing={logo ? 1 : 0}
+      spacing={1}
       bg="gray.100"
-      flexShrink={0}
       px={2}
       py={1}
       borderRadius="full"
-      display="inline-flex"
+      justify="space-between"
+      minW="8.5rem"
     >
-      {logo && <Image src={logo} alt={label} {...props} />}
+      {logo && (
+        <HStack spacing={0} justify="center" w={4} flexShrink={0}>
+          <Image src={logo} alt={label} {...props} />
+        </HStack>
+      )}
       <CopyText>{children}</CopyText>
     </HStack>
   );

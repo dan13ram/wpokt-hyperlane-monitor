@@ -14,6 +14,7 @@ import {
   Thead,
   Tooltip,
   Tr,
+  useBreakpointValue,
   useClipboard,
   useToast,
   VStack,
@@ -33,6 +34,7 @@ import {
 import { humanFormattedDate, uniqueValues } from '@/utils/helpers';
 
 import { HashDisplay } from './HashDisplay';
+import { Tile } from './Tile';
 
 const CLI_CODE = `pocket accounts send-tx 92d75da9086b557764432b66b7d3703c1492771a ${POKT_MULTISIG_ADDRESS} 20000000 testnet 10000 '{"address":"0x3F9B2fea60325d733e61bC76598725c5430cD751","chain_id":"5"}'  --remoteCLIURL https://node2.testnet.pokt.network`;
 
@@ -137,6 +139,8 @@ export const MintPanel: React.FC = () => {
 
   const { onCopy, hasCopied, value, setValue } = useClipboard(CLI_CODE);
 
+  const isSmallScreen = useBreakpointValue({ base: true, lg: false });
+
   return (
     <VStack align="stretch">
       <VStack align="stretch" py={8}>
@@ -203,9 +207,141 @@ export const MintPanel: React.FC = () => {
         </Text>
       </VStack>
 
-      <Divider />
+      {!loading && isSmallScreen && (
+        <VStack align="stretch" overflowX="auto" spacing={4}>
+          {mints.map(mint => {
+            const nonce = nonceMap[mint.recipient_address.toLowerCase()];
+            const isMintNotReady =
+              nonce != null
+                ? !mint.nonce || BigInt(mint.nonce) > nonce + BigInt(1)
+                : true;
+            const isMintCompleted =
+              nonce != null
+                ? !!mint.nonce && BigInt(mint.nonce) <= nonce
+                : true;
 
-      {!loading && (
+            return (
+              <Tile
+                key={mint.transaction_hash}
+                entries={[
+                  {
+                    label: 'Tx Hash',
+                    value: (
+                      <HashDisplay chainId={mint.sender_chain_id}>
+                        {mint.transaction_hash}
+                      </HashDisplay>
+                    ),
+                  },
+                  {
+                    label: 'Height',
+                    value: mint.height,
+                  },
+                  {
+                    label: 'Sender',
+                    value: (
+                      <HashDisplay chainId={mint.sender_chain_id}>
+                        {mint.sender_address}
+                      </HashDisplay>
+                    ),
+                  },
+                  {
+                    label: 'Recipient',
+                    value: (
+                      <HashDisplay chainId={mint.recipient_chain_id}>
+                        {mint.recipient_address}
+                      </HashDisplay>
+                    ),
+                  },
+                  {
+                    label: 'Amount',
+                    value: formatUnits(BigInt(mint.amount), 6),
+                  },
+                  {
+                    label: 'Nonce',
+                    value: mint.nonce,
+                  },
+                  {
+                    label: 'Created At',
+                    value: (
+                      <Text whiteSpace="nowrap">
+                        {humanFormattedDate(new Date(mint.created_at))}
+                      </Text>
+                    ),
+                  },
+                  {
+                    label: 'Status',
+                    value: (
+                      <Tooltip
+                        label={
+                          mint.status === 'pending'
+                            ? `The transaction has ${mint.confirmations} confirmations out of a total of 1 required.`
+                            : ''
+                        }
+                      >
+                        <HStack spacing={1}>
+                          <Text>{mint.status}</Text>
+                          {mint.status === 'pending' && (
+                            <QuestionIcon fontSize="xs" />
+                          )}
+                        </HStack>
+                      </Tooltip>
+                    ),
+                  },
+                  {
+                    label: 'Action',
+                    value: (
+                      <>
+                        {nonce != null &&
+                        (mint.status === 'signed' ||
+                          (mint.status === 'confirmed' &&
+                            mint.signatures.length >= 2)) ? (
+                          <Tooltip
+                            label={
+                              isMintNotReady
+                                ? 'Please complete previous mints first'
+                                : isMintCompleted
+                                ? 'Mint completed, please wait for validators to mark it as complete'
+                                : ''
+                            }
+                          >
+                            <Button
+                              isLoading={
+                                isLoading &&
+                                mint._id.toString() === currentMintId
+                              }
+                              onClick={() => mintTokens(mint)}
+                              isDisabled={isMintNotReady || isMintCompleted}
+                              colorScheme="blue"
+                            >
+                              Mint
+                            </Button>
+                          </Tooltip>
+                        ) : (
+                          <Text>N/A</Text>
+                        )}
+                      </>
+                    ),
+                  },
+                  {
+                    label: 'Mint Tx Hash',
+                    value: mint.mint_tx_hash ? (
+                      <HashDisplay chainId={mint.recipient_chain_id}>
+                        {mint.mint_tx_hash}
+                      </HashDisplay>
+                    ) : (
+                      'N/A'
+                    ),
+                  },
+                ]}
+              />
+            );
+          })}
+        </VStack>
+      )}
+
+      {!loading && !isSmallScreen && <Divider />}
+
+      {!loading && !isSmallScreen && (
         <VStack align="stretch" overflowX="auto">
           <Table maxW="100%">
             <Thead>
@@ -305,10 +441,12 @@ export const MintPanel: React.FC = () => {
                       )}
                     </Td>
                     <Td>
-                      {mint.mint_tx_hash && (
+                      {mint.mint_tx_hash ? (
                         <HashDisplay chainId={mint.recipient_chain_id}>
                           {mint.mint_tx_hash}
                         </HashDisplay>
+                      ) : (
+                        'N/A'
                       )}
                     </Td>
                   </Tr>

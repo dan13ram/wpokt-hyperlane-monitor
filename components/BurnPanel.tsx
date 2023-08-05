@@ -13,6 +13,7 @@ import {
   Thead,
   Tooltip,
   Tr,
+  useBreakpointValue,
   useToast,
   VStack,
 } from '@chakra-ui/react';
@@ -26,6 +27,7 @@ import { WRAPPED_POCKET_ADDRESS } from '@/utils/constants';
 import { humanFormattedDate } from '@/utils/helpers';
 
 import { HashDisplay } from './HashDisplay';
+import { Tile } from './Tile';
 
 export const BurnPanel: React.FC = () => {
   const { burns, reload, loading } = useAllBurns();
@@ -99,6 +101,8 @@ export const BurnPanel: React.FC = () => {
     }
   }, [account, value, address, toast, publicClient, walletClient]);
 
+  const isSmallScreen = useBreakpointValue({ base: true, lg: false });
+
   return (
     <VStack align="stretch">
       <VStack align="stretch" py={8}>
@@ -143,9 +147,85 @@ export const BurnPanel: React.FC = () => {
         </Text>
       </VStack>
 
-      <Divider />
+      {!loading && isSmallScreen && (
+        <VStack align="stretch" overflowX="auto" spacing={4}>
+          {burns.map(burn => (
+            <Tile
+              key={burn.transaction_hash + burn.log_index}
+              entries={[
+                {
+                  label: 'Tx Hash',
+                  value: (
+                    <HashDisplay chainId={burn.sender_chain_id}>
+                      {burn.transaction_hash}
+                    </HashDisplay>
+                  ),
+                },
+                {
+                  label: 'Block Number',
+                  value: burn.block_number,
+                },
+                {
+                  label: 'Sender',
+                  value: (
+                    <HashDisplay chainId={burn.sender_chain_id}>
+                      {burn.sender_address}
+                    </HashDisplay>
+                  ),
+                },
+                {
+                  label: 'Recipient',
+                  value: (
+                    <HashDisplay chainId={burn.recipient_chain_id}>
+                      {burn.recipient_address}
+                    </HashDisplay>
+                  ),
+                },
+                {
+                  label: 'Amount',
+                  value: formatUnits(BigInt(burn.amount), 6),
+                },
+                {
+                  label: 'Created At',
+                  value: humanFormattedDate(new Date(burn.created_at)),
+                },
+                {
+                  label: 'Status',
+                  value: (
+                    <Tooltip
+                      label={
+                        burn.status === 'pending'
+                          ? `The transaction has ${burn.confirmations} confirmations out of a total of 8 required.`
+                          : ''
+                      }
+                    >
+                      <HStack spacing={1}>
+                        <Text>{burn.status}</Text>
+                        {burn.status === 'pending' && (
+                          <QuestionIcon fontSize="xs" />
+                        )}
+                      </HStack>
+                    </Tooltip>
+                  ),
+                },
+                {
+                  label: 'Return Tx Hash',
+                  value: burn.return_tx_hash ? (
+                    <HashDisplay chainId={burn.recipient_chain_id}>
+                      {burn.return_tx_hash}
+                    </HashDisplay>
+                  ) : (
+                    'N/A'
+                  ),
+                },
+              ]}
+            />
+          ))}
+        </VStack>
+      )}
 
-      {!loading && (
+      {!loading && !isSmallScreen && <Divider />}
+      {!loading && !isSmallScreen && (
         <VStack align="stretch" overflowX="auto">
           <Table maxW="100%">
             <Thead>
@@ -202,10 +282,12 @@ export const BurnPanel: React.FC = () => {
                     </Tooltip>
                   </Td>
                   <Td>
-                    {burn.return_tx_hash && (
+                    {burn.return_tx_hash ? (
                       <HashDisplay chainId={burn.recipient_chain_id}>
                         {burn.return_tx_hash}
                       </HashDisplay>
+                    ) : (
+                      'N/A'
                     )}
                   </Td>
                 </Tr>

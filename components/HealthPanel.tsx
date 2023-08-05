@@ -10,6 +10,7 @@ import {
   Th,
   Thead,
   Tr,
+  useBreakpointValue,
   VStack,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
@@ -18,6 +19,7 @@ import useHealth from '@/hooks/useHealth';
 import { humanFormattedDate } from '@/utils/helpers';
 
 import { HashDisplay } from './HashDisplay';
+import { Tile } from './Tile';
 
 const TimeDisplay: React.FC<{ time: number | string | Date }> = ({ time }) => {
   const [, forceUpdate] = useState(0);
@@ -56,10 +58,73 @@ const TimeDisplay: React.FC<{ time: number | string | Date }> = ({ time }) => {
 export const HealthPanel: React.FC = () => {
   const { healths, reload, loading } = useHealth();
 
+  const isSmallScreen = useBreakpointValue({ base: true, lg: false });
+
   return (
     <VStack align="stretch">
-      <Divider />
-      {!loading && (
+      {!loading && isSmallScreen && (
+        <VStack align="stretch" overflowX="auto" spacing={4}>
+          {healths.map(health => {
+            const lastSyncTime = health.updated_at;
+            const isOnline =
+              new Date(lastSyncTime).getTime() > Date.now() - 1000 * 60 * 10;
+            const nextSyncTime = new Date(lastSyncTime).getTime() + 300 * 1000;
+
+            return (
+              <Tile
+                key={health._id.toString()}
+                entries={[
+                  {
+                    label: 'Validator ID',
+                    value: health.validator_id,
+                  },
+                  {
+                    label: 'Pokt Address',
+                    value: (
+                      <HashDisplay chainId="testnet">
+                        {health.pokt_address}
+                      </HashDisplay>
+                    ),
+                  },
+                  {
+                    label: 'Eth Address',
+                    value: (
+                      <HashDisplay chainId="5">
+                        {health.eth_address}
+                      </HashDisplay>
+                    ),
+                  },
+                  {
+                    label: 'Last Health Check',
+                    value: <TimeDisplay time={lastSyncTime} />,
+                  },
+                  {
+                    label: 'Next Health Check',
+                    value: <TimeDisplay time={nextSyncTime} />,
+                  },
+                  {
+                    label: 'Status',
+                    value: (
+                      <HStack>
+                        <Box
+                          w="10px"
+                          h="10px"
+                          borderRadius="50%"
+                          bg={isOnline ? 'green.500' : 'red.500'}
+                        />
+                        <Text>{isOnline ? 'Online' : 'Offline'}</Text>
+                      </HStack>
+                    ),
+                  },
+                ]}
+              />
+            );
+          })}
+        </VStack>
+      )}
+
+      {!loading && !isSmallScreen && <Divider />}
+      {!loading && !isSmallScreen && (
         <VStack align="stretch" overflowX="auto">
           <Table maxW="100%">
             <Thead>

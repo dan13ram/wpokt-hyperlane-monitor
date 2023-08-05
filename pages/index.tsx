@@ -68,16 +68,16 @@ const WrappedPocketPage: React.FC = () => {
           </TabList>
         </HStack>
         <TabPanels>
-          <TabPanel>
+          <TabPanel px={0}>
             <MintPanel />
           </TabPanel>
-          <TabPanel>
+          <TabPanel px={0}>
             <BurnPanel />
           </TabPanel>
-          <TabPanel>
+          <TabPanel px={0}>
             <InvalidMintPanel />
           </TabPanel>
-          <TabPanel>
+          <TabPanel px={0}>
             <HealthPanel />
           </TabPanel>
         </TabPanels>
