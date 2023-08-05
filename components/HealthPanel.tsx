@@ -21,7 +21,7 @@ import { humanFormattedDate } from '@/utils/helpers';
 import { HashDisplay } from './HashDisplay';
 import { Tile } from './Tile';
 
-const TimeDisplay: React.FC<{ time: number | string | Date }> = ({ time }) => {
+const TimeLeft: React.FC<{ time: number | string | Date }> = ({ time }) => {
   const [, forceUpdate] = useState(0);
 
   useEffect(() => {
@@ -96,11 +96,11 @@ export const HealthPanel: React.FC = () => {
                   },
                   {
                     label: 'Last Health Check',
-                    value: <TimeDisplay time={lastSyncTime} />,
+                    value: humanFormattedDate(new Date(lastSyncTime)),
                   },
                   {
                     label: 'Next Health Check',
-                    value: <TimeDisplay time={nextSyncTime} />,
+                    value: <TimeLeft time={nextSyncTime} />,
                   },
                   {
                     label: 'Status',
@@ -165,7 +165,7 @@ export const HealthPanel: React.FC = () => {
                       </Text>
                     </Td>
                     <Td>
-                      <TimeDisplay time={nextSyncTime} />
+                      <TimeLeft time={nextSyncTime} />
                     </Td>
                     <Td>
                       <HStack>

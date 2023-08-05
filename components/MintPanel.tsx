@@ -5,6 +5,7 @@ import {
   Divider,
   HStack,
   Link,
+  Spinner,
   Table,
   Tbody,
   Td,
@@ -24,7 +25,7 @@ import { formatUnits } from 'viem';
 import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
 
 import useAllMints from '@/hooks/useAllMints';
-import { useWPOKTNonceMap } from '@/hooks/useWPOKTNonce';
+import { useNonceMap } from '@/hooks/useNonceMap';
 import { Mint } from '@/types';
 import { MINT_CONTROLLER_ABI } from '@/utils/abis';
 import {
@@ -55,8 +56,11 @@ export const MintPanel: React.FC = () => {
     [mints],
   );
 
-  const [refreshCount, refresh] = useState(0);
-  const nonceMap = useWPOKTNonceMap(addresses, refreshCount);
+  const {
+    nonceMap,
+    loading: loadingNonce,
+    reload: reloadNonce,
+  } = useNonceMap(addresses);
 
   const toast = useToast();
 
@@ -117,7 +121,7 @@ export const MintPanel: React.FC = () => {
           duration: 5000,
           isClosable: true,
         });
-        refresh(c => c + 1);
+        reloadNonce();
       } catch (error) {
         toast.closeAll();
         // eslint-disable-next-line no-console
@@ -134,7 +138,7 @@ export const MintPanel: React.FC = () => {
         setCurrentMintId(null);
       }
     },
-    [toast, account.address, walletClient, publicClient, refresh],
+    [toast, account.address, walletClient, publicClient, reloadNonce],
   );
 
   const { onCopy, hasCopied, value, setValue } = useClipboard(CLI_CODE);
@@ -291,10 +295,17 @@ export const MintPanel: React.FC = () => {
                     label: 'Action',
                     value: (
                       <>
-                        {nonce != null &&
-                        (mint.status === 'signed' ||
-                          (mint.status === 'confirmed' &&
-                            mint.signatures.length >= 2)) ? (
+                        {loadingNonce ? (
+                          <Spinner
+                            thickness="2px"
+                            speed="0.65s"
+                            size="sm"
+                            color="blue.500"
+                          />
+                        ) : nonce != null &&
+                          (mint.status === 'signed' ||
+                            (mint.status === 'confirmed' &&
+                              mint.signatures.length >= 2)) ? (
                           <Tooltip
                             label={
                               isMintNotReady
@@ -312,6 +323,7 @@ export const MintPanel: React.FC = () => {
                               onClick={() => mintTokens(mint)}
                               isDisabled={isMintNotReady || isMintCompleted}
                               colorScheme="blue"
+                              maxH="2rem"
                             >
                               Mint
                             </Button>
@@ -412,10 +424,17 @@ export const MintPanel: React.FC = () => {
                       </Tooltip>
                     </Td>
                     <Td>
-                      {nonce != null &&
-                      (mint.status === 'signed' ||
-                        (mint.status === 'confirmed' &&
-                          mint.signatures.length >= 2)) ? (
+                      {loadingNonce ? (
+                        <Spinner
+                          thickness="2px"
+                          speed="0.65s"
+                          size="sm"
+                          color="blue.500"
+                        />
+                      ) : nonce != null &&
+                        (mint.status === 'signed' ||
+                          (mint.status === 'confirmed' &&
+                            mint.signatures.length >= 2)) ? (
                         <Tooltip
                           label={
                             isMintNotReady
@@ -432,6 +451,7 @@ export const MintPanel: React.FC = () => {
                             onClick={() => mintTokens(mint)}
                             isDisabled={isMintNotReady || isMintCompleted}
                             colorScheme="blue"
+                            maxH="2rem"
                           >
                             Mint
                           </Button>

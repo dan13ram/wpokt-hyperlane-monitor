@@ -42,6 +42,7 @@ export const HashDisplay: React.FC<{ children: string; chainId: string }> = ({
       borderRadius="full"
       justify="space-between"
       minW="8.5rem"
+      maxW="9rem"
     >
       {logo && (
         <HStack spacing={0} justify="center" w={4} flexShrink={0}>

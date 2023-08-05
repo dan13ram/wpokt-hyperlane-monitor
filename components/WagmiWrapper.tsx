@@ -1,11 +1,18 @@
-import { Button, Heading, HStack, Text, VStack } from '@chakra-ui/react';
+import {
+  Button,
+  Heading,
+  HStack,
+  Spinner,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
 import { Web3Button, Web3Modal } from '@web3modal/react';
 import { PropsWithChildren, useCallback, useMemo } from 'react';
 import { formatUnits } from 'viem';
 import { useAccount, useNetwork, useSwitchNetwork } from 'wagmi';
 
 import { WagmiProvider } from '@/components/WagmiProvider';
-import { useWPOKTBalance } from '@/hooks/useWPOKTBalance';
+import { useBalance } from '@/hooks/useBalance';
 import { DEFAULT_CHAIN, ethereumClient, projectId } from '@/lib/web3';
 import { PAGE_MAX_WIDTH, PAGE_PADDING_X } from '@/utils/theme';
 
@@ -56,7 +63,7 @@ const WagmiConnectionManager: React.FC<PropsWithChildren> = ({ children }) => {
 };
 
 const Header: React.FC = () => {
-  const balance = useWPOKTBalance();
+  const { balance, loading } = useBalance();
   const { address } = useAccount();
   const { chain } = useNetwork();
 
@@ -68,7 +75,17 @@ const Header: React.FC = () => {
     <HStack w="100%" justifyContent="space-between" spacing={4} py={4}>
       <Heading size="md">WPOKT Demo</Heading>
       <HStack spacing={4}>
-        {isConnected && <Text> Balance: {formatUnits(balance, 6)} WPOKT</Text>}
+        {isConnected && (
+          <Text>
+            Balance:{' '}
+            {loading ? (
+              <Spinner thickness="2px" speed="0.65s" size="xs" />
+            ) : (
+              formatUnits(balance, 6)
+            )}{' '}
+            WPOKT
+          </Text>
+        )}
         <Web3Button />
       </HStack>
     </HStack>
