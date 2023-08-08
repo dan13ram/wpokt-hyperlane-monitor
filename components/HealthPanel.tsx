@@ -16,6 +16,7 @@ import {
 import { useEffect, useState } from 'react';
 
 import useHealth from '@/hooks/useHealth';
+import { ETH_CHAIN_ID, POKT_CHAIN_ID } from '@/utils/constants';
 import { humanFormattedDate } from '@/utils/helpers';
 
 import { HashDisplay } from './HashDisplay';
@@ -81,7 +82,7 @@ export const HealthPanel: React.FC = () => {
                   {
                     label: 'Pokt Address',
                     value: (
-                      <HashDisplay chainId="testnet">
+                      <HashDisplay chainId={POKT_CHAIN_ID}>
                         {health.pokt_address}
                       </HashDisplay>
                     ),
@@ -89,7 +90,7 @@ export const HealthPanel: React.FC = () => {
                   {
                     label: 'Eth Address',
                     value: (
-                      <HashDisplay chainId="5">
+                      <HashDisplay chainId={ETH_CHAIN_ID}>
                         {health.eth_address}
                       </HashDisplay>
                     ),
@@ -150,12 +151,12 @@ export const HealthPanel: React.FC = () => {
                   <Tr key={health._id.toString()}>
                     <Td>{health.validator_id}</Td>
                     <Td>
-                      <HashDisplay chainId="testnet">
+                      <HashDisplay chainId={POKT_CHAIN_ID}>
                         {health.pokt_address}
                       </HashDisplay>
                     </Td>
                     <Td>
-                      <HashDisplay chainId="5">
+                      <HashDisplay chainId={ETH_CHAIN_ID}>
                         {health.eth_address}
                       </HashDisplay>
                     </Td>

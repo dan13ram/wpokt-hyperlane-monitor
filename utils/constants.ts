@@ -45,3 +45,7 @@ export const POKT_CHAIN_ID = process.env.NEXT_PUBLIC_POKT_CHAIN_ID;
 export const POKT_RPC_URL = process.env.NEXT_PUBLIC_POKT_RPC_URL;
 export const WALLETCONNECT_PROJECT_ID =
   process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID;
+
+export const POKT_NETWORK_LABEL =
+  POKT_CHAIN_ID === 'testnet' ? 'Testnet' : 'Mainnet';
+export const ETH_NETWORK_LABEL = ETH_CHAIN_ID === '1' ? 'Mainnet' : 'Goerli';

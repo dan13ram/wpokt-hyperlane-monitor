@@ -2,6 +2,8 @@ import { HStack } from '@chakra-ui/react';
 import Image from 'next/image';
 import { useMemo } from 'react';
 
+import { ETH_NETWORK_LABEL, POKT_NETWORK_LABEL } from '@/utils/constants';
+
 import { CopyText } from './CopyText';
 
 export const HashDisplay: React.FC<{ children: string; chainId: string }> = ({
@@ -13,7 +15,7 @@ export const HashDisplay: React.FC<{ children: string; chainId: string }> = ({
     let networkLogo = '';
     let logoProps = {};
     if (chainId === '5' || chainId === '1') {
-      networkLabel = chainId === '5' ? 'goerli' : 'mainnet';
+      networkLabel = `Ethereum ${ETH_NETWORK_LABEL}`;
       networkLogo = '/eth-logo.png';
       logoProps = {
         width: 9,
@@ -21,7 +23,7 @@ export const HashDisplay: React.FC<{ children: string; chainId: string }> = ({
         style: { height: '14px', width: '9px' },
       };
     } else if (chainId === 'testnet' || chainId === 'mainnet') {
-      networkLabel = chainId;
+      networkLabel = `Pocket ${POKT_NETWORK_LABEL}`;
       networkLogo = '/pokt-logo.png';
       logoProps = {
         width: 14,

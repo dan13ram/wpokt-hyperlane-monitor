@@ -30,8 +30,12 @@ import { useSignerThreshold } from '@/hooks/useSignerThreshold';
 import { Mint } from '@/types';
 import { MINT_CONTROLLER_ABI } from '@/utils/abis';
 import {
+  ETH_CHAIN_ID,
+  ETH_NETWORK_LABEL,
   MINT_CONTROLLER_ADDRESS,
+  POKT_CHAIN_ID,
   POKT_MULTISIG_ADDRESS,
+  POKT_NETWORK_LABEL,
   POKT_RPC_URL,
 } from '@/utils/constants';
 import { humanFormattedDate, uniqueValues } from '@/utils/helpers';
@@ -39,7 +43,7 @@ import { humanFormattedDate, uniqueValues } from '@/utils/helpers';
 import { HashDisplay } from './HashDisplay';
 import { Tile } from './Tile';
 
-const CLI_CODE = `pocket accounts send-tx 92d75da9086b557764432b66b7d3703c1492771a ${POKT_MULTISIG_ADDRESS} 20000000 testnet 10000 '{"address":"0x3F9B2fea60325d733e61bC76598725c5430cD751","chain_id":"5"}'  --remoteCLIURL ${POKT_RPC_URL}`;
+const CLI_CODE = `pocket accounts send-tx 92d75da9086b557764432b66b7d3703c1492771a ${POKT_MULTISIG_ADDRESS} 20000000 ${POKT_CHAIN_ID} 10000 '{"address":"0x3F9B2fea60325d733e61bC76598725c5430cD751","chain_id":"${ETH_CHAIN_ID}"}'  --remoteCLIURL ${POKT_RPC_URL}`;
 
 export const MintPanel: React.FC = () => {
   const { mints, reload, loading } = useAllMints();
@@ -203,12 +207,12 @@ export const MintPanel: React.FC = () => {
         <Text>
           {`Step 2: Monitor Your Transaction:`}
           <br />
-          {`Once you have sent the POKT tokens, you can find your transaction details below. Please wait for the transaction to be confirmed on the Pocket Testnet before proceeding to the next step.`}
+          {`Once you have sent the POKT tokens, you can find your transaction details below. Please wait for the transaction to be confirmed on the Pocket ${POKT_NETWORK_LABEL} before proceeding to the next step.`}
           <br />
           <br />
           {`Step 3: Complete the Bridging Process:`}
           <br />
-          {`Once your transaction is confirmed, click the "Mint" button to complete the bridging process and mint wPOKT tokens on the Ethereum Goerli Testnet.`}
+          {`Once your transaction is confirmed, click the "Mint" button to complete the bridging process and mint wPOKT tokens on the Ethereum ${ETH_NETWORK_LABEL}.`}
           <br />
           <br />
           {`Happy minting!`}

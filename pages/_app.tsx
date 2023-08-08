@@ -4,12 +4,10 @@ import type { AppProps } from 'next/app';
 import Head from 'next/head';
 
 import { WagmiWrapper } from '@/components/WagmiWrapper';
-import { ETH_CHAIN_ID, POKT_CHAIN_ID } from '@/utils/constants';
+import { ETH_NETWORK_LABEL, POKT_NETWORK_LABEL } from '@/utils/constants';
 import { globalStyles, theme } from '@/utils/theme';
 
-const TITLE = `WPOKT Monitor | Eth ${
-  ETH_CHAIN_ID === '5' ? 'Goerli' : 'Mainnet'
-} - Pokt ${POKT_CHAIN_ID === 'testnet' ? 'Testnet' : 'Mainnet'}`;
+const TITLE = `wPOKT Bridge Monitor | Ethereum ${ETH_NETWORK_LABEL} - Pocket ${POKT_NETWORK_LABEL}`;
 
 export default function App({
   Component,

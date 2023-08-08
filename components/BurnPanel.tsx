@@ -23,7 +23,7 @@ import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
 
 import useAllBurns from '@/hooks/useAllBurns';
 import { WRAPPED_POCKET_ABI } from '@/utils/abis';
-import { WRAPPED_POCKET_ADDRESS } from '@/utils/constants';
+import { POKT_NETWORK_LABEL, WRAPPED_POCKET_ADDRESS } from '@/utils/constants';
 import { humanFormattedDate } from '@/utils/helpers';
 
 import { HashDisplay } from './HashDisplay';
@@ -143,7 +143,7 @@ export const BurnPanel: React.FC = () => {
           >
             Burn
           </Button>
-          {`That's it! Your wPOKT tokens will be burned, and the equivalent POKT tokens on the Pocket Testnet will be transferred to the recipient address.`}
+          {`That's it! Your wPOKT tokens will be burned, and the equivalent POKT tokens on the Pocket ${POKT_NETWORK_LABEL} will be transferred to the recipient address.`}
         </Text>
       </VStack>
 
