@@ -32,13 +32,14 @@ import { MINT_CONTROLLER_ABI } from '@/utils/abis';
 import {
   MINT_CONTROLLER_ADDRESS,
   POKT_MULTISIG_ADDRESS,
+  POKT_RPC_URL,
 } from '@/utils/constants';
 import { humanFormattedDate, uniqueValues } from '@/utils/helpers';
 
 import { HashDisplay } from './HashDisplay';
 import { Tile } from './Tile';
 
-const CLI_CODE = `pocket accounts send-tx 92d75da9086b557764432b66b7d3703c1492771a ${POKT_MULTISIG_ADDRESS} 20000000 testnet 10000 '{"address":"0x3F9B2fea60325d733e61bC76598725c5430cD751","chain_id":"5"}'  --remoteCLIURL https://node2.testnet.pokt.network`;
+const CLI_CODE = `pocket accounts send-tx 92d75da9086b557764432b66b7d3703c1492771a ${POKT_MULTISIG_ADDRESS} 20000000 testnet 10000 '{"address":"0x3F9B2fea60325d733e61bC76598725c5430cD751","chain_id":"5"}'  --remoteCLIURL ${POKT_RPC_URL}`;
 
 export const MintPanel: React.FC = () => {
   const { mints, reload, loading } = useAllMints();

@@ -20,6 +20,10 @@ if (!process.env.NEXT_PUBLIC_POKT_CHAIN_ID) {
   throw new Error('Environment variable NEXT_PUBLIC_POKT_CHAIN_ID is not set');
 }
 
+if (!process.env.NEXT_PUBLIC_POKT_RPC_URL) {
+  throw new Error('Environment variable NEXT_PUBLIC_POKT_RPC_URL is not set');
+}
+
 if (!process.env.NEXT_PUBLIC_ETH_CHAIN_ID) {
   throw new Error('Environment variable NEXT_PUBLIC_ETH_CHAIN_ID is not set');
 }
@@ -38,5 +42,6 @@ export const POKT_MULTISIG_ADDRESS =
   process.env.NEXT_PUBLIC_POKT_MULTISIG_ADDRESS;
 export const ETH_CHAIN_ID = process.env.NEXT_PUBLIC_ETH_CHAIN_ID;
 export const POKT_CHAIN_ID = process.env.NEXT_PUBLIC_POKT_CHAIN_ID;
+export const POKT_RPC_URL = process.env.NEXT_PUBLIC_POKT_RPC_URL;
 export const WALLETCONNECT_PROJECT_ID =
   process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID;
