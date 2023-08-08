@@ -17,6 +17,7 @@ import {
 import { formatUnits } from 'viem';
 
 import useAllInvalidMints from '@/hooks/useAllInvalidMints';
+import { POKT_CONFIRMATIONS } from '@/utils/constants';
 import { humanFormattedDate } from '@/utils/helpers';
 
 import { CopyText } from './CopyText';
@@ -81,7 +82,7 @@ export const InvalidMintPanel: React.FC = () => {
                     <Tooltip
                       label={
                         invalidMint.status === 'pending'
-                          ? `The transaction has ${invalidMint.confirmations} confirmations out of a total of 1 required.`
+                          ? `The transaction has ${invalidMint.confirmations} confirmations out of a total of ${POKT_CONFIRMATIONS} required.`
                           : ''
                       }
                     >
@@ -150,7 +151,7 @@ export const InvalidMintPanel: React.FC = () => {
                     <Tooltip
                       label={
                         invalidMint.status === 'pending'
-                          ? `The transaction has ${invalidMint.confirmations} confirmations out of a total of 1 required.`
+                          ? `The transaction has ${invalidMint.confirmations} confirmations out of a total of ${POKT_CONFIRMATIONS} required.`
                           : ''
                       }
                     >

@@ -23,7 +23,11 @@ import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
 
 import useAllBurns from '@/hooks/useAllBurns';
 import { WRAPPED_POCKET_ABI } from '@/utils/abis';
-import { POKT_NETWORK_LABEL, WRAPPED_POCKET_ADDRESS } from '@/utils/constants';
+import {
+  ETH_CONFIRMATIONS,
+  POKT_NETWORK_LABEL,
+  WRAPPED_POCKET_ADDRESS,
+} from '@/utils/constants';
 import { humanFormattedDate } from '@/utils/helpers';
 
 import { HashDisplay } from './HashDisplay';
@@ -191,7 +195,7 @@ export const BurnPanel: React.FC = () => {
                     <Tooltip
                       label={
                         burn.status === 'pending'
-                          ? `The transaction has ${burn.confirmations} confirmations out of a total of 8 required.`
+                          ? `The transaction has ${burn.confirmations} confirmations out of a total of ${ETH_CONFIRMATIONS} required.`
                           : ''
                       }
                     >
@@ -263,7 +267,7 @@ export const BurnPanel: React.FC = () => {
                     <Tooltip
                       label={
                         burn.status === 'pending'
-                          ? `The transaction has ${burn.confirmations} confirmations out of a total of 8 required.`
+                          ? `The transaction has ${burn.confirmations} confirmations out of a total of ${ETH_CONFIRMATIONS} required.`
                           : ''
                       }
                     >

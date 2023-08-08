@@ -34,6 +34,7 @@ import {
   ETH_NETWORK_LABEL,
   MINT_CONTROLLER_ADDRESS,
   POKT_CHAIN_ID,
+  POKT_CONFIRMATIONS,
   POKT_MULTISIG_ADDRESS,
   POKT_NETWORK_LABEL,
   POKT_RPC_URL,
@@ -282,7 +283,7 @@ export const MintPanel: React.FC = () => {
                       <Tooltip
                         label={
                           mint.status === 'pending'
-                            ? `The transaction has ${mint.confirmations} confirmations out of a total of 1 required.`
+                            ? `The transaction has ${mint.confirmations} confirmations out of a total of ${POKT_CONFIRMATIONS} required.`
                             : ''
                         }
                       >
@@ -410,7 +411,7 @@ export const MintPanel: React.FC = () => {
                       <Tooltip
                         label={
                           mint.status === 'pending'
-                            ? `The transaction has ${mint.confirmations} confirmations out of a total of 1 required.`
+                            ? `The transaction has ${mint.confirmations} confirmations out of a total of ${POKT_CONFIRMATIONS} required.`
                             : ''
                         }
                       >
