@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback } from 'react';
 
 import { WRAPPED_POCKET_ADDRESS } from '@/utils/constants';
 import { WRAPPED_POCKET_ABI } from '@/utils/abis';
@@ -22,7 +22,7 @@ export const useNonceMap = (
         const nonceMap: Record<string, bigint> = {};
         for (const address of addrs) {
           nonceMap[address.toLowerCase()] = (await publicClient.readContract({
-            address: WRAPPED_POCKET_ADDRESS,
+            address: WRAPPED_POCKET_ADDRESS as `0x${string}`,
             abi: WRAPPED_POCKET_ABI,
             functionName: 'getUserNonce',
             args: [address],

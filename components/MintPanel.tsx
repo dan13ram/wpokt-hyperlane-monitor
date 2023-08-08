@@ -26,6 +26,7 @@ import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
 
 import useAllMints from '@/hooks/useAllMints';
 import { useNonceMap } from '@/hooks/useNonceMap';
+import { useSignerThreshold } from '@/hooks/useSignerThreshold';
 import { Mint } from '@/types';
 import { MINT_CONTROLLER_ABI } from '@/utils/abis';
 import {
@@ -89,7 +90,7 @@ export const MintPanel: React.FC = () => {
         setCurrentMintId(mint._id.toString());
         const txHash = await walletClient.writeContract({
           account: account.address,
-          address: MINT_CONTROLLER_ADDRESS,
+          address: MINT_CONTROLLER_ADDRESS as `0x${string}`,
           abi: MINT_CONTROLLER_ABI,
           functionName: 'mintWrappedPocket',
           args: [mint.data, mint.signatures],
@@ -144,6 +145,8 @@ export const MintPanel: React.FC = () => {
   const { onCopy, hasCopied, value, setValue } = useClipboard(CLI_CODE);
 
   const isSmallScreen = useBreakpointValue({ base: true, lg: false });
+
+  const { signerThreshold } = useSignerThreshold();
 
   return (
     <VStack align="stretch">
@@ -305,7 +308,8 @@ export const MintPanel: React.FC = () => {
                         ) : nonce != null &&
                           (mint.status === 'signed' ||
                             (mint.status === 'confirmed' &&
-                              mint.signatures.length >= 2)) ? (
+                              mint.signatures.length >=
+                                Number(signerThreshold))) ? (
                           <Tooltip
                             label={
                               isMintNotReady
@@ -430,7 +434,8 @@ export const MintPanel: React.FC = () => {
                           ) : nonce != null &&
                             (mint.status === 'signed' ||
                               (mint.status === 'confirmed' &&
-                                mint.signatures.length >= 2)) ? (
+                                mint.signatures.length >=
+                                  Number(signerThreshold))) ? (
                             <Tooltip
                               label={
                                 isMintNotReady

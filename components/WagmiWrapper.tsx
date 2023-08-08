@@ -73,7 +73,7 @@ const Header: React.FC = () => {
   );
   return (
     <HStack w="100%" justifyContent="space-between" spacing={4} py={4}>
-      <Heading size="md">WPOKT Demo</Heading>
+      <Heading size="md">WPOKT Monitor</Heading>
       <HStack spacing={4}>
         {isConnected && (
           <Text as="div">

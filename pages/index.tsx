@@ -14,6 +14,7 @@ import { BurnPanel } from '@/components/BurnPanel';
 import { HealthPanel } from '@/components/HealthPanel';
 import { InvalidMintPanel } from '@/components/InvalidMintPanel';
 import { MintPanel } from '@/components/MintPanel';
+import { ETH_CHAIN_ID, POKT_CHAIN_ID } from '@/utils/constants';
 
 const WrappedPocketPage: React.FC = () => {
   return (
@@ -33,7 +34,8 @@ const WrappedPocketPage: React.FC = () => {
             height: 'auto',
           }}
         />
-        Pocket Testnet and WPOKT on
+        Pocket {POKT_CHAIN_ID === 'mainnet' ? 'Mainnet' : 'Testnet'} and WPOKT
+        on
         <Image
           src="/eth-logo.png"
           alt="ETH"
@@ -47,7 +49,7 @@ const WrappedPocketPage: React.FC = () => {
             height: '16px',
           }}
         />
-        Ethereum Goerli.
+        Ethereum {ETH_CHAIN_ID === 'mainnet' ? 'Mainnet' : 'Goerli'}
       </Text>
 
       <Tabs>

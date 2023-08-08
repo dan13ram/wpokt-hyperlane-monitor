@@ -50,7 +50,7 @@ export const BurnPanel: React.FC = () => {
       const recipient = getAddress('0x' + address);
       const txHash = await walletClient.writeContract({
         account: account.address,
-        address: WRAPPED_POCKET_ADDRESS,
+        address: WRAPPED_POCKET_ADDRESS as `0x${string}`,
         abi: WRAPPED_POCKET_ABI,
         functionName: 'burnAndBridge',
         args: [amount, recipient],

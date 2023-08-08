@@ -4,18 +4,14 @@ import {
   w3mProvider,
 } from '@web3modal/ethereum';
 import { configureChains, createConfig } from 'wagmi';
-import { goerli } from 'wagmi/chains';
+import { goerli, mainnet } from 'wagmi/chains';
 import { publicProvider } from 'wagmi/providers/public';
 
-if (!process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID) {
-  throw new Error(
-    'Invalid/Missing environment variable: "NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID"',
-  );
-}
+import { ETH_CHAIN_ID, WALLETCONNECT_PROJECT_ID } from '@/utils/constants';
 
-export const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID;
+export const projectId = WALLETCONNECT_PROJECT_ID;
 
-export const DEFAULT_CHAIN = goerli;
+export const DEFAULT_CHAIN = ETH_CHAIN_ID === '1' ? mainnet : goerli;
 
 const { publicClient, webSocketPublicClient } = configureChains(
   [DEFAULT_CHAIN],

@@ -1,5 +1,42 @@
+if (!process.env.NEXT_PUBLIC_WRAPPED_POCKET_ADDRESS) {
+  throw new Error(
+    'Environment variable NEXT_PUBLIC_WRAPPED_POCKET_ADDRESS is not set',
+  );
+}
+
+if (!process.env.NEXT_PUBLIC_MINT_CONTROLLER_ADDRESS) {
+  throw new Error(
+    'Environment variable NEXT_PUBLIC_MINT_CONTROLLER_ADDRESS is not set',
+  );
+}
+
+if (!process.env.NEXT_PUBLIC_POKT_MULTISIG_ADDRESS) {
+  throw new Error(
+    'Environment variable NEXT_PUBLIC_POKT_MULTISIG_ADDRESS is not set',
+  );
+}
+
+if (!process.env.NEXT_PUBLIC_POKT_CHAIN_ID) {
+  throw new Error('Environment variable NEXT_PUBLIC_POKT_CHAIN_ID is not set');
+}
+
+if (!process.env.NEXT_PUBLIC_ETH_CHAIN_ID) {
+  throw new Error('Environment variable NEXT_PUBLIC_ETH_CHAIN_ID is not set');
+}
+
+if (!process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID) {
+  throw new Error(
+    'Environment variable NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID is not set',
+  );
+}
+
 export const WRAPPED_POCKET_ADDRESS =
-  '0x69E6049D2D055e67AC9235e9DF80cDBA370bA37C';
+  process.env.NEXT_PUBLIC_WRAPPED_POCKET_ADDRESS;
 export const MINT_CONTROLLER_ADDRESS =
-  '0xd0D6D748B4Ef08536834c88ef005C37dB1a8a1b9';
-export const POKT_MULTISIG_ADDRESS = '7FB0A18CEB4E803F22911F5B85E2727BB3BDF04B';
+  process.env.NEXT_PUBLIC_MINT_CONTROLLER_ADDRESS;
+export const POKT_MULTISIG_ADDRESS =
+  process.env.NEXT_PUBLIC_POKT_MULTISIG_ADDRESS;
+export const ETH_CHAIN_ID = process.env.NEXT_PUBLIC_ETH_CHAIN_ID;
+export const POKT_CHAIN_ID = process.env.NEXT_PUBLIC_POKT_CHAIN_ID;
+export const WALLETCONNECT_PROJECT_ID =
+  process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID;

@@ -19,7 +19,7 @@ export const useBalance = (): {
       if (!addr || !publicClient) return;
       try {
         const balance = (await publicClient.readContract({
-          address: WRAPPED_POCKET_ADDRESS,
+          address: WRAPPED_POCKET_ADDRESS as `0x${string}`,
           abi: WRAPPED_POCKET_ABI,
           functionName: 'balanceOf',
           args: [addr],

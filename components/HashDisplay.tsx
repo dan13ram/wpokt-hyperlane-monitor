@@ -12,16 +12,16 @@ export const HashDisplay: React.FC<{ children: string; chainId: string }> = ({
     let networkLabel = 'unknown';
     let networkLogo = '';
     let logoProps = {};
-    if (chainId === '5') {
-      networkLabel = 'goerli';
+    if (chainId === '5' || chainId === '1') {
+      networkLabel = chainId === '5' ? 'goerli' : 'mainnet';
       networkLogo = '/eth-logo.png';
       logoProps = {
         width: 9,
         height: 14,
         style: { height: '14px', width: '9px' },
       };
-    } else if (chainId === 'testnet') {
-      networkLabel = 'testnet';
+    } else if (chainId === 'testnet' || chainId === 'mainnet') {
+      networkLabel = chainId;
       networkLogo = '/pokt-logo.png';
       logoProps = {
         width: 14,
