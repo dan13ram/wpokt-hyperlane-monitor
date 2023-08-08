@@ -21,7 +21,7 @@ export default function useAllMints(): {
 
   return {
     mints: data || [],
-    loading: data === undefined || isLoading || isValidating,
+    loading: isLoading || isValidating,
     error,
     reload: mutate,
   };

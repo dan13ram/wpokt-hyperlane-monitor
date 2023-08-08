@@ -37,6 +37,6 @@ export const useSignerThreshold = (): {
   return {
     signerThreshold: bnSignerThreshold || BigInt(0),
     reload: mutate,
-    loading: bnSignerThreshold === undefined || isLoading,
+    loading: isLoading,
   };
 };

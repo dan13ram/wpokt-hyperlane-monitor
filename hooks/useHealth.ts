@@ -18,7 +18,7 @@ export default function useHealth(): {
 
   return {
     healths: data || [],
-    loading: data === undefined || isLoading || isValidating,
+    loading: isLoading || isValidating,
     error,
     reload: mutate,
   };

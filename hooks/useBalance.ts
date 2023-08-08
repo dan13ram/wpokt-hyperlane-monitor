@@ -38,6 +38,6 @@ export const useBalance = (): {
   return {
     balance: bnBalance || BigInt(0),
     reload: mutate,
-    loading: bnBalance === undefined || isLoading,
+    loading: isLoading,
   };
 };

@@ -41,7 +41,7 @@ export const useNonceMap = (
 
   return {
     nonceMap: bnNonceMap || {},
-    loading: isLoading || bnNonceMap === undefined,
+    loading: isLoading,
     reload: mutate,
   };
 };

@@ -18,7 +18,7 @@ export default function useAllInvalidMints(): {
 
   return {
     invalidMints: data || [],
-    loading: data === undefined || isLoading || isValidating,
+    loading: isLoading || isValidating,
     error,
     reload: mutate,
   };
