@@ -28,7 +28,6 @@ import {
   POKT_NETWORK_LABEL,
   WRAPPED_POCKET_ADDRESS,
 } from '@/utils/constants';
-import { humanFormattedDate } from '@/utils/helpers';
 
 import { HashDisplay } from './HashDisplay';
 import { Tile } from './Tile';
@@ -186,10 +185,6 @@ export const BurnPanel: React.FC = () => {
                   value: formatUnits(BigInt(burn.amount), 6),
                 },
                 {
-                  label: 'Created At',
-                  value: humanFormattedDate(new Date(burn.created_at)),
-                },
-                {
                   label: 'Status',
                   value: (
                     <Tooltip
@@ -234,7 +229,6 @@ export const BurnPanel: React.FC = () => {
                 <Th>Sender</Th>
                 <Th>Recipient</Th>
                 <Th>Amount</Th>
-                <Th>Created At</Th>
                 <Th>Status</Th>
                 <Th>Return Tx Hash</Th>
               </Tr>
@@ -258,11 +252,6 @@ export const BurnPanel: React.FC = () => {
                     </HashDisplay>
                   </Td>
                   <Td>{formatUnits(BigInt(burn.amount), 6)}</Td>
-                  <Td>
-                    <Text whiteSpace="nowrap">
-                      {humanFormattedDate(new Date(burn.created_at))}
-                    </Text>
-                  </Td>
                   <Td>
                     <Tooltip
                       label={

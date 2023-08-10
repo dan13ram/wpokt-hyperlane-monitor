@@ -39,7 +39,7 @@ import {
   POKT_NETWORK_LABEL,
   POKT_RPC_URL,
 } from '@/utils/constants';
-import { humanFormattedDate, uniqueValues } from '@/utils/helpers';
+import { uniqueValues } from '@/utils/helpers';
 
 import { HashDisplay } from './HashDisplay';
 import { Tile } from './Tile';
@@ -270,14 +270,6 @@ export const MintPanel: React.FC = () => {
                     value: mint.nonce,
                   },
                   {
-                    label: 'Created At',
-                    value: (
-                      <Text whiteSpace="nowrap">
-                        {humanFormattedDate(new Date(mint.created_at))}
-                      </Text>
-                    ),
-                  },
-                  {
                     label: 'Status',
                     value: (
                       <Tooltip
@@ -366,7 +358,6 @@ export const MintPanel: React.FC = () => {
                 <Th>Recipient</Th>
                 <Th>Amount</Th>
                 <Th>Nonce</Th>
-                <Th>Created At</Th>
                 <Th>Status</Th>
                 <Th>Mint Tx Hash</Th>
               </Tr>
@@ -402,11 +393,6 @@ export const MintPanel: React.FC = () => {
                     </Td>
                     <Td>{formatUnits(BigInt(mint.amount), 6)}</Td>
                     <Td>{mint.nonce}</Td>
-                    <Td>
-                      <Text whiteSpace="nowrap">
-                        {humanFormattedDate(new Date(mint.created_at))}
-                      </Text>
-                    </Td>
                     <Td>
                       <Tooltip
                         label={

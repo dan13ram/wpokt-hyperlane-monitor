@@ -55,7 +55,18 @@ export const ETH_CHAIN_ID = process.env.NEXT_PUBLIC_ETH_CHAIN_ID;
 export const ETH_CONFIRMATIONS = Number(
   process.env.NEXT_PUBLIC_ETH_CONFIRMATIONS,
 );
-export const ETH_NETWORK_LABEL = ETH_CHAIN_ID === '1' ? 'Mainnet' : 'Goerli';
+export const ETH_NETWORK_LABEL = ((): string => {
+  switch (ETH_CHAIN_ID) {
+    case '1':
+      return 'Mainnet';
+    case '5':
+      return 'Goerli';
+    case '11155111':
+      return 'Sepolia';
+    default:
+      throw new Error(`Unknown ETH_CHAIN_ID: ${ETH_CHAIN_ID}`);
+  }
+})();
 
 export const POKT_CHAIN_ID = process.env.NEXT_PUBLIC_POKT_CHAIN_ID;
 export const POKT_RPC_URL = process.env.NEXT_PUBLIC_POKT_RPC_URL;
@@ -64,8 +75,16 @@ export const POKT_MULTISIG_ADDRESS =
 export const POKT_CONFIRMATIONS = Number(
   process.env.NEXT_PUBLIC_POKT_CONFIRMATIONS,
 );
-export const POKT_NETWORK_LABEL =
-  POKT_CHAIN_ID === 'testnet' ? 'Testnet' : 'Mainnet';
+export const POKT_NETWORK_LABEL = ((): string => {
+  switch (POKT_CHAIN_ID) {
+    case 'testnet':
+      return 'Testnet';
+    case 'mainnet':
+      return 'Mainnet';
+    default:
+      throw new Error(`Unknown POKT_CHAIN_ID: ${POKT_CHAIN_ID}`);
+  }
+})();
 
 export const WALLETCONNECT_PROJECT_ID =
   process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID;

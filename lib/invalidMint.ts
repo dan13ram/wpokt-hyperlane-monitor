@@ -31,7 +31,7 @@ export const getAllInvalidMints = async (): Promise<InvalidMint[]> => {
         {
           vault_address: POKT_MULTISIG_ADDRESS,
         },
-        { sort: { created_at: -1 } },
+        { sort: { height: -1 } },
       )
       .toArray();
 

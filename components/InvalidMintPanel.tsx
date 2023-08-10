@@ -18,7 +18,6 @@ import { formatUnits } from 'viem';
 
 import useAllInvalidMints from '@/hooks/useAllInvalidMints';
 import { POKT_CONFIRMATIONS } from '@/utils/constants';
-import { humanFormattedDate } from '@/utils/helpers';
 
 import { CopyText } from './CopyText';
 import { HashDisplay } from './HashDisplay';
@@ -69,14 +68,6 @@ export const InvalidMintPanel: React.FC = () => {
                   value: <CopyText maxChars={20}>{invalidMint.memo}</CopyText>,
                 },
                 {
-                  label: 'Created At',
-                  value: (
-                    <Text whiteSpace="nowrap">
-                      {humanFormattedDate(new Date(invalidMint.created_at))}
-                    </Text>
-                  ),
-                },
-                {
                   label: 'Status',
                   value: (
                     <Tooltip
@@ -120,7 +111,6 @@ export const InvalidMintPanel: React.FC = () => {
                 <Th>Sender</Th>
                 <Th>Amount</Th>
                 <Th>Invalid Memo</Th>
-                <Th>Created At</Th>
                 <Th>Status</Th>
                 <Th>Return Tx Hash</Th>
               </Tr>
@@ -141,11 +131,6 @@ export const InvalidMintPanel: React.FC = () => {
                   <Td>{formatUnits(BigInt(invalidMint.amount), 6)}</Td>
                   <Td>
                     <CopyText maxChars={20}>{invalidMint.memo}</CopyText>
-                  </Td>
-                  <Td>
-                    <Text whiteSpace="nowrap">
-                      {humanFormattedDate(new Date(invalidMint.created_at))}
-                    </Text>
                   </Td>
                   <Td>
                     <Tooltip

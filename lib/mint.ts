@@ -35,7 +35,7 @@ export const getAllMints = async (): Promise<Mint[]> => {
           wpokt_address: WRAPPED_POCKET_ADDRESS,
           vault_address: POKT_MULTISIG_ADDRESS,
         },
-        { sort: { created_at: -1 } },
+        { sort: { height: -1 } },
       )
       .toArray();
 

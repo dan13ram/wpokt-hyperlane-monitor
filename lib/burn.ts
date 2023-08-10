@@ -30,7 +30,7 @@ export const getAllBurns = async (): Promise<Burn[]> => {
         {
           wpokt_address: WRAPPED_POCKET_ADDRESS,
         },
-        { sort: { created_at: -1 } },
+        { sort: { block_number: -1 } },
       )
       .toArray();
 

@@ -13,48 +13,14 @@ import {
   useBreakpointValue,
   VStack,
 } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
 
 import useHealth from '@/hooks/useHealth';
 import { ETH_CHAIN_ID, POKT_CHAIN_ID } from '@/utils/constants';
-import { humanFormattedDate } from '@/utils/helpers';
 
 import { HashDisplay } from './HashDisplay';
 import { Tile } from './Tile';
-
-const TimeLeft: React.FC<{ time: number | string | Date }> = ({ time }) => {
-  const [, forceUpdate] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      forceUpdate(n => n + 1);
-    }, 1000);
-
-    return () => {
-      clearInterval(interval);
-    };
-  }, []);
-
-  const now = Date.now();
-  const date = new Date(time).getTime();
-  const secondsLeft = Math.floor((date - now) / 1000);
-
-  if (secondsLeft <= 0) {
-    return <span>0s</span>;
-  }
-
-  const hours = Math.floor(secondsLeft / 3600);
-  const minutes = Math.floor((secondsLeft % 3600) / 60);
-  const seconds = secondsLeft % 60;
-
-  return (
-    <span>
-      {hours ? `${hours}h` : ''}
-      {minutes ? `${minutes}m` : ''}
-      {seconds ? `${seconds}s` : ''}
-    </span>
-  );
-};
+import { TimeAgo } from './TimeAgo';
+import { TimeLeft } from './TimeLeft';
 
 export const HealthPanel: React.FC = () => {
   const { healths, reload, loading } = useHealth();
@@ -97,7 +63,7 @@ export const HealthPanel: React.FC = () => {
                   },
                   {
                     label: 'Last Health Check',
-                    value: humanFormattedDate(new Date(lastSyncTime)),
+                    value: <TimeAgo time={lastSyncTime} />,
                   },
                   {
                     label: 'Next Health Check',
@@ -161,9 +127,7 @@ export const HealthPanel: React.FC = () => {
                       </HashDisplay>
                     </Td>
                     <Td>
-                      <Text whiteSpace="nowrap">
-                        {humanFormattedDate(new Date(lastSyncTime))}
-                      </Text>
+                      <TimeAgo time={lastSyncTime} />
                     </Td>
                     <Td>
                       <TimeLeft time={nextSyncTime} />
