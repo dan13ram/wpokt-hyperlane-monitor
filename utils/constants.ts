@@ -63,6 +63,8 @@ export const ETH_NETWORK_LABEL = ((): string => {
       return 'Goerli';
     case '11155111':
       return 'Sepolia';
+    case '31337':
+      return 'Hardhat';
     default:
       throw new Error(`Unknown ETH_CHAIN_ID: ${ETH_CHAIN_ID}`);
   }
@@ -81,6 +83,8 @@ export const POKT_NETWORK_LABEL = ((): string => {
       return 'Testnet';
     case 'mainnet':
       return 'Mainnet';
+    case 'localnet':
+      return 'Localnet';
     default:
       throw new Error(`Unknown POKT_CHAIN_ID: ${POKT_CHAIN_ID}`);
   }

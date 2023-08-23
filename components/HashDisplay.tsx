@@ -6,6 +6,12 @@ import { ETH_NETWORK_LABEL, POKT_NETWORK_LABEL } from '@/utils/constants';
 
 import { CopyText } from './CopyText';
 
+const isETH = (chainId: string) =>
+  chainId === '5' || chainId === '1' || chainId === '31337';
+
+const isPOKT = (chainId: string) =>
+  chainId === 'testnet' || chainId === 'mainnet' || chainId === 'localnet';
+
 export const HashDisplay: React.FC<{ children: string; chainId: string }> = ({
   children,
   chainId,
@@ -14,7 +20,7 @@ export const HashDisplay: React.FC<{ children: string; chainId: string }> = ({
     let networkLabel = 'unknown';
     let networkLogo = '';
     let logoProps = {};
-    if (chainId === '5' || chainId === '1') {
+    if (isETH(chainId)) {
       networkLabel = `Ethereum ${ETH_NETWORK_LABEL}`;
       networkLogo = '/eth-logo.png';
       logoProps = {
@@ -22,7 +28,7 @@ export const HashDisplay: React.FC<{ children: string; chainId: string }> = ({
         height: 14,
         style: { height: '14px', width: '9px' },
       };
-    } else if (chainId === 'testnet' || chainId === 'mainnet') {
+    } else if (isPOKT(chainId)) {
       networkLabel = `Pocket ${POKT_NETWORK_LABEL}`;
       networkLogo = '/pokt-logo.png';
       logoProps = {

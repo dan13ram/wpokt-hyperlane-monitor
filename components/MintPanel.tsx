@@ -164,7 +164,7 @@ export const MintPanel: React.FC = () => {
           {`Step 1: Send POKT tokens to our Vault Address:`}
           <br />
           {`Send POKT tokens to our vault address: `}
-          <strong>7FB0A18CEB4E803F22911F5B85E2727BB3BDF04B.</strong> You can use
+          <strong>{POKT_MULTISIG_ADDRESS}.</strong> You can use
           {`the `}
           <Link
             isExternal
