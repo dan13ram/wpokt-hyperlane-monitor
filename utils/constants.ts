@@ -47,9 +47,9 @@ if (!process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID) {
 }
 
 export const WRAPPED_POCKET_ADDRESS =
-  process.env.NEXT_PUBLIC_WRAPPED_POCKET_ADDRESS;
+  process.env.NEXT_PUBLIC_WRAPPED_POCKET_ADDRESS.toLowerCase();
 export const MINT_CONTROLLER_ADDRESS =
-  process.env.NEXT_PUBLIC_MINT_CONTROLLER_ADDRESS;
+  process.env.NEXT_PUBLIC_MINT_CONTROLLER_ADDRESS.toLowerCase();
 
 export const ETH_CHAIN_ID = process.env.NEXT_PUBLIC_ETH_CHAIN_ID;
 export const ETH_CONFIRMATIONS = Number(
@@ -73,7 +73,7 @@ export const ETH_NETWORK_LABEL = ((): string => {
 export const POKT_CHAIN_ID = process.env.NEXT_PUBLIC_POKT_CHAIN_ID;
 export const POKT_RPC_URL = process.env.NEXT_PUBLIC_POKT_RPC_URL;
 export const POKT_MULTISIG_ADDRESS =
-  process.env.NEXT_PUBLIC_POKT_MULTISIG_ADDRESS;
+  process.env.NEXT_PUBLIC_POKT_MULTISIG_ADDRESS.toLowerCase();
 export const POKT_CONFIRMATIONS = Number(
   process.env.NEXT_PUBLIC_POKT_CONFIRMATIONS,
 );
