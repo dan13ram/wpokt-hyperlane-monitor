@@ -20,11 +20,12 @@ import {
   useToast,
   VStack,
 } from '@chakra-ui/react';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { formatUnits } from 'viem';
 import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
 
 import useAllMints from '@/hooks/useAllMints';
+import { useIsConnected } from '@/hooks/useIsConnected';
 import { useNonceMap } from '@/hooks/useNonceMap';
 import { useSignerThreshold } from '@/hooks/useSignerThreshold';
 import { Mint } from '@/types';
@@ -62,6 +63,8 @@ export const MintPanel: React.FC = () => {
       ),
     [mints],
   );
+
+  const isConnected = useIsConnected();
 
   const {
     nonceMap,
@@ -150,6 +153,17 @@ export const MintPanel: React.FC = () => {
 
   const { onCopy, hasCopied, value, setValue } = useClipboard(CLI_CODE);
 
+  useEffect(() => {
+    if (account.address) {
+      setValue(
+        CLI_CODE.replace(
+          /0x3F9B2fea60325d733e61bC76598725c5430cD751/g,
+          account.address,
+        ),
+      );
+    }
+  }, [setValue, account.address]);
+
   const isSmallScreen = useBreakpointValue({ base: true, lg: false });
 
   const { signerThreshold } = useSignerThreshold();
@@ -165,15 +179,15 @@ export const MintPanel: React.FC = () => {
           <br />
           {`Send POKT tokens to our vault address: `}
           <strong>{POKT_MULTISIG_ADDRESS}.</strong> You can use
-          {`the `}
+          {` the `}
           <Link
             isExternal
             href="https://docs.pokt.network/node/environment/#source"
             color="blue.500"
           >
             Pocket CLI
-          </Link>{' '}
-          {`to send tokens to the vault address. Here's a sample command:`}
+          </Link>
+          {` to send tokens to the vault address. Here's a sample command:`}
         </Text>
         <Code my={4} p={0} borderRadius="4px" w="100%">
           <HStack
@@ -443,7 +457,11 @@ export const MintPanel: React.FC = () => {
                                   mint._id.toString() === currentMintId
                                 }
                                 onClick={() => mintTokens(mint)}
-                                isDisabled={isMintNotReady || isMintCompleted}
+                                isDisabled={
+                                  isMintNotReady ||
+                                  isMintCompleted ||
+                                  !isConnected
+                                }
                                 colorScheme="blue"
                                 maxH="2rem"
                                 minW="8.5rem"

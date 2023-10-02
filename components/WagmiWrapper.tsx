@@ -1,8 +1,8 @@
+import { RepeatIcon } from '@chakra-ui/icons';
 import {
   Alert,
-  AlertIcon,
-  AlertTitle,
   AlertDescription,
+  AlertIcon,
   Button,
   Heading,
   HStack,
@@ -17,9 +17,9 @@ import { useAccount, useNetwork, useSwitchNetwork } from 'wagmi';
 
 import { WagmiProvider } from '@/components/WagmiProvider';
 import { useBalance } from '@/hooks/useBalance';
+import { useIsConnected } from '@/hooks/useIsConnected';
 import { DEFAULT_CHAIN, ethereumClient, projectId } from '@/lib/web3';
 import { PAGE_MAX_WIDTH, PAGE_PADDING_X } from '@/utils/theme';
-import { RepeatIcon } from '@chakra-ui/icons';
 
 const InvalidNetwork: React.FC = () => {
   const { isLoading, switchNetwork } = useSwitchNetwork();
@@ -81,13 +81,8 @@ const WagmiConnectionManager: React.FC<PropsWithChildren> = ({ children }) => {
 
 const Header: React.FC = () => {
   const { balance, loading } = useBalance();
-  const { address } = useAccount();
-  const { chain } = useNetwork();
+  const isConnected = useIsConnected();
 
-  const isConnected = useMemo(
-    () => !!address && !!chain && chain.id === DEFAULT_CHAIN.id,
-    [address, chain],
-  );
   return (
     <HStack w="100%" justifyContent="space-between" spacing={4} py={4}>
       <Heading size="md">wPOKT Bridge Monitor</Heading>
