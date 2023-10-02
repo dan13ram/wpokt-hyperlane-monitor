@@ -1,4 +1,8 @@
 import {
+  Alert,
+  AlertIcon,
+  AlertTitle,
+  AlertDescription,
   Button,
   Heading,
   HStack,
@@ -15,6 +19,7 @@ import { WagmiProvider } from '@/components/WagmiProvider';
 import { useBalance } from '@/hooks/useBalance';
 import { DEFAULT_CHAIN, ethereumClient, projectId } from '@/lib/web3';
 import { PAGE_MAX_WIDTH, PAGE_PADDING_X } from '@/utils/theme';
+import { RepeatIcon } from '@chakra-ui/icons';
 
 const InvalidNetwork: React.FC = () => {
   const { isLoading, switchNetwork } = useSwitchNetwork();
@@ -25,10 +30,20 @@ const InvalidNetwork: React.FC = () => {
   );
 
   return (
-    <VStack spacing={4}>
-      <Text>Your wallet is connected to an unsupported network.</Text>
+    <VStack w="100%" bg="red.100" p={6} my={6} borderRadius="md">
+      <Alert status="error" w="auto">
+        <AlertIcon />
+        <AlertDescription>
+          Your wallet is connected to an unsupported network.
+        </AlertDescription>
+      </Alert>
       {switchNetwork ? (
-        <Button onClick={onSwitch} isLoading={isLoading}>
+        <Button
+          onClick={onSwitch}
+          isLoading={isLoading}
+          colorScheme="red"
+          leftIcon={<RepeatIcon />}
+        >
           Switch to {DEFAULT_CHAIN.name}
         </Button>
       ) : (
@@ -47,19 +62,21 @@ const WagmiConnectionManager: React.FC<PropsWithChildren> = ({ children }) => {
     [chain],
   );
 
-  if (!address) {
-    return (
-      <VStack spacing={4}>
-        <Text>Please connect your wallet.</Text>
-      </VStack>
-    );
-  }
-
-  if (isInvalidNetwork) {
-    return <InvalidNetwork />;
-  }
-
-  return <>{children}</>;
+  return (
+    <>
+      {!address && (
+        <VStack w="100%" bg="blue.100" p={6} my={6} borderRadius="md">
+          <Alert status="info" w="auto">
+            <AlertIcon />
+            <AlertDescription>Please connect your wallet.</AlertDescription>
+          </Alert>
+          <Web3Button />
+        </VStack>
+      )}
+      {!!address && isInvalidNetwork && <InvalidNetwork />}
+      {children}
+    </>
+  );
 };
 
 const Header: React.FC = () => {
