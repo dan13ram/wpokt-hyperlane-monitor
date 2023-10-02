@@ -15,7 +15,7 @@ export const CopyText: React.FC<{
       hasArrow
       closeOnClick={false}
     >
-      <Text as="span" onClick={onCopy} cursor="pointer">
+      <Text as="span" onClick={onCopy} cursor="pointer" fontFamily="mono">
         {shorten ? shortenHex(children, maxChars) : children}
       </Text>
     </Tooltip>

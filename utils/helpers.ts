@@ -1,7 +1,7 @@
 export const shortenHex = (hex: string, maxChars: number = 10): string => {
   if (!hex) return '';
   if (hex.length <= maxChars + 2) return hex;
-  return `${hex.slice(0, maxChars - 4)}...${hex.slice(-4)}`;
+  return `${hex.slice(0, maxChars - 4)}…${hex.slice(-4)}`;
 };
 
 export const uniqueValues = (array: string[]): string[] => {

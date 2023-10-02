@@ -22,6 +22,8 @@ import { formatUnits, getAddress, parseUnits } from 'viem';
 import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
 
 import useAllBurns from '@/hooks/useAllBurns';
+import { useBalance } from '@/hooks/useBalance';
+import { useIsConnected } from '@/hooks/useIsConnected';
 import { WRAPPED_POCKET_ABI } from '@/utils/abis';
 import {
   ETH_CONFIRMATIONS,
@@ -35,6 +37,9 @@ import { Tile } from './Tile';
 export const BurnPanel: React.FC = () => {
   const { burns, reload, loading } = useAllBurns();
 
+  const isConnected = useIsConnected();
+  const { balance } = useBalance();
+
   const toast = useToast();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -46,10 +51,40 @@ export const BurnPanel: React.FC = () => {
   const { data: walletClient } = useWalletClient();
 
   const burnTokens = useCallback(async () => {
+    if (!value) {
+      toast({
+        title: 'Error',
+        description: 'Please enter a burn amount',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
+    const amount = parseUnits(value, 6);
+    if (amount > balance) {
+      toast({
+        title: 'Error',
+        description: 'You do not have enough tokens to burn',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
+    if (!address) {
+      toast({
+        title: 'Error',
+        description: 'Please enter a recipient address',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
     if (!account.address || !walletClient || !publicClient) return;
     try {
       setIsLoading(true);
-      const amount = parseUnits(value, 6);
       const recipient = getAddress('0x' + address);
       const txHash = await walletClient.writeContract({
         account: account.address,
@@ -102,7 +137,7 @@ export const BurnPanel: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [account, value, address, toast, publicClient, walletClient]);
+  }, [account, value, address, toast, publicClient, walletClient, balance]);
 
   const isSmallScreen = useBreakpointValue({ base: true, lg: false });
 
@@ -143,6 +178,7 @@ export const BurnPanel: React.FC = () => {
             px={8}
             my={4}
             display="flex"
+            isDisabled={!isConnected}
           >
             Burn
           </Button>
