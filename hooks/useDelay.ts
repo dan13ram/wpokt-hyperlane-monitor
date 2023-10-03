@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useCallback, useRef } from 'react';
 
-export const useDelay = (fn: (...args: any) => void, ms = 500) => {
+type Fn = (...args: any) => void;
+
+export const useDelay = (fn: Fn, ms = 500): Fn => {
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const delayCallBack = useCallback(

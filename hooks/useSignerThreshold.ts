@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
+import useSWR from 'swr';
 import { usePublicClient } from 'wagmi';
 
-import { MINT_CONTROLLER_ADDRESS } from '@/utils/constants';
 import { MINT_CONTROLLER_ABI } from '@/utils/abis';
-import useSWR from 'swr';
+import { MINT_CONTROLLER_ADDRESS } from '@/utils/constants';
 
 export const useSignerThreshold = (): {
   signerThreshold: bigint;
@@ -13,7 +13,7 @@ export const useSignerThreshold = (): {
   const publicClient = usePublicClient();
 
   const fetchSignerThreshold = useCallback(async () => {
-    if (!publicClient) return;
+    if (!publicClient) return BigInt(0);
     try {
       const signerThreshold = (await publicClient.readContract({
         address: MINT_CONTROLLER_ADDRESS as `0x${string}`,

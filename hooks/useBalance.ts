@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
+import useSWR from 'swr';
 import { useAccount, usePublicClient } from 'wagmi';
 
-import { WRAPPED_POCKET_ADDRESS } from '@/utils/constants';
 import { WRAPPED_POCKET_ABI } from '@/utils/abis';
-import useSWR from 'swr';
+import { WRAPPED_POCKET_ADDRESS } from '@/utils/constants';
 
 export const useBalance = (): {
   balance: bigint;
@@ -16,7 +16,7 @@ export const useBalance = (): {
 
   const fetchBalance = useCallback(
     async (addr: string) => {
-      if (!addr || !publicClient) return;
+      if (!addr || !publicClient) return BigInt(0);
       try {
         const balance = (await publicClient.readContract({
           address: WRAPPED_POCKET_ADDRESS as `0x${string}`,
@@ -30,7 +30,7 @@ export const useBalance = (): {
         return BigInt(0);
       }
     },
-    [address, publicClient],
+    [publicClient],
   );
 
   const { data: bnBalance, isLoading, mutate } = useSWR(address, fetchBalance);
