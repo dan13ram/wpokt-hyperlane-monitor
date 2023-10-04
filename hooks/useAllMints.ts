@@ -8,14 +8,14 @@ async function fetcher(uri: string) {
     .then(mints => mints || []);
 }
 
-export default function useAllMints(): {
+export default function useAllMints(page = 1): {
   mints: Mint[];
   reload: () => void;
   loading: boolean;
   error: Error | null;
 } {
   const { data, error, mutate, isLoading, isValidating } = useSWR(
-    '/api/mints/all',
+    '/api/mints/all?page=' + page,
     fetcher,
   );
 
