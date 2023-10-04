@@ -8,14 +8,14 @@ async function fetcher(uri: string) {
     .then(invalidMints => invalidMints || []);
 }
 
-export default function useAllInvalidMints(): {
+export default function useAllInvalidMints(page = 1): {
   invalidMints: InvalidMint[];
   reload: () => void;
   loading: boolean;
   error: Error | null;
 } {
   const { data, error, mutate, isLoading, isValidating } = useSWR(
-    '/api/invalidMints/all',
+    '/api/invalidMints/all?page=' + page,
     fetcher,
   );
 

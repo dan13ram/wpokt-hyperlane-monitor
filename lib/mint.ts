@@ -24,8 +24,12 @@ export const getMintFromId = async (id: string): Promise<Mint | null> => {
   }
 };
 
-export const getAllMints = async (): Promise<Mint[]> => {
+const PER_PAGE = 20;
+
+export const getAllMints = async (_page: number): Promise<Mint[]> => {
   try {
+    const page = Number.isNaN(_page) || !_page || _page < 1 ? 1 : _page;
+
     const client = await dbPromise;
 
     const mints = await client
@@ -37,6 +41,8 @@ export const getAllMints = async (): Promise<Mint[]> => {
         },
         { sort: { height: -1 } },
       )
+      .skip((page - 1) * PER_PAGE)
+      .limit(PER_PAGE)
       .toArray();
 
     return mints as Mint[];

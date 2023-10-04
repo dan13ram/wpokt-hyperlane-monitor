@@ -17,14 +17,18 @@ import {
 import { formatUnits } from 'viem';
 
 import useAllInvalidMints from '@/hooks/useAllInvalidMints';
+import { usePage } from '@/hooks/usePage';
 import { POKT_CONFIRMATIONS } from '@/utils/constants';
 
 import { CopyText } from './CopyText';
 import { HashDisplay } from './HashDisplay';
+import { Pagination } from './Pagination';
 import { Tile } from './Tile';
 
 export const InvalidMintPanel: React.FC = () => {
-  const { invalidMints, reload, loading } = useAllInvalidMints();
+  const { page, nextPage, prevPage } = usePage();
+
+  const { invalidMints, reload, loading } = useAllInvalidMints(page);
 
   const isSmallScreen = useBreakpointValue({ base: true, lg: false });
 
@@ -164,9 +168,12 @@ export const InvalidMintPanel: React.FC = () => {
         </VStack>
       )}
 
-      <Button isLoading={loading} onClick={() => reload()} colorScheme="blue">
-        Reload
-      </Button>
+      <HStack spacing={4} mt={4} justify="center" w="100%">
+        <Button isLoading={loading} onClick={() => reload()} colorScheme="blue">
+          Reload
+        </Button>
+        <Pagination page={page} nextPage={nextPage} prevPage={prevPage} />
+      </HStack>
     </VStack>
   );
 };
