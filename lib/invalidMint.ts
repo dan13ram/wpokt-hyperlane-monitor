@@ -23,7 +23,9 @@ export const getInvalidMintFromId = async (
 
 const PER_PAGE = 20;
 
-export const getAllInvalidMints = async (_page: number): Promise<InvalidMint[]> => {
+export const getAllInvalidMints = async (
+  _page: number,
+): Promise<InvalidMint[]> => {
   try {
     const page = Number.isNaN(_page) || !_page || _page < 1 ? 1 : _page;
 
