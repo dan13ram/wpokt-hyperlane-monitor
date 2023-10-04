@@ -1,4 +1,5 @@
 import { WithId } from 'mongodb';
+
 import { Status } from './status';
 
 export const CollectionInvalidMints = 'invalidMints';

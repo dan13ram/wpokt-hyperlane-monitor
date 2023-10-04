@@ -1,9 +1,9 @@
 import { useCallback } from 'react';
-
-import { WRAPPED_POCKET_ADDRESS } from '@/utils/constants';
-import { WRAPPED_POCKET_ABI } from '@/utils/abis';
-import { usePublicClient } from 'wagmi';
 import useSWR from 'swr';
+import { usePublicClient } from 'wagmi';
+
+import { WRAPPED_POCKET_ABI } from '@/utils/abis';
+import { WRAPPED_POCKET_ADDRESS } from '@/utils/constants';
 
 export const useNonceMap = (
   addresses: string[],
@@ -15,8 +15,8 @@ export const useNonceMap = (
   const publicClient = usePublicClient();
 
   const fetchNonce = useCallback(
-    async (addrs: string[]) => {
-      if (!addrs || addrs.length == 0 || !publicClient) return;
+    async (addrs: string[]): Promise<Record<string, bigint>> => {
+      if (!addrs || addrs.length == 0 || !publicClient) return {};
 
       try {
         const nonceMap: Record<string, bigint> = {};

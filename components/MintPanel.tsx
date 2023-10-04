@@ -1,29 +1,28 @@
-import { CheckIcon, CopyIcon, QuestionIcon } from '@chakra-ui/icons';
+import { QuestionIcon } from '@chakra-ui/icons';
 import {
   Button,
-  Code,
   Divider,
   HStack,
+  Input,
   Link,
   Spinner,
   Table,
   Tbody,
   Td,
   Text,
-  Textarea,
   Th,
   Thead,
   Tooltip,
   Tr,
   useBreakpointValue,
-  useClipboard,
   useToast,
   VStack,
 } from '@chakra-ui/react';
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { formatUnits } from 'viem';
+import { useCallback, useMemo, useState } from 'react';
+import { formatUnits, isAddress, parseUnits } from 'viem';
 import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
 
+import { usePocketWallet } from '@/contexts/PocketWallet';
 import useAllMints from '@/hooks/useAllMints';
 import { useIsConnected } from '@/hooks/useIsConnected';
 import { useNonceMap } from '@/hooks/useNonceMap';
@@ -34,18 +33,14 @@ import {
   ETH_CHAIN_ID,
   ETH_NETWORK_LABEL,
   MINT_CONTROLLER_ADDRESS,
-  POKT_CHAIN_ID,
   POKT_CONFIRMATIONS,
   POKT_MULTISIG_ADDRESS,
   POKT_NETWORK_LABEL,
-  POKT_RPC_URL,
 } from '@/utils/constants';
-import { uniqueValues } from '@/utils/helpers';
+import { getEthTxLink, getPoktTxLink, uniqueValues } from '@/utils/helpers';
 
 import { HashDisplay } from './HashDisplay';
 import { Tile } from './Tile';
-
-const CLI_CODE = `pocket accounts send-tx 92d75da9086b557764432b66b7d3703c1492771a ${POKT_MULTISIG_ADDRESS} 20000000 ${POKT_CHAIN_ID} 10000 '{"address":"0x3F9B2fea60325d733e61bC76598725c5430cD751","chain_id":"${ETH_CHAIN_ID}"}'  --remoteCLIURL ${POKT_RPC_URL}`;
 
 export const MintPanel: React.FC = () => {
   const { mints, reload, loading } = useAllMints();
@@ -80,6 +75,91 @@ export const MintPanel: React.FC = () => {
   const { data: walletClient } = useWalletClient();
   const account = useAccount();
 
+  const { poktBalance, isPoktConnected, sendPokt } = usePocketWallet();
+
+  const [isSending, setIsSending] = useState(false);
+
+  const [value, setValue] = useState('');
+  const [address, setAddress] = useState('');
+
+  const sendTokens = useCallback(async () => {
+    if (!value) {
+      toast({
+        title: 'Error',
+        description: 'Please enter a mint amount',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    const amount = parseUnits(value, 6);
+    if (amount > poktBalance) {
+      toast({
+        title: 'Error',
+        description: 'You do not have enough tokens to send',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
+    if (!isAddress(address)) {
+      toast({
+        title: 'Error',
+        description: 'Please enter a valid recipient eth address',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    try {
+      setIsSending(true);
+
+      const memo = JSON.stringify({
+        address,
+        chain_id: ETH_CHAIN_ID.toString(),
+      });
+
+      const recipient = POKT_MULTISIG_ADDRESS;
+
+      const txHash = await sendPokt(amount, recipient, memo);
+
+      const txLink = getPoktTxLink(txHash);
+      toast.closeAll();
+      toast({
+        title: 'Transaction sent',
+        description: (
+          <Text>
+            Sending tokens, view on{' '}
+            <Link isExternal href={txLink}>
+              PoktScan
+            </Link>{' '}
+          </Text>
+        ),
+        status: 'loading',
+        duration: null,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast.closeAll();
+      // eslint-disable-next-line no-console
+      console.error(error);
+      toast({
+        title: 'Error',
+        description: 'Error sending tokens, please try again later',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    } finally {
+      setIsSending(false);
+    }
+  }, [value, address, toast, poktBalance, sendPokt]);
+
   const mintTokens = useCallback(
     async (mint: Mint) => {
       if (!mint.data || !mint.signatures) {
@@ -105,7 +185,7 @@ export const MintPanel: React.FC = () => {
           args: [mint.data, mint.signatures],
         });
 
-        const txLink = `https://goerli.etherscan.io/tx/${txHash}`;
+        const txLink = getEthTxLink(txHash);
         toast.closeAll();
         toast({
           title: 'Transaction sent',
@@ -151,19 +231,6 @@ export const MintPanel: React.FC = () => {
     [toast, account.address, walletClient, publicClient, reloadNonce],
   );
 
-  const { onCopy, hasCopied, value, setValue } = useClipboard(CLI_CODE);
-
-  useEffect(() => {
-    if (account.address) {
-      setValue(
-        CLI_CODE.replace(
-          /0x3F9B2fea60325d733e61bC76598725c5430cD751/g,
-          account.address,
-        ),
-      );
-    }
-  }, [setValue, account.address]);
-
   const isSmallScreen = useBreakpointValue({ base: true, lg: false });
 
   const { signerThreshold } = useSignerThreshold();
@@ -175,57 +242,48 @@ export const MintPanel: React.FC = () => {
           {`To get started with minting wPOKT tokens, please follow these steps:`}
           <br />
           <br />
-          {`Step 1: Send POKT tokens to our Vault Address:`}
+          {`Step 1: Send POKT tokens to our Vault Address: {POKT_MULTISIG_ADDRESS}`}
           <br />
-          {`Send POKT tokens to our vault address: `}
-          <strong>{POKT_MULTISIG_ADDRESS}.</strong> You can use
-          {` the `}
-          <Link
-            isExternal
-            href="https://docs.pokt.network/node/environment/#source"
-            color="blue.500"
-          >
-            Pocket CLI
-          </Link>
-          {` to send tokens to the vault address. Here's a sample command:`}
+          {`In the input fields below, enter the amount of POKT tokens you want to send and the recipient's Ethereum address.`}
         </Text>
-        <Code my={4} p={0} borderRadius="4px" w="100%">
-          <HStack
-            borderTopRadius="4px"
-            align="center"
-            justify="space-between"
-            pl={4}
-            pr={2}
-            py={1}
-            bg="blue.100"
-          >
-            <Text fontSize="xs" fontWeight="bold" as="span">
-              shell
-            </Text>
-            <Button
-              variant="ghost"
-              size="xs"
-              onClick={() => onCopy()}
-              leftIcon={hasCopied ? <CheckIcon /> : <CopyIcon />}
-            >
-              {hasCopied ? 'Copied!' : 'Copy code'}
-            </Button>
-          </HStack>
-          <Textarea
-            p={6}
-            m={0}
+        <VStack align="start" maxW="30rem" my={4}>
+          <Input
+            placeholder="Mint Amount"
+            type="number"
             value={value}
             onChange={e => setValue(e.target.value)}
-            h="auto"
           />
-        </Code>
+          <Input
+            placeholder="Recipient Ethereum Address"
+            type="text"
+            value={address}
+            onChange={e => setAddress(e.target.value)}
+          />
+        </VStack>
         <Text>
-          {`Step 2: Monitor Your Transaction:`}
+          {`Step 2: Click the "Send POKT" Button`}
+          <br />
+          {`After entering the required information, click the "Send POKT" button to initiate the minting process.`}
+          <Button
+            isLoading={isSending}
+            onClick={sendTokens}
+            colorScheme="blue"
+            maxW="30rem"
+            px={8}
+            my={4}
+            display="flex"
+            isDisabled={!isPoktConnected}
+          >
+            Send POKT
+          </Button>
+        </Text>
+        <Text>
+          {`Step 3: Monitor Your Transaction:`}
           <br />
           {`Once you have sent the POKT tokens, you can find your transaction details below. Please wait for the transaction to be confirmed on the Pocket ${POKT_NETWORK_LABEL} before proceeding to the next step.`}
           <br />
           <br />
-          {`Step 3: Complete the Bridging Process:`}
+          {`Step 4: Complete the Bridging Process:`}
           <br />
           {`Once your transaction is confirmed, click the "Mint" button to complete the bridging process and mint wPOKT tokens on the Ethereum ${ETH_NETWORK_LABEL}.`}
           <br />

@@ -14,7 +14,10 @@ export default function useAllInvalidMints(): {
   loading: boolean;
   error: Error | null;
 } {
-  const { data, error, mutate, isLoading, isValidating } = useSWR('/api/invalidMints/all', fetcher);
+  const { data, error, mutate, isLoading, isValidating } = useSWR(
+    '/api/invalidMints/all',
+    fetcher,
+  );
 
   return {
     invalidMints: data || [],

@@ -1,8 +1,7 @@
+import { useMemo } from 'react';
 import { useAccount, useNetwork } from 'wagmi';
 
 import { DEFAULT_CHAIN } from '@/lib/web3';
-
-import { useMemo } from 'react';
 
 export const useIsConnected = (): boolean => {
   const { address } = useAccount();

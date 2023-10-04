@@ -4,6 +4,7 @@ import type { AppProps } from 'next/app';
 import Head from 'next/head';
 
 import { WagmiWrapper } from '@/components/WagmiWrapper';
+import { PocketWalletProvider } from '@/contexts/PocketWallet';
 import { ETH_NETWORK_LABEL, POKT_NETWORK_LABEL } from '@/utils/constants';
 import { globalStyles, theme } from '@/utils/theme';
 
@@ -25,9 +26,11 @@ export default function App({
       </Head>
       <ChakraProvider resetCSS theme={theme}>
         <Global styles={globalStyles} />
-        <WagmiWrapper>
-          <Component {...pageProps} />
-        </WagmiWrapper>
+        <PocketWalletProvider>
+          <WagmiWrapper>
+            <Component {...pageProps} />
+          </WagmiWrapper>
+        </PocketWalletProvider>
       </ChakraProvider>
     </>
   );

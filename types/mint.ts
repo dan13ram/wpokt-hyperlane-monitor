@@ -1,6 +1,7 @@
-export const CollectionMints = "mints";
+export const CollectionMints = 'mints';
 
 import { WithId } from 'mongodb';
+
 import { Status } from './status';
 
 export type Maybe<T> = T | null | undefined;
@@ -36,5 +37,4 @@ export type Mint = WithId<{
   signers: string[];
   signatures: string[];
   mint_tx_hash: string;
-
 }>;

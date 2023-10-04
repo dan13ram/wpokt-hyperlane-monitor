@@ -14,7 +14,10 @@ export default function useHealth(): {
   loading: boolean;
   error: Error | null;
 } {
-  const { data, error, mutate, isLoading, isValidating } = useSWR('/api/health', fetcher);
+  const { data, error, mutate, isLoading, isValidating } = useSWR(
+    '/api/health',
+    fetcher,
+  );
 
   return {
     healths: data || [],
