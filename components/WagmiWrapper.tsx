@@ -46,7 +46,7 @@ const InvalidNetwork: React.FC = () => {
   );
 
   const isInvalidPoktNetwork = useMemo(
-    () => !!poktNetwork && poktNetwork !== DEFAULT_CHAIN.name,
+    () => !!poktNetwork && poktNetwork !== POKT_CHAIN_ID,
     [poktNetwork],
   );
 
@@ -55,7 +55,7 @@ const InvalidNetwork: React.FC = () => {
   }
 
   return (
-    <VStack w="100%" bg="red.100" p={6} my={6} borderRadius="md">
+    <VStack w="100%" bg="red.100" p={6} my={6} borderRadius="md" spacing={4}>
       <Alert status="error" w="auto">
         <AlertIcon />
         <AlertDescription>
@@ -78,16 +78,22 @@ const InvalidNetwork: React.FC = () => {
               bg="gray.700"
               _hover={{ bg: 'gray.900' }}
               _active={{ bg: 'gray.900' }}
+              color="white"
             >
               Switch ETH to {DEFAULT_CHAIN.name}
             </Button>
           ) : (
-            <Text>Please switch your ETH Wallet to {DEFAULT_CHAIN.name}</Text>
+            <Text>
+              Please switch your ETH Wallet to{' '}
+              <strong>{DEFAULT_CHAIN.name}</strong>
+            </Text>
           )}
         </>
       )}
       {isInvalidPoktNetwork && (
-        <Text>Please switch your POKT Wallet to {POKT_CHAIN_ID}</Text>
+        <Text>
+          Please switch your POKT Wallet to <strong>{POKT_CHAIN_ID}</strong>
+        </Text>
       )}
     </VStack>
   );
@@ -113,7 +119,10 @@ const WagmiConnectionManager: React.FC<PropsWithChildren> = ({ children }) => {
               <Button
                 leftIcon={<EthIcon boxSize="1.25rem" />}
                 onClick={open}
-                colorScheme="blue"
+                bg="gray.700"
+                _hover={{ bg: 'gray.900' }}
+                _active={{ bg: 'gray.900' }}
+                color="white"
               >
                 Connect ETH Wallet
               </Button>

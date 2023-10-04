@@ -88,7 +88,7 @@ export const PocketWalletProvider: React.FC<React.PropsWithChildren> = ({
 
       let network = 'mainnet';
       try {
-        const { chain } = await window.pocketNetwork.send('pokt_network');
+        const { chain } = await window.pocketNetwork.send('pokt_chain');
         if (
           chain.toLowerCase() === 'testnet' ||
           chain.toLowerCase() === 'mainnet'
@@ -105,7 +105,7 @@ export const PocketWalletProvider: React.FC<React.PropsWithChildren> = ({
       console.error('Error connecting to POKT Wallet', e);
       toast({
         title: 'Error connecting to POKT Wallet',
-        description: 'Please try again',
+        description: (e as Error).message,
         status: 'error',
         duration: 9000,
         isClosable: true,

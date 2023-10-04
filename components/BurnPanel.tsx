@@ -30,6 +30,7 @@ import {
   POKT_NETWORK_LABEL,
   WRAPPED_POCKET_ADDRESS,
 } from '@/utils/constants';
+import { getEthTxLink } from '@/utils/helpers';
 
 import { HashDisplay } from './HashDisplay';
 import { Tile } from './Tile';
@@ -94,7 +95,7 @@ export const BurnPanel: React.FC = () => {
         args: [amount, recipient],
       });
 
-      const txLink = `https://goerli.etherscan.io/tx/${txHash}`;
+      const txLink = getEthTxLink(txHash);
       toast.closeAll();
       toast({
         title: 'Transaction sent',
