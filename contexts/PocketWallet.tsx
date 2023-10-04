@@ -1,6 +1,14 @@
-import { useToast } from '@chakra-ui/react';
-import { createContext, useCallback, useContext, useState } from 'react';
+import { Link, Text, useToast } from '@chakra-ui/react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+} from 'react';
 import useSWR from 'swr';
+
+import { POKT_CHAIN_ID } from '@/utils/constants';
 
 declare global {
   interface Window {
@@ -11,24 +19,30 @@ declare global {
 
 export type PocketWalletContextType = {
   poktAddress: string;
+  poktNetwork: string;
   poktBalance: bigint;
   isBalanceLoading: boolean;
   reloadPoktBalance: () => void;
-  connectSendWallet: () => Promise<void>;
+  connectPocketWallet: () => Promise<void>;
   sendPokt: (
     amount: bigint,
     recipient: string,
     memo: string,
   ) => Promise<string>;
+  isPoktConnected: boolean;
+  resetPoktWallet: () => void;
 };
 
 export const PocketWalletContext = createContext<PocketWalletContextType>({
   poktBalance: BigInt(0),
+  poktNetwork: '',
   isBalanceLoading: false,
   reloadPoktBalance: () => {},
   poktAddress: '',
-  connectSendWallet: async () => {},
+  connectPocketWallet: async () => {},
   sendPokt: async () => '',
+  isPoktConnected: false,
+  resetPoktWallet: () => {},
 });
 
 export const usePocketWallet = (): PocketWalletContextType =>
@@ -38,14 +52,30 @@ export const PocketWalletProvider: React.FC<React.PropsWithChildren> = ({
   children,
 }) => {
   const [poktAddress, setPoktAddress] = useState<string>('');
+  const [poktNetwork, setPoktNetwork] = useState<string>('');
 
   const toast = useToast();
 
-  const connectSendWallet = useCallback(async () => {
+  const connectPocketWallet = useCallback(async () => {
     if (window.pocketNetwork === undefined) {
       toast({
-        title: 'SendWallet not found!',
-        description: 'Please visit https://sendwallet.net to install',
+        title: 'POKT Wallet not found!',
+        description: (
+          <Text>
+            Please install{' '}
+            <Link href="https://sendwallet.net" isExternal>
+              SendWallet
+            </Link>
+            {' or '}
+            <Link
+              href="https://github.com/decentralized-authority/nodewallet"
+              isExternal
+            >
+              NodeWallet
+            </Link>
+            {'.'}
+          </Text>
+        ),
         status: 'error',
         duration: 9000,
         isClosable: true,
@@ -53,20 +83,35 @@ export const PocketWalletProvider: React.FC<React.PropsWithChildren> = ({
       return;
     }
 
-    // Connect SendWallet
     try {
       const [address] = await window.pocketNetwork.send('pokt_requestAccounts');
+
+      let network = 'mainnet';
+      try {
+        const { chain } = await window.pocketNetwork.send('pokt_network');
+        if (
+          chain.toLowerCase() === 'testnet' ||
+          chain.toLowerCase() === 'mainnet'
+        ) {
+          network = chain.toLowerCase();
+        }
+      } catch (e) {
+        console.error('Error getting POKT network', e);
+      }
+
       setPoktAddress(address);
+      setPoktNetwork(network);
     } catch (e) {
-      console.error('Error connecting to SendWallet', e);
+      console.error('Error connecting to POKT Wallet', e);
       toast({
-        title: 'Error connecting to SendWallet',
+        title: 'Error connecting to POKT Wallet',
         description: 'Please try again',
         status: 'error',
         duration: 9000,
         isClosable: true,
       });
       setPoktAddress('');
+      setPoktNetwork('');
     }
   }, [toast]);
 
@@ -109,15 +154,28 @@ export const PocketWalletProvider: React.FC<React.PropsWithChildren> = ({
     [poktAddress],
   );
 
+  const isPoktConnected = useMemo(
+    () => !!poktAddress && !!poktNetwork && poktNetwork === POKT_CHAIN_ID,
+    [poktAddress, poktNetwork],
+  );
+
+  const resetPoktWallet = useCallback(() => {
+    setPoktAddress('');
+    setPoktNetwork('');
+  }, []);
+
   return (
     <PocketWalletContext.Provider
       value={{
         poktBalance: poktBalance || BigInt(0),
+        poktNetwork,
         isBalanceLoading,
         reloadPoktBalance,
         poktAddress,
-        connectSendWallet,
+        connectPocketWallet,
         sendPokt,
+        isPoktConnected,
+        resetPoktWallet,
       }}
     >
       {children}
