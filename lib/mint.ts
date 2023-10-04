@@ -28,7 +28,7 @@ const PER_PAGE = 20;
 
 export const getAllMints = async (_page: number): Promise<Mint[]> => {
   try {
-    const page = !_page || _page < 1 ? 1 : _page;
+    const page = Number.isNaN(_page) || !_page || _page < 1 ? 1 : _page;
 
     const client = await dbPromise;
 

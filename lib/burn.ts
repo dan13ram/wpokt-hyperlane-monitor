@@ -20,8 +20,12 @@ export const getBurnFromId = async (id: string): Promise<Burn | null> => {
   }
 };
 
-export const getAllBurns = async (): Promise<Burn[]> => {
+const PER_PAGE = 20;
+
+export const getAllBurns = async (_page: number): Promise<Burn[]> => {
   try {
+    const page = Number.isNaN(_page) || !_page || _page < 1 ? 1 : _page;
+
     const client = await dbPromise;
 
     const burns = await client
@@ -32,6 +36,8 @@ export const getAllBurns = async (): Promise<Burn[]> => {
         },
         { sort: { block_number: -1 } },
       )
+      .skip((page - 1) * PER_PAGE)
+      .limit(PER_PAGE)
       .toArray();
 
     return burns as Burn[];

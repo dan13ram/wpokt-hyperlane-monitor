@@ -8,14 +8,14 @@ async function fetcher(uri: string) {
     .then(burns => burns || []);
 }
 
-export default function useAllBurns(): {
+export default function useAllBurns(page = 1): {
   burns: Burn[];
   reload: () => void;
   loading: boolean;
   error: Error | null;
 } {
   const { data, error, mutate, isLoading, isValidating } = useSWR(
-    '/api/burns/all',
+    '/api/burns/all?page=' + page,
     fetcher,
   );
 

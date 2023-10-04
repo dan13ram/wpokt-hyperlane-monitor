@@ -21,8 +21,12 @@ export const getInvalidMintFromId = async (
   }
 };
 
-export const getAllInvalidMints = async (): Promise<InvalidMint[]> => {
+const PER_PAGE = 20;
+
+export const getAllInvalidMints = async (_page: number): Promise<InvalidMint[]> => {
   try {
+    const page = Number.isNaN(_page) || !_page || _page < 1 ? 1 : _page;
+
     const client = await dbPromise;
 
     const invalid_mints = await client
@@ -33,6 +37,8 @@ export const getAllInvalidMints = async (): Promise<InvalidMint[]> => {
         },
         { sort: { height: -1 } },
       )
+      .skip((page - 1) * PER_PAGE)
+      .limit(PER_PAGE)
       .toArray();
 
     return invalid_mints as InvalidMint[];
