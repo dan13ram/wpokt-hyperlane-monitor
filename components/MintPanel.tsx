@@ -242,7 +242,7 @@ export const MintPanel: React.FC = () => {
           {`To get started with minting wPOKT tokens, please follow these steps:`}
           <br />
           <br />
-          {`Step 1: Send POKT tokens to our Vault Address: {POKT_MULTISIG_ADDRESS}`}
+          {`Step 1: Send POKT tokens to our Vault Address: ${POKT_MULTISIG_ADDRESS}`}
           <br />
           {`In the input fields below, enter the amount of POKT tokens you want to send and the recipient's Ethereum address.`}
         </Text>
