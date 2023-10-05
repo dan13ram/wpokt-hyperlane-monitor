@@ -9,14 +9,19 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import Image from 'next/image';
+import { formatUnits } from 'viem';
 
 import { BurnPanel } from '@/components/BurnPanel';
 import { HealthPanel } from '@/components/HealthPanel';
 import { InvalidMintPanel } from '@/components/InvalidMintPanel';
 import { MintPanel } from '@/components/MintPanel';
+import { Tile } from '@/components/Tile';
+import useTotals from '@/hooks/useTotals';
 import { ETH_NETWORK_LABEL, POKT_NETWORK_LABEL } from '@/utils/constants';
 
 const WrappedPocketPage: React.FC = () => {
+  const { totals } = useTotals();
+
   return (
     <VStack align="stretch" w="100%" spacing={4} pt={0} pb={10}>
       <Text fontWeight="bold" w="100%" textAlign="center">
@@ -51,6 +56,25 @@ const WrappedPocketPage: React.FC = () => {
         Ethereum {ETH_NETWORK_LABEL}
       </Text>
 
+      <VStack minW="20rem" align="stretch" mx="auto">
+        <Tile
+          entries={[
+            {
+              label: 'Total Minted',
+              value: formatUnits(totals.mints, 6),
+            },
+            {
+              label: 'Total Burnt',
+              value: formatUnits(totals.burns, 6),
+            },
+            {
+              label: 'Total Refunded',
+              value: formatUnits(totals.invalidMints, 6),
+            },
+          ]}
+        />
+      </VStack>
+
       <Tabs>
         <HStack justify="center" w="100%">
           <TabList>
@@ -61,7 +85,7 @@ const WrappedPocketPage: React.FC = () => {
               <Text fontSize="lg">Burns</Text>
             </Tab>
             <Tab>
-              <Text fontSize="lg">Invalid Mints</Text>
+              <Text fontSize="lg">Refunds</Text>
             </Tab>
             <Tab>
               <Text fontSize="lg">Validators Health</Text>

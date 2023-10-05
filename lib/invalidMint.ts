@@ -49,3 +49,41 @@ export const getAllInvalidMints = async (
     return [];
   }
 };
+
+export const getTotalInvalidMintAmount = async (): Promise<string> => {
+  try {
+    const client = await dbPromise;
+
+    const totalInvalidMintAmount = await client
+      .collection(CollectionInvalidMints)
+      .aggregate([
+        {
+          $match: {
+            status: 'success',
+            vault_address: POKT_MULTISIG_ADDRESS,
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            totalInvalidMintAmount: {
+              $sum: {
+                $convert: {
+                  input: {
+                    $toLong: '$amount',
+                  },
+                  to: 'decimal',
+                },
+              },
+            },
+          },
+        },
+      ])
+      .toArray();
+
+    return totalInvalidMintAmount[0]?.totalInvalidMintAmount?.toString() || '0';
+  } catch (error) {
+    console.error('Error finding total invalid mint amount:', error);
+    return '0';
+  }
+};

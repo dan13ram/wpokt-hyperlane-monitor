@@ -51,3 +51,42 @@ export const getAllMints = async (_page: number): Promise<Mint[]> => {
     return [];
   }
 };
+
+export const getTotalMintAmount = async (): Promise<string> => {
+  try {
+    const client = await dbPromise;
+
+    const totalMintAmount = await client
+      .collection(CollectionMints)
+      .aggregate([
+        {
+          $match: {
+            status: 'success',
+            wpokt_address: WRAPPED_POCKET_ADDRESS,
+            vault_address: POKT_MULTISIG_ADDRESS,
+          },
+        },
+        {
+          $group: {
+            _id: null,
+            totalMintAmount: {
+              $sum: {
+                $convert: {
+                  input: {
+                    $toLong: '$amount',
+                  },
+                  to: 'decimal',
+                },
+              },
+            },
+          },
+        },
+      ])
+      .toArray();
+
+    return totalMintAmount[0]?.totalMintAmount?.toString() || '0';
+  } catch (error) {
+    console.error('Error finding total mint amount:', error);
+    return '0';
+  }
+};
