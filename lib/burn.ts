@@ -4,6 +4,8 @@ import { dbPromise } from '@/lib/mongodb';
 import { Burn, CollectionBurns } from '@/types';
 import { WRAPPED_POCKET_ADDRESS } from '@/utils/constants';
 
+import { PER_PAGE } from './constants';
+
 export const getBurnFromId = async (id: string): Promise<Burn | null> => {
   try {
     const client = await dbPromise;
@@ -19,8 +21,6 @@ export const getBurnFromId = async (id: string): Promise<Burn | null> => {
     return null;
   }
 };
-
-const PER_PAGE = 20;
 
 export const getAllBurns = async (_page: number): Promise<Burn[]> => {
   try {

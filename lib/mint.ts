@@ -7,6 +7,8 @@ import {
   WRAPPED_POCKET_ADDRESS,
 } from '@/utils/constants';
 
+import { PER_PAGE } from './constants';
+
 export const getMintFromId = async (id: string): Promise<Mint | null> => {
   try {
     const client = await dbPromise;
@@ -23,8 +25,6 @@ export const getMintFromId = async (id: string): Promise<Mint | null> => {
     return null;
   }
 };
-
-const PER_PAGE = 20;
 
 export const getAllMints = async (_page: number): Promise<Mint[]> => {
   try {

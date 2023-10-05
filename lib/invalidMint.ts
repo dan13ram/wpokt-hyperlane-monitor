@@ -3,6 +3,7 @@ import { ObjectId } from 'mongodb';
 import { dbPromise } from '@/lib/mongodb';
 import { CollectionInvalidMints, InvalidMint } from '@/types';
 import { POKT_MULTISIG_ADDRESS } from '@/utils/constants';
+import { PER_PAGE } from './constants';
 
 export const getInvalidMintFromId = async (
   id: string,
@@ -20,8 +21,6 @@ export const getInvalidMintFromId = async (
     return null;
   }
 };
-
-const PER_PAGE = 20;
 
 export const getAllInvalidMints = async (
   _page: number,
