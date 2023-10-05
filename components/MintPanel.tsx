@@ -26,7 +26,6 @@ import { usePocketWallet } from '@/contexts/PocketWallet';
 import useAllMints from '@/hooks/useAllMints';
 import { useIsConnected } from '@/hooks/useIsConnected';
 import { useNonceMap } from '@/hooks/useNonceMap';
-import { usePage } from '@/hooks/usePage';
 import { useSignerThreshold } from '@/hooks/useSignerThreshold';
 import { Mint } from '@/types';
 import { MINT_CONTROLLER_ABI } from '@/utils/abis';
@@ -45,9 +44,7 @@ import { Pagination } from './Pagination';
 import { Tile } from './Tile';
 
 export const MintPanel: React.FC = () => {
-  const { page, nextPage, prevPage } = usePage();
-
-  const { mints, reload, loading } = useAllMints(page);
+  const { mints, reload, loading, pagination } = useAllMints();
 
   const addresses = useMemo(
     () =>
@@ -547,12 +544,12 @@ export const MintPanel: React.FC = () => {
         </VStack>
       )}
 
-      <HStack spacing={4} mt={4} justify="center" w="100%">
+      <VStack spacing={4} mt={4} w="100%">
+        <Pagination {...pagination} />
         <Button isLoading={loading} onClick={() => reload()} colorScheme="blue">
           Reload
         </Button>
-        <Pagination page={page} nextPage={nextPage} prevPage={prevPage} />
-      </HStack>
+      </VStack>
     </VStack>
   );
 };

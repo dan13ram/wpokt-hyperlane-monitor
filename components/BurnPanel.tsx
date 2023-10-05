@@ -24,7 +24,6 @@ import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
 import useAllBurns from '@/hooks/useAllBurns';
 import { useBalance } from '@/hooks/useBalance';
 import { useIsConnected } from '@/hooks/useIsConnected';
-import { usePage } from '@/hooks/usePage';
 import { WRAPPED_POCKET_ABI } from '@/utils/abis';
 import {
   ETH_CONFIRMATIONS,
@@ -38,9 +37,7 @@ import { Pagination } from './Pagination';
 import { Tile } from './Tile';
 
 export const BurnPanel: React.FC = () => {
-  const { page, nextPage, prevPage } = usePage();
-
-  const { burns, reload, loading } = useAllBurns(page);
+  const { burns, reload, loading, pagination } = useAllBurns();
 
   const isConnected = useIsConnected();
   const { balance } = useBalance();
@@ -325,12 +322,12 @@ export const BurnPanel: React.FC = () => {
         </VStack>
       )}
 
-      <HStack spacing={4} mt={4} justify="center" w="100%">
+      <VStack spacing={4} mt={4} w="100%">
+        <Pagination {...pagination} />
         <Button isLoading={loading} onClick={() => reload()} colorScheme="blue">
           Reload
         </Button>
-        <Pagination page={page} nextPage={nextPage} prevPage={prevPage} />
-      </HStack>
+      </VStack>
     </VStack>
   );
 };

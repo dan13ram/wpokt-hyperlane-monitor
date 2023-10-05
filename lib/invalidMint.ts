@@ -1,8 +1,9 @@
 import { ObjectId } from 'mongodb';
 
 import { dbPromise } from '@/lib/mongodb';
-import { CollectionInvalidMints, InvalidMint } from '@/types';
+import { CollectionInvalidMints, InvalidMint, InvalidMintData } from '@/types';
 import { POKT_MULTISIG_ADDRESS } from '@/utils/constants';
+
 import { PER_PAGE } from './constants';
 
 export const getInvalidMintFromId = async (
@@ -24,13 +25,13 @@ export const getInvalidMintFromId = async (
 
 export const getAllInvalidMints = async (
   _page: number,
-): Promise<InvalidMint[]> => {
-  try {
-    const page = Number.isNaN(_page) || !_page || _page < 1 ? 1 : _page;
+): Promise<InvalidMintData> => {
+  const page = Number.isNaN(_page) || !_page || _page < 1 ? 1 : _page;
 
+  try {
     const client = await dbPromise;
 
-    const invalid_mints = await client
+    const invalidMints = await client
       .collection(CollectionInvalidMints)
       .find(
         {
@@ -42,10 +43,30 @@ export const getAllInvalidMints = async (
       .limit(PER_PAGE)
       .toArray();
 
-    return invalid_mints as InvalidMint[];
+    const totalInvalidMints = await client
+      .collection(CollectionInvalidMints)
+      .countDocuments({
+        vault_address: POKT_MULTISIG_ADDRESS,
+      });
+
+    const totalPages = Math.ceil(totalInvalidMints / PER_PAGE);
+
+    const data = {
+      invalidMints,
+      page,
+      totalInvalidMints,
+      totalPages,
+    };
+
+    return data as InvalidMintData;
   } catch (error) {
     console.error('Error finding invalid mints:', error);
-    return [];
+    return {
+      invalidMints: [],
+      page,
+      totalInvalidMints: 0,
+      totalPages: 0,
+    };
   }
 };
 

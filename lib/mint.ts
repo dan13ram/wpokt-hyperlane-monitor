@@ -1,7 +1,7 @@
 import { ObjectId } from 'mongodb';
 
 import { dbPromise } from '@/lib/mongodb';
-import { CollectionMints, Mint } from '@/types';
+import { CollectionMints, Mint, MintData } from '@/types';
 import {
   POKT_MULTISIG_ADDRESS,
   WRAPPED_POCKET_ADDRESS,
@@ -26,10 +26,10 @@ export const getMintFromId = async (id: string): Promise<Mint | null> => {
   }
 };
 
-export const getAllMints = async (_page: number): Promise<Mint[]> => {
-  try {
-    const page = Number.isNaN(_page) || !_page || _page < 1 ? 1 : _page;
+export const getAllMints = async (_page: number): Promise<MintData> => {
+  const page = Number.isNaN(_page) || !_page || _page < 1 ? 1 : _page;
 
+  try {
     const client = await dbPromise;
 
     const mints = await client
@@ -45,10 +45,29 @@ export const getAllMints = async (_page: number): Promise<Mint[]> => {
       .limit(PER_PAGE)
       .toArray();
 
-    return mints as Mint[];
+    const totalMints = await client.collection(CollectionMints).countDocuments({
+      wpokt_address: WRAPPED_POCKET_ADDRESS,
+      vault_address: POKT_MULTISIG_ADDRESS,
+    });
+
+    const totalPages = Math.ceil(totalMints / PER_PAGE);
+
+    const data = {
+      mints,
+      page,
+      totalMints,
+      totalPages,
+    };
+
+    return data as MintData;
   } catch (error) {
     console.error('Error finding mints:', error);
-    return [];
+    return {
+      mints: [],
+      page,
+      totalMints: 0,
+      totalPages: 0,
+    };
   }
 };
 
