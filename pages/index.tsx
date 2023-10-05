@@ -20,7 +20,7 @@ import useTotals from '@/hooks/useTotals';
 import { ETH_NETWORK_LABEL, POKT_NETWORK_LABEL } from '@/utils/constants';
 
 const WrappedPocketPage: React.FC = () => {
-  const { totals } = useTotals();
+  const { totals, loading } = useTotals();
 
   return (
     <VStack align="stretch" w="100%" spacing={4} pt={0} pb={10}>
@@ -61,15 +61,15 @@ const WrappedPocketPage: React.FC = () => {
           entries={[
             {
               label: 'Total Minted',
-              value: formatUnits(totals.mints, 6),
+              value: loading ? '…' : formatUnits(totals.mints, 6),
             },
             {
               label: 'Total Burnt',
-              value: formatUnits(totals.burns, 6),
+              value: loading ? '…' : formatUnits(totals.burns, 6),
             },
             {
               label: 'Total Refunded',
-              value: formatUnits(totals.invalidMints, 6),
+              value: loading ? '…' : formatUnits(totals.invalidMints, 6),
             },
           ]}
         />

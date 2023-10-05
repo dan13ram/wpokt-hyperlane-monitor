@@ -1,8 +1,10 @@
 import { ObjectId } from 'mongodb';
 
 import { dbPromise } from '@/lib/mongodb';
-import { Burn, CollectionBurns } from '@/types';
+import { Burn, BurnData, CollectionBurns } from '@/types';
 import { WRAPPED_POCKET_ADDRESS } from '@/utils/constants';
+
+import { PER_PAGE } from './constants';
 
 export const getBurnFromId = async (id: string): Promise<Burn | null> => {
   try {
@@ -20,12 +22,10 @@ export const getBurnFromId = async (id: string): Promise<Burn | null> => {
   }
 };
 
-const PER_PAGE = 20;
+export const getAllBurns = async (_page: number): Promise<BurnData> => {
+  const page = Number.isNaN(_page) || !_page || _page < 1 ? 1 : _page;
 
-export const getAllBurns = async (_page: number): Promise<Burn[]> => {
   try {
-    const page = Number.isNaN(_page) || !_page || _page < 1 ? 1 : _page;
-
     const client = await dbPromise;
 
     const burns = await client
@@ -40,10 +40,28 @@ export const getAllBurns = async (_page: number): Promise<Burn[]> => {
       .limit(PER_PAGE)
       .toArray();
 
-    return burns as Burn[];
+    const totalBurns = await client.collection(CollectionBurns).countDocuments({
+      wpokt_address: WRAPPED_POCKET_ADDRESS,
+    });
+
+    const totalPages = Math.ceil(totalBurns / PER_PAGE);
+
+    const data = {
+      burns,
+      page,
+      totalBurns,
+      totalPages,
+    };
+
+    return data as BurnData;
   } catch (error) {
     console.error('Error finding burns:', error);
-    return [];
+    return {
+      burns: [],
+      page,
+      totalBurns: 0,
+      totalPages: 0,
+    };
   }
 };
 

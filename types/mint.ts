@@ -11,7 +11,7 @@ export type MintMemo = {
   chain_id: string;
 };
 
-export type MintData = {
+export type MintTxData = {
   recipient: string;
   amount: string;
   nonce: string;
@@ -33,7 +33,7 @@ export type Mint = WithId<{
   created_at: Date;
   updated_at: Date;
   status: Status;
-  data: Maybe<MintData>;
+  data: Maybe<MintTxData>;
   signers: string[];
   signatures: string[];
   mint_tx_hash: string;
