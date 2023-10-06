@@ -1,5 +1,6 @@
 import { QuestionIcon } from '@chakra-ui/icons';
 import {
+  Box,
   Button,
   Divider,
   HStack,
@@ -33,6 +34,7 @@ import {
   ETH_CHAIN_ID,
   ETH_NETWORK_LABEL,
   MINT_CONTROLLER_ADDRESS,
+  POKT_CHAIN_ID,
   POKT_CONFIRMATIONS,
   POKT_MULTISIG_ADDRESS,
   POKT_NETWORK_LABEL,
@@ -239,11 +241,16 @@ export const MintPanel: React.FC = () => {
   return (
     <VStack align="stretch">
       <VStack align="stretch" py={8}>
-        <Text>
+        <Text as="div">
           {`To get started with minting wPOKT tokens, please follow these steps:`}
           <br />
           <br />
-          {`Step 1: Send POKT tokens to our Vault Address: ${POKT_MULTISIG_ADDRESS}`}
+          {`Step 1: Send POKT tokens to our Vault Address: `}
+          <Box display="inline-block" ml={2}>
+            <HashDisplay chainId={POKT_CHAIN_ID}>
+              {POKT_MULTISIG_ADDRESS}
+            </HashDisplay>
+          </Box>
           <br />
           {`In the input fields below, enter the amount of POKT tokens you want to send and the recipient's Ethereum address.`}
         </Text>

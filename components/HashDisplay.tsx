@@ -1,8 +1,16 @@
-import { HStack } from '@chakra-ui/react';
+import { ExternalLinkIcon } from '@chakra-ui/icons';
+import { HStack, Link, Tooltip } from '@chakra-ui/react';
 import Image from 'next/image';
 import { useMemo } from 'react';
+import { isAddress } from 'viem';
 
 import { ETH_NETWORK_LABEL, POKT_NETWORK_LABEL } from '@/utils/constants';
+import {
+  getEthAddressLink,
+  getEthTxLink,
+  getPoktAddressLink,
+  getPoktTxLink,
+} from '@/utils/helpers';
 
 import { CopyText } from './CopyText';
 
@@ -41,6 +49,24 @@ export const HashDisplay: React.FC<{ children: string; chainId: string }> = ({
     return { label: networkLabel, logo: networkLogo, props: logoProps };
   }, [chainId]);
 
+  const link = useMemo(() => {
+    const isAddressValue = children.startsWith('0x')
+      ? isAddress(children)
+      : isAddress(`0x${children}`);
+
+    if (isAddressValue) {
+      if (isETH(chainId)) {
+        return getEthAddressLink(children);
+      }
+      return getPoktAddressLink(children);
+    }
+
+    if (isETH(chainId)) {
+      return getEthTxLink(children);
+    }
+    return getPoktTxLink(children);
+  }, [chainId, children]);
+
   return (
     <HStack
       spacing={1}
@@ -49,7 +75,7 @@ export const HashDisplay: React.FC<{ children: string; chainId: string }> = ({
       py={1}
       borderRadius="full"
       justify="space-between"
-      w="9rem"
+      w="10.5rem"
     >
       {logo && (
         <HStack spacing={0} justify="center" w={4} flexShrink={0}>
@@ -57,6 +83,21 @@ export const HashDisplay: React.FC<{ children: string; chainId: string }> = ({
         </HStack>
       )}
       <CopyText>{children}</CopyText>
+      {link && (
+        <Tooltip
+          label={isETH(chainId) ? 'View on Etherscan' : 'View on PoktScan'}
+          placement="top"
+        >
+          <Link href={link} isExternal>
+            <ExternalLinkIcon
+              mb={1}
+              transition="color 0.25s"
+              _hover={{ color: 'blue.400' }}
+              _active={{ color: 'blue.400' }}
+            />
+          </Link>
+        </Tooltip>
+      )}
     </HStack>
   );
 };

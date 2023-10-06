@@ -88,7 +88,7 @@ const WrappedPocketPage: React.FC = () => {
               <Text fontSize="lg">Refunds</Text>
             </Tab>
             <Tab>
-              <Text fontSize="lg">Validators Health</Text>
+              <Text fontSize="lg">Health</Text>
             </Tab>
           </TabList>
         </HStack>
