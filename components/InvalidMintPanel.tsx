@@ -53,6 +53,12 @@ export const InvalidMintPanel: React.FC = () => {
                   ),
                 },
                 {
+                  label: 'Created At',
+                  value: new Date(invalidMint.created_at).toLocaleString(
+                    'en-US',
+                  ),
+                },
+                {
                   label: 'Sender',
                   value: (
                     <HashDisplay chainId={invalidMint.sender_chain_id}>
@@ -109,6 +115,7 @@ export const InvalidMintPanel: React.FC = () => {
             <Thead>
               <Tr>
                 <Th>Tx Hash</Th>
+                <Th>Created At</Th>
                 <Th>Sender</Th>
                 <Th>Amount</Th>
                 <Th>Invalid Memo</Th>
@@ -123,6 +130,9 @@ export const InvalidMintPanel: React.FC = () => {
                     <HashDisplay chainId={invalidMint.sender_chain_id}>
                       {invalidMint.transaction_hash}
                     </HashDisplay>
+                  </Td>
+                  <Td>
+                    {new Date(invalidMint.created_at).toLocaleString('en-US')}
                   </Td>
                   <Td>
                     <HashDisplay chainId={invalidMint.sender_chain_id}>

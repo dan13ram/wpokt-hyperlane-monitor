@@ -1,5 +1,6 @@
 import { QuestionIcon } from '@chakra-ui/icons';
 import {
+  Box,
   Button,
   Divider,
   HStack,
@@ -33,6 +34,7 @@ import {
   ETH_CHAIN_ID,
   ETH_NETWORK_LABEL,
   MINT_CONTROLLER_ADDRESS,
+  POKT_CHAIN_ID,
   POKT_CONFIRMATIONS,
   POKT_MULTISIG_ADDRESS,
   POKT_NETWORK_LABEL,
@@ -239,11 +241,16 @@ export const MintPanel: React.FC = () => {
   return (
     <VStack align="stretch">
       <VStack align="stretch" py={8}>
-        <Text>
+        <Text as="div">
           {`To get started with minting wPOKT tokens, please follow these steps:`}
           <br />
           <br />
-          {`Step 1: Send POKT tokens to our Vault Address: ${POKT_MULTISIG_ADDRESS}`}
+          {`Step 1: Send POKT tokens to our Vault Address: `}
+          <Box display="inline-block" ml={2}>
+            <HashDisplay chainId={POKT_CHAIN_ID}>
+              {POKT_MULTISIG_ADDRESS}
+            </HashDisplay>
+          </Box>
           <br />
           {`In the input fields below, enter the amount of POKT tokens you want to send and the recipient's Ethereum address.`}
         </Text>
@@ -317,6 +324,10 @@ export const MintPanel: React.FC = () => {
                         {mint.transaction_hash}
                       </HashDisplay>
                     ),
+                  },
+                  {
+                    label: 'Created At',
+                    value: new Date(mint.created_at).toLocaleString('en-US'),
                   },
                   {
                     label: 'Sender',
@@ -396,7 +407,11 @@ export const MintPanel: React.FC = () => {
                                 mint._id.toString() === currentMintId
                               }
                               onClick={() => mintTokens(mint)}
-                              isDisabled={isMintNotReady || isMintCompleted}
+                              isDisabled={
+                                isMintNotReady ||
+                                isMintCompleted ||
+                                !isConnected
+                              }
                               colorScheme="blue"
                               maxH="2rem"
                               minW="8.5rem"
@@ -427,6 +442,7 @@ export const MintPanel: React.FC = () => {
             <Thead>
               <Tr>
                 <Th>Tx Hash</Th>
+                <Th>Created At</Th>
                 <Th>Sender</Th>
                 <Th>Recipient</Th>
                 <Th>Amount</Th>
@@ -454,6 +470,7 @@ export const MintPanel: React.FC = () => {
                         {mint.transaction_hash}
                       </HashDisplay>
                     </Td>
+                    <Td>{new Date(mint.created_at).toLocaleString('en-US')}</Td>
                     <Td>
                       <HashDisplay chainId={mint.sender_chain_id}>
                         {mint.sender_address}

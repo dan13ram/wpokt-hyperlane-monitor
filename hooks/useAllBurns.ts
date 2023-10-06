@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import useSWR from 'swr';
 
 import { Burn, BurnData } from '@/types';
@@ -27,21 +27,23 @@ export default function useAllBurns(): {
   pagination: PaginationType;
 } {
   const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   const { data, error, mutate, isLoading, isValidating } = useSWR(
     '/api/burns/all?page=' + page,
     fetcher,
   );
 
-  const { burns, totalPages } = useMemo(
-    () => data || { burns: [], totalBurns: 0, page: 1, totalPages: 1 },
-    [data],
-  );
+  useEffect(() => {
+    if (data) {
+      setTotalPages(data.totalPages);
+    }
+  }, [data]);
 
   const pagination = usePagination({ totalPages, page, setPage });
 
   return {
-    burns,
+    burns: data?.burns || [],
     loading: isLoading || isValidating,
     error,
     reload: mutate,

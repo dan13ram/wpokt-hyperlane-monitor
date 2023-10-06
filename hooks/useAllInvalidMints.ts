@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import useSWR from 'swr';
 
 import { InvalidMint, InvalidMintData } from '@/types';
@@ -27,27 +27,23 @@ export default function useAllInvalidMints(): {
   pagination: PaginationType;
 } {
   const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   const { data, error, mutate, isLoading, isValidating } = useSWR(
     '/api/invalidMints/all?page=' + page,
     fetcher,
   );
 
-  const { invalidMints, totalPages } = useMemo(
-    () =>
-      data || {
-        invalidMints: [],
-        totalInvalidMints: 0,
-        page: 1,
-        totalPages: 1,
-      },
-    [data],
-  );
+  useEffect(() => {
+    if (data) {
+      setTotalPages(data.totalPages);
+    }
+  }, [data]);
 
   const pagination = usePagination({ totalPages, page, setPage });
 
   return {
-    invalidMints,
+    invalidMints: data?.invalidMints || [],
     loading: isLoading || isValidating,
     error,
     reload: mutate,
