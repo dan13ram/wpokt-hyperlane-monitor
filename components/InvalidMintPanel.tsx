@@ -18,6 +18,7 @@ import { formatUnits } from 'viem';
 
 import useAllInvalidMints from '@/hooks/useAllInvalidMints';
 import { POKT_CONFIRMATIONS } from '@/utils/constants';
+import { humanFormattedDate } from '@/utils/helpers';
 
 import { CopyText } from './CopyText';
 import { HashDisplay } from './HashDisplay';
@@ -54,9 +55,7 @@ export const InvalidMintPanel: React.FC = () => {
                 },
                 {
                   label: 'Created At',
-                  value: new Date(invalidMint.created_at).toLocaleString(
-                    'en-US',
-                  ),
+                  value: humanFormattedDate(invalidMint.created_at),
                 },
                 {
                   label: 'Sender',
@@ -131,9 +130,7 @@ export const InvalidMintPanel: React.FC = () => {
                       {invalidMint.transaction_hash}
                     </HashDisplay>
                   </Td>
-                  <Td>
-                    {new Date(invalidMint.created_at).toLocaleString('en-US')}
-                  </Td>
+                  <Td>{humanFormattedDate(invalidMint.created_at)}</Td>
                   <Td>
                     <HashDisplay chainId={invalidMint.sender_chain_id}>
                       {invalidMint.sender_address}
