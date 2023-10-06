@@ -203,6 +203,10 @@ export const BurnPanel: React.FC = () => {
                   ),
                 },
                 {
+                  label: 'Created At',
+                  value: new Date(burn.created_at).toLocaleString('en-US'),
+                },
+                {
                   label: 'Sender',
                   value: (
                     <HashDisplay chainId={burn.sender_chain_id}>
@@ -264,6 +268,7 @@ export const BurnPanel: React.FC = () => {
             <Thead>
               <Tr>
                 <Th>Tx Hash</Th>
+                <Th>Created At</Th>
                 <Th>Sender</Th>
                 <Th>Recipient</Th>
                 <Th>Amount</Th>
@@ -279,6 +284,7 @@ export const BurnPanel: React.FC = () => {
                       {burn.transaction_hash}
                     </HashDisplay>
                   </Td>
+                  <Td>{new Date(burn.created_at).toLocaleString('en-US')}</Td>
                   <Td>
                     <HashDisplay chainId={burn.sender_chain_id}>
                       {burn.sender_address}

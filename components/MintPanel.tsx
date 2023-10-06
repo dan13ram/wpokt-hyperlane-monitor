@@ -326,6 +326,10 @@ export const MintPanel: React.FC = () => {
                     ),
                   },
                   {
+                    label: 'Created At',
+                    value: new Date(mint.created_at).toLocaleString('en-US'),
+                  },
+                  {
                     label: 'Sender',
                     value: (
                       <HashDisplay chainId={mint.sender_chain_id}>
@@ -438,6 +442,7 @@ export const MintPanel: React.FC = () => {
             <Thead>
               <Tr>
                 <Th>Tx Hash</Th>
+                <Th>Created At</Th>
                 <Th>Sender</Th>
                 <Th>Recipient</Th>
                 <Th>Amount</Th>
@@ -465,6 +470,7 @@ export const MintPanel: React.FC = () => {
                         {mint.transaction_hash}
                       </HashDisplay>
                     </Td>
+                    <Td>{new Date(mint.created_at).toLocaleString('en-US')}</Td>
                     <Td>
                       <HashDisplay chainId={mint.sender_chain_id}>
                         {mint.sender_address}
