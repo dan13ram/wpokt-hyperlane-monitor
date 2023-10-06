@@ -39,7 +39,12 @@ import {
   POKT_MULTISIG_ADDRESS,
   POKT_NETWORK_LABEL,
 } from '@/utils/constants';
-import { getEthTxLink, getPoktTxLink, uniqueValues } from '@/utils/helpers';
+import {
+  getEthTxLink,
+  getPoktTxLink,
+  humanFormattedDate,
+  uniqueValues,
+} from '@/utils/helpers';
 
 import { HashDisplay } from './HashDisplay';
 import { Pagination } from './Pagination';
@@ -327,7 +332,7 @@ export const MintPanel: React.FC = () => {
                   },
                   {
                     label: 'Created At',
-                    value: new Date(mint.created_at).toLocaleString('en-US'),
+                    value: humanFormattedDate(mint.created_at),
                   },
                   {
                     label: 'Sender',
@@ -470,7 +475,7 @@ export const MintPanel: React.FC = () => {
                         {mint.transaction_hash}
                       </HashDisplay>
                     </Td>
-                    <Td>{new Date(mint.created_at).toLocaleString('en-US')}</Td>
+                    <Td>{humanFormattedDate(mint.created_at)}</Td>
                     <Td>
                       <HashDisplay chainId={mint.sender_chain_id}>
                         {mint.sender_address}

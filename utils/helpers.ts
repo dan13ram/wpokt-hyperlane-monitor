@@ -14,8 +14,8 @@ export const uniqueValues = (array: string[]): string[] => {
   return Object.keys(map);
 };
 
-export const humanFormattedDate = (date: Date): string => {
-  return date.toLocaleString('en-US', {
+export const humanFormattedDate = (date: Date | string | number): string => {
+  return new Date(date).toLocaleString('en-US', {
     month: 'short',
     day: 'numeric',
     year: 'numeric',

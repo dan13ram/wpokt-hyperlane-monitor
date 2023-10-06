@@ -30,7 +30,7 @@ import {
   POKT_NETWORK_LABEL,
   WRAPPED_POCKET_ADDRESS,
 } from '@/utils/constants';
-import { getEthTxLink } from '@/utils/helpers';
+import { getEthTxLink, humanFormattedDate } from '@/utils/helpers';
 
 import { HashDisplay } from './HashDisplay';
 import { Pagination } from './Pagination';
@@ -204,7 +204,7 @@ export const BurnPanel: React.FC = () => {
                 },
                 {
                   label: 'Created At',
-                  value: new Date(burn.created_at).toLocaleString('en-US'),
+                  value: humanFormattedDate(burn.created_at),
                 },
                 {
                   label: 'Sender',
@@ -284,7 +284,7 @@ export const BurnPanel: React.FC = () => {
                       {burn.transaction_hash}
                     </HashDisplay>
                   </Td>
-                  <Td>{new Date(burn.created_at).toLocaleString('en-US')}</Td>
+                  <Td>{humanFormattedDate(burn.created_at)}</Td>
                   <Td>
                     <HashDisplay chainId={burn.sender_chain_id}>
                       {burn.sender_address}
