@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import useSWR from 'swr';
 
 import { Mint, MintData } from '@/types';
@@ -27,21 +27,23 @@ export default function useAllMints(): {
   pagination: PaginationType;
 } {
   const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   const { data, error, mutate, isLoading, isValidating } = useSWR(
     '/api/mints/all?page=' + page,
     fetcher,
   );
 
-  const { mints, totalPages } = useMemo(
-    () => data || { mints: [], totalMints: 0, page: 1, totalPages: 1 },
-    [data],
-  );
+  useEffect(() => {
+    if (data) {
+      setTotalPages(data.totalPages);
+    }
+  }, [data]);
 
   const pagination = usePagination({ totalPages, page, setPage });
 
   return {
-    mints,
+    mints: data?.mints || [],
     loading: isLoading || isValidating,
     error,
     reload: mutate,

@@ -403,7 +403,11 @@ export const MintPanel: React.FC = () => {
                                 mint._id.toString() === currentMintId
                               }
                               onClick={() => mintTokens(mint)}
-                              isDisabled={isMintNotReady || isMintCompleted}
+                              isDisabled={
+                                isMintNotReady ||
+                                isMintCompleted ||
+                                !isConnected
+                              }
                               colorScheme="blue"
                               maxH="2rem"
                               minW="8.5rem"
