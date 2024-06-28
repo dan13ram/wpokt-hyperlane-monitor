@@ -1,33 +1,36 @@
+'use client';
+
 import {
   Alert,
   AlertDescription,
   AlertIcon,
   Button,
+  ChakraProvider,
   Heading,
-  Spinner,
   Stack,
   Text,
-  useDisclosure,
   VStack,
 } from '@chakra-ui/react';
-import { useWeb3Modal, Web3Modal } from '@web3modal/react';
-import { PropsWithChildren, useCallback, useMemo } from 'react';
-import { formatUnits } from 'viem';
-import { useAccount, useNetwork, useSwitchNetwork } from 'wagmi';
+import { Global } from '@emotion/react';
+import { useWeb3Modal } from '@web3modal/wagmi/react';
+import { PropsWithChildren, useLayoutEffect } from 'react';
+import { State, useAccount } from 'wagmi';
 
-import { WagmiProvider } from '@/components/WagmiProvider';
-import { usePocketWallet } from '@/contexts/PocketWallet';
-import { useBalance } from '@/hooks/useBalance';
-import { useIsConnected } from '@/hooks/useIsConnected';
-import { DEFAULT_CHAIN, ethereumClient, projectId } from '@/lib/web3';
-import { POKT_CHAIN_ID } from '@/utils/constants';
+import { WagmiProvider } from '@/contexts/WagmiProvider';
+// import { useBalance } from '@/hooks/useBalance';
+// import { useIsConnected } from '@/hooks/useIsConnected';
 import { shortenHex } from '@/utils/helpers';
-import { PAGE_MAX_WIDTH, PAGE_PADDING_X } from '@/utils/theme';
+import {
+  globalStyles,
+  PAGE_MAX_WIDTH,
+  PAGE_PADDING_X,
+  theme,
+} from '@/utils/theme';
 
 import { EthIcon } from './EthIcon';
-import { PocketWalletModal } from './PocketWalletModal';
 import { PoktIcon } from './PoktIcon';
 
+/*
 const InvalidNetwork: React.FC = () => {
   const { isLoading, switchNetwork } = useSwitchNetwork();
 
@@ -63,8 +66,8 @@ const InvalidNetwork: React.FC = () => {
           {isInvalidEthNetwork
             ? 'ETH wallet is'
             : isInvalidPoktNetwork
-            ? 'POKT wallet is'
-            : 'wallets are'}{' '}
+              ? 'POKT wallet is'
+              : 'wallets are'}{' '}
           connected to an unsupported network.
         </AlertDescription>
       </Alert>
@@ -98,13 +101,16 @@ const InvalidNetwork: React.FC = () => {
     </VStack>
   );
 };
+*/
 
 const WagmiConnectionManager: React.FC<PropsWithChildren> = ({ children }) => {
   const { address } = useAccount();
 
   const { open } = useWeb3Modal();
 
-  const { poktAddress, connectPocketWallet } = usePocketWallet();
+  // const { poktAddress, connectPocketWallet } = usePocketWallet();
+  //
+  const poktAddress = '';
 
   return (
     <>
@@ -118,7 +124,7 @@ const WagmiConnectionManager: React.FC<PropsWithChildren> = ({ children }) => {
             {!address && (
               <Button
                 leftIcon={<EthIcon boxSize="1.25rem" />}
-                onClick={open}
+                onClick={() => open()}
                 bg="gray.700"
                 _hover={{ bg: 'gray.900' }}
                 _active={{ bg: 'gray.900' }}
@@ -130,7 +136,7 @@ const WagmiConnectionManager: React.FC<PropsWithChildren> = ({ children }) => {
             {!poktAddress && (
               <Button
                 leftIcon={<PoktIcon boxSize="1.25rem" />}
-                onClick={connectPocketWallet}
+                // onClick={connectPocketWallet}
                 colorScheme="blue"
               >
                 Connect POKT Wallet
@@ -139,23 +145,23 @@ const WagmiConnectionManager: React.FC<PropsWithChildren> = ({ children }) => {
           </Stack>
         </VStack>
       )}
-      {(!!address || !!poktAddress) && <InvalidNetwork />}
+      {/*(!!address || !!poktAddress) && <InvalidNetwork />*/}
       {children}
     </>
   );
 };
 
 const Header: React.FC = () => {
-  const { balance, loading } = useBalance();
-  const isConnected = useIsConnected();
+  // const { balance, loading } = useBalance();
+  // const isConnected = useIsConnected();
   const { address } = useAccount();
 
-  const { poktAddress, poktBalance, isBalanceLoading, isPoktConnected } =
-    usePocketWallet();
+  // const { poktAddress, poktBalance, isBalanceLoading, isPoktConnected } =
+  //   usePocketWallet();
 
   const { open } = useWeb3Modal();
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  // const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <Stack
@@ -181,11 +187,11 @@ const Header: React.FC = () => {
               _active={{ bg: 'gray.900' }}
               color="white"
               fontFamily="mono"
-              onClick={open}
+              onClick={() => open()}
             >
               <Text mb="-2px">{shortenHex(address, 10)}</Text>
             </Button>
-            {isConnected && (
+            {/*isConnected && (
               <Text fontSize="sm">
                 Balance:{' '}
                 {loading ? (
@@ -196,10 +202,10 @@ const Header: React.FC = () => {
                   </Text>
                 )}
               </Text>
-            )}
+            )*/}
           </VStack>
         )}
-        {poktAddress && (
+        {/*poktAddress && (
           <VStack>
             <Button
               leftIcon={<PoktIcon boxSize="1rem" />}
@@ -222,27 +228,37 @@ const Header: React.FC = () => {
               </Text>
             )}
           </VStack>
-        )}
+        )*/}
       </Stack>
-      <PocketWalletModal isOpen={isOpen} onClose={onClose} />
+      {/*<PocketWalletModal isOpen={isOpen} onClose={onClose} />*/}
     </Stack>
   );
 };
 
-export const WagmiWrapper: React.FC<PropsWithChildren> = ({ children }) => {
+type Props = React.PropsWithChildren<{
+  initialState: State | undefined;
+}>;
+
+export const WagmiWrapper: React.FC<Props> = ({ children, initialState }) => {
+  useLayoutEffect(() => {
+    window.localStorage.setItem('chakra-ui-color-mode', 'light');
+  }, []);
+
   return (
-    <WagmiProvider>
-      <VStack
-        px={PAGE_PADDING_X}
-        w="100%"
-        flex={1}
-        maxW={PAGE_MAX_WIDTH}
-        marginX="auto"
-      >
-        <Header />
-        <WagmiConnectionManager>{children}</WagmiConnectionManager>
-      </VStack>
-      <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
+    <WagmiProvider initialState={initialState}>
+      <ChakraProvider resetCSS theme={theme}>
+        <Global styles={globalStyles} />
+        <VStack
+          px={PAGE_PADDING_X}
+          w="100%"
+          flex={1}
+          maxW={PAGE_MAX_WIDTH}
+          marginX="auto"
+        >
+          <Header />
+          <WagmiConnectionManager>{children}</WagmiConnectionManager>
+        </VStack>
+      </ChakraProvider>
     </WagmiProvider>
   );
 };

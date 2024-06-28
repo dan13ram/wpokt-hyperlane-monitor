@@ -1,0 +1,4 @@
+node_modules
+out
+!.storybook
+next.config.js

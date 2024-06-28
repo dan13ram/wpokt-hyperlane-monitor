@@ -4,24 +4,16 @@ import Image from 'next/image';
 import { useMemo } from 'react';
 import { isAddress } from 'viem';
 
-import { ETH_NETWORK_LABEL, POKT_NETWORK_LABEL } from '@/utils/constants';
-import {
-  getEthAddressLink,
-  getEthTxLink,
-  getPoktAddressLink,
-  getPoktTxLink,
-} from '@/utils/helpers';
+import { getAddressLink, getNetworkConfig, getTxLink } from '@/utils/helpers';
 
 import { CopyText } from './CopyText';
 
-const isETH = (chainId: string) =>
-  chainId === '5' || chainId === '1' || chainId === '31337';
+const isETH = (chainId: string) => !Number.isNaN(Number(chainId));
 
-const isPOKT = (chainId: string) =>
-  chainId === 'testnet' || chainId === 'mainnet' || chainId === 'localnet';
+const isPOKT = (chainId: string) => Number.isNaN(Number(chainId));
 
 export const HashDisplay: React.FC<{ children: string; chainId: string }> = ({
-  children,
+  children: hex,
   chainId,
 }) => {
   const { label, logo, props } = useMemo(() => {
@@ -29,7 +21,7 @@ export const HashDisplay: React.FC<{ children: string; chainId: string }> = ({
     let networkLogo = '';
     let logoProps = {};
     if (isETH(chainId)) {
-      networkLabel = `Ethereum ${ETH_NETWORK_LABEL}`;
+      networkLabel = getNetworkConfig(chainId).chain_name;
       networkLogo = '/eth-logo.png';
       logoProps = {
         width: 9,
@@ -37,7 +29,7 @@ export const HashDisplay: React.FC<{ children: string; chainId: string }> = ({
         style: { height: '14px', width: '9px' },
       };
     } else if (isPOKT(chainId)) {
-      networkLabel = `Pocket ${POKT_NETWORK_LABEL}`;
+      networkLabel = getNetworkConfig(chainId).chain_name;
       networkLogo = '/pokt-logo.png';
       logoProps = {
         width: 14,
@@ -50,22 +42,16 @@ export const HashDisplay: React.FC<{ children: string; chainId: string }> = ({
   }, [chainId]);
 
   const link = useMemo(() => {
-    const isAddressValue = children.startsWith('0x')
-      ? isAddress(children)
-      : isAddress(`0x${children}`);
+    const isAddressValue = hex.startsWith('0x')
+      ? isAddress(hex)
+      : isAddress(`0x${hex}`);
 
     if (isAddressValue) {
-      if (isETH(chainId)) {
-        return getEthAddressLink(children);
-      }
-      return getPoktAddressLink(children);
+      return getAddressLink(chainId, hex);
     }
 
-    if (isETH(chainId)) {
-      return getEthTxLink(children);
-    }
-    return getPoktTxLink(children);
-  }, [chainId, children]);
+    return getTxLink(chainId, hex);
+  }, [chainId, hex]);
 
   return (
     <HStack
@@ -82,7 +68,7 @@ export const HashDisplay: React.FC<{ children: string; chainId: string }> = ({
           <Image src={logo} alt={label} {...props} />
         </HStack>
       )}
-      <CopyText>{children}</CopyText>
+      <CopyText>{hex}</CopyText>
       {link && (
         <Tooltip
           label={isETH(chainId) ? 'View on Etherscan' : 'View on PoktScan'}

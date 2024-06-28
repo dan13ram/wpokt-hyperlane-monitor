@@ -1,4 +1,6 @@
-import { ETH_CHAIN_ID, POKT_CHAIN_ID } from './constants';
+import { CosmosNetworkConfig, EthereumNetworkConfig } from '@/types/config';
+
+import { config } from './config';
 
 export const shortenHex = (hex: string, maxChars: number = 10): string => {
   if (!hex) return '';
@@ -24,52 +26,54 @@ export const humanFormattedDate = (date: Date | string | number): string => {
   });
 };
 
-export const getEthTxLink = (txHash: string): string => {
-  switch (ETH_CHAIN_ID) {
+export const getTxLink = (chainId: string, txHash: string): string => {
+  switch (chainId) {
     case '1':
       return `https://etherscan.io/tx/${txHash}`;
     case '5':
       return `https://goerli.etherscan.io/tx/${txHash}`;
     case '11155111':
       return `https://sepolia.etherscan.io/tx/${txHash}`;
+    case '17000':
+      return `https://holesky.etherscan.io/tx/${txHash}`;
     case '31337':
     default:
       return ``;
   }
 };
 
-export const getPoktTxLink = (txHash: string): string => {
-  switch (POKT_CHAIN_ID) {
-    case 'mainnet':
-      return `https://poktscan.com/tx/${txHash}`;
-    case 'testnet':
-      return `https://poktscan.com/testnet/tx/${txHash}`;
-    default:
-      return ``;
-  }
-};
-
-export const getEthAddressLink = (address: string): string => {
-  switch (ETH_CHAIN_ID) {
+export const getAddressLink = (chainId: string, address: string): string => {
+  switch (chainId) {
     case '1':
       return `https://etherscan.io/address/${address}`;
     case '5':
       return `https://goerli.etherscan.io/address/${address}`;
     case '11155111':
       return `https://sepolia.etherscan.io/address/${address}`;
+    case '17000':
+      return `https://holesky.etherscan.io/address/${address}`;
     case '31337':
     default:
       return ``;
   }
 };
 
-export const getPoktAddressLink = (account: string): string => {
-  switch (POKT_CHAIN_ID) {
-    case 'mainnet':
-      return `https://poktscan.com/account/${account}`;
-    case 'testnet':
-      return `https://poktscan.com/testnet/account/${account}`;
-    default:
-      return ``;
-  }
+export type NetworkConfig = CosmosNetworkConfig | EthereumNetworkConfig;
+
+const networkConfigs: Record<string, NetworkConfig> = {
+  [config.cosmos_network.chain_id]: config.cosmos_network,
+  ...config.ethereum_networks.reduce<Record<string, EthereumNetworkConfig>>(
+    (acc, network) => {
+      acc[network.chain_id.toString()] = network;
+      return acc;
+    },
+    {},
+  ),
+};
+
+export const getNetworkConfig = (chainId: string): NetworkConfig =>
+  networkConfigs[chainId];
+
+export const sleep = async (timeoutMs: number): Promise<void> => {
+  return new Promise(resolve => setTimeout(resolve, timeoutMs));
 };

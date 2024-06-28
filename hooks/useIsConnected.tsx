@@ -1,14 +1,9 @@
 import { useMemo } from 'react';
-import { useAccount, useNetwork } from 'wagmi';
-
-import { DEFAULT_CHAIN } from '@/lib/web3';
+import { useAccount, useChainId } from 'wagmi';
 
 export const useIsConnected = (): boolean => {
   const { address } = useAccount();
-  const { chain } = useNetwork();
-  const isConnected = useMemo(
-    () => !!address && !!chain && chain.id === DEFAULT_CHAIN.id,
-    [address, chain],
-  );
+  const chain = useChainId();
+  const isConnected = useMemo(() => !!address && !!chain, [address, chain]);
   return isConnected;
 };

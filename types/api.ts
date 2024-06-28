@@ -1,24 +1,24 @@
-import { Burn } from './burn';
-import { InvalidMint } from './invalidMint';
-import { Mint } from './mint';
+import { Message } from './message';
+import { Refund } from './refund';
+import { Transaction } from './transaction';
 
-export type MintData = {
-  mints: Mint[];
+export type MessageData = {
+  messages: Message[];
   page: number;
-  totalMints: number;
+  totalMessages: number;
   totalPages: number;
 };
 
-export type BurnData = {
-  burns: Burn[];
+export type RefundData = {
+  refunds: Refund[];
   page: number;
-  totalBurns: number;
+  totalRefunds: number;
   totalPages: number;
 };
 
-export type InvalidMintData = {
-  invalidMints: InvalidMint[];
+export type TransactionData = {
+  transactions: Transaction[];
   page: number;
-  totalInvalidMints: number;
+  totalTransactions: number;
   totalPages: number;
 };

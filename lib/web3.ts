@@ -1,37 +1,20 @@
-import {
-  EthereumClient,
-  w3mConnectors,
-  w3mProvider,
-} from '@web3modal/ethereum';
-import { configureChains, createConfig } from 'wagmi';
-import { goerli, hardhat, mainnet } from 'wagmi/chains';
-import { publicProvider } from 'wagmi/providers/public';
+import { defaultWagmiConfig } from '@web3modal/wagmi/react/config';
+import { holesky, sepolia } from 'wagmi/chains';
 
-import { ETH_CHAIN_ID, WALLETCONNECT_PROJECT_ID } from '@/utils/constants';
+import { WALLETCONNECT_PROJECT_ID } from '@/utils/constants';
 
 export const projectId = WALLETCONNECT_PROJECT_ID;
 
-export const DEFAULT_CHAIN = (() => {
-  switch (ETH_CHAIN_ID) {
-    case '1':
-      return mainnet;
-    case '5':
-      return goerli;
-    default:
-      return hardhat;
-  }
-})();
+const metadata = {
+  name: 'Web3Modal',
+  description: 'Web3Modal Example',
+  url: 'https://web3modal.com', // origin must match your domain & subdomain
+  icons: ['https://avatars.githubusercontent.com/u/37784886'],
+};
 
-const { publicClient, webSocketPublicClient } = configureChains(
-  [DEFAULT_CHAIN],
-  [w3mProvider({ projectId }), publicProvider()],
-);
-
-export const wagmiConfig = createConfig({
-  autoConnect: true,
-  connectors: w3mConnectors({ projectId, chains: [DEFAULT_CHAIN] }),
-  publicClient,
-  webSocketPublicClient,
+const chains = [sepolia, holesky] as const;
+export const wagmiConfig = defaultWagmiConfig({
+  chains,
+  projectId,
+  metadata,
 });
-
-export const ethereumClient = new EthereumClient(wagmiConfig, [DEFAULT_CHAIN]);

@@ -5,19 +5,17 @@ async function fetcher(uri: string) {
   return fetch(uri)
     .then(r => r.ok && r.json())
     .then(
-      mints =>
-        mints || {
-          mints: '0',
-          burns: '0',
-          invalidMints: '0',
+      messages =>
+        messages || {
+          messages: '0',
+          refunds: '0',
         },
     );
 }
 
 type TotalAmounts = {
-  mints: bigint;
-  burns: bigint;
-  invalidMints: bigint;
+  messages: bigint;
+  refunds: bigint;
 };
 
 export default function useTotals(): {
@@ -34,15 +32,13 @@ export default function useTotals(): {
   const totals = useMemo(() => {
     if (!data)
       return {
-        mints: BigInt(0),
-        burns: BigInt(0),
-        invalidMints: BigInt(0),
+        messages: BigInt(0),
+        refunds: BigInt(0),
       };
 
     return {
-      mints: BigInt(data.mints),
-      burns: BigInt(data.burns),
-      invalidMints: BigInt(data.invalidMints),
+      messages: BigInt(data.messages),
+      refunds: BigInt(data.refunds),
     };
   }, [data]);
 
