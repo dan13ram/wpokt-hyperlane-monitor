@@ -10,8 +10,11 @@ import {
 } from '@chakra-ui/react';
 import Image from 'next/image';
 
+import { MessagePanel } from '@/components/MessagePanel';
 import { NodesPanel } from '@/components/NodesPanel';
+import { RefundPanel } from '@/components/RefundPanel';
 import { TotalsTile } from '@/components/TotalsTile';
+import { TransactionPanel } from '@/components/TransactionPanel';
 
 const HomePage: React.FC = () => {
   return (
@@ -56,13 +59,13 @@ const HomePage: React.FC = () => {
         <HStack justify="center" w="100%">
           <TabList>
             <Tab>
-              <Text fontSize="lg">Mints</Text>
-            </Tab>
-            <Tab>
-              <Text fontSize="lg">Burns</Text>
+              <Text fontSize="lg">Messages</Text>
             </Tab>
             <Tab>
               <Text fontSize="lg">Refunds</Text>
+            </Tab>
+            <Tab>
+              <Text fontSize="lg">Transactions</Text>
             </Tab>
             <Tab>
               <Text fontSize="lg">Nodes</Text>
@@ -70,9 +73,15 @@ const HomePage: React.FC = () => {
           </TabList>
         </HStack>
         <TabPanels>
-          <TabPanel px={0}></TabPanel>
-          <TabPanel px={0}></TabPanel>
-          <TabPanel px={0}></TabPanel>
+          <TabPanel px={0}>
+            <MessagePanel />
+          </TabPanel>
+          <TabPanel px={0}>
+            <RefundPanel />
+          </TabPanel>
+          <TabPanel px={0}>
+            <TransactionPanel />
+          </TabPanel>
           <TabPanel px={0}>
             <NodesPanel />
           </TabPanel>

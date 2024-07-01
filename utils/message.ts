@@ -1,4 +1,3 @@
-import { Long } from 'mongodb';
 import {
   decodeAbiParameters,
   encodeAbiParameters,
@@ -87,10 +86,10 @@ export const encodeMessage = (message: MessageContent): Hex => {
 
   return formatMessage(
     message.version,
-    message.nonce.toNumber(),
-    message.origin_domain.toNumber(),
+    message.nonce,
+    message.origin_domain,
     message.sender,
-    message.destination_domain.toNumber(),
+    message.destination_domain,
     message.recipient,
     messageBodyHex,
   );
@@ -130,10 +129,10 @@ export function decodeMessage(encodedMessage: Hex): MessageContent {
 
   return {
     version,
-    nonce: new Long(nonce),
-    origin_domain: new Long(originDomain),
+    nonce,
+    origin_domain: originDomain,
     sender,
-    destination_domain: new Long(destinationDomain),
+    destination_domain: destinationDomain,
     recipient,
     message_body,
   };

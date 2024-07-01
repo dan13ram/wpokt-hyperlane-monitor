@@ -118,6 +118,7 @@ export const mergeConfigs = (yamlConfig: Config, envConfig: Config): Config => {
     mergedConfig.cosmos_network.confirmations =
       envConfig.cosmos_network.confirmations;
   }
+
   if (envConfig.cosmos_network.rpc_url) {
     mergedConfig.cosmos_network.rpc_url = envConfig.cosmos_network.rpc_url;
   }

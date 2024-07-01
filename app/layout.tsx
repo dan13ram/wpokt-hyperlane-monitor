@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 import { cookieToInitialState } from 'wagmi';
 
-import { WagmiWrapper } from '@/components/WagmiWrapper';
+import { WalletWrapper } from '@/components/WalletWrapper';
 import { wagmiConfig } from '@/lib/web3';
 
 const TITLE = `wPOKT Shannon Testnet Bridge Monitor`;
@@ -24,7 +24,7 @@ const RootLayout: React.FC<
   return (
     <html lang="en">
       <body>
-        <WagmiWrapper initialState={initialState}>{children}</WagmiWrapper>
+        <WalletWrapper initialState={initialState}>{children}</WalletWrapper>
       </body>
     </html>
   );

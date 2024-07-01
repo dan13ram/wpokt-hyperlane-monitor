@@ -1,4 +1,7 @@
+'use client';
+
 import { Link, Text, useToast } from '@chakra-ui/react';
+import { Window as KeplrWindow } from '@keplr-wallet/types';
 import {
   createContext,
   useCallback,
@@ -8,13 +11,11 @@ import {
 } from 'react';
 import useSWR from 'swr';
 
-import { POKT_CHAIN_ID } from '@/utils/constants';
+import { poktChainInfo } from '@/utils/config';
 
 declare global {
-  interface Window {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    pocketNetwork: any;
-  }
+  // eslint-disable-next-line @typescript-eslint/no-empty-interface
+  interface Window extends KeplrWindow {}
 }
 
 export type PocketWalletContextType = {
@@ -57,21 +58,14 @@ export const PocketWalletProvider: React.FC<React.PropsWithChildren> = ({
   const toast = useToast();
 
   const connectPocketWallet = useCallback(async () => {
-    if (window.pocketNetwork === undefined) {
+    if (window.keplr === undefined) {
       toast({
-        title: 'POKT Wallet not found!',
+        title: 'Keplr Wallet not found!',
         description: (
           <Text>
             Please install{' '}
-            <Link href="https://sendwallet.net" isExternal>
-              SendWallet
-            </Link>
-            {' or '}
-            <Link
-              href="https://github.com/decentralized-authority/nodewallet"
-              isExternal
-            >
-              NodeWallet
+            <Link href="https://www.keplr.app/download" isExternal>
+              Keplr Wallet
             </Link>
             {'.'}
           </Text>
@@ -84,11 +78,15 @@ export const PocketWalletProvider: React.FC<React.PropsWithChildren> = ({
     }
 
     try {
-      const [address] = await window.pocketNetwork.send('pokt_requestAccounts');
+      await window.keplr.experimentalSuggestChain(poktChainInfo);
+      await window.keplr.enable(poktChainInfo.chainId);
+
+      /*
+      const [address] = await window.keplr.send('pokt_requestAccounts');
 
       let network = 'mainnet';
       try {
-        const { chain } = await window.pocketNetwork.send('pokt_chain');
+        const { chain } = await window.keplr.send('pokt_chain');
         if (
           chain.toLowerCase() === 'testnet' ||
           chain.toLowerCase() === 'mainnet'
@@ -101,6 +99,7 @@ export const PocketWalletProvider: React.FC<React.PropsWithChildren> = ({
 
       setPoktAddress(address);
       setPoktNetwork(network);
+      */
     } catch (e) {
       console.error('Error connecting to POKT Wallet', e);
       toast({
@@ -117,11 +116,14 @@ export const PocketWalletProvider: React.FC<React.PropsWithChildren> = ({
 
   const fetchPoktBalance = useCallback(
     async (address: string): Promise<undefined | bigint> => {
-      if (!address || !window.pocketNetwork) return BigInt(0);
-      const { balance } = await window.pocketNetwork.send('pokt_balance', [
+      if (!address || !window.keplr) return BigInt(0);
+      /*
+      const { balance } = await window.keplr.send('pokt_balance', [
         { address },
       ]);
       return BigInt(balance);
+        */
+      return BigInt(0);
     },
     [],
   );
@@ -141,7 +143,8 @@ export const PocketWalletProvider: React.FC<React.PropsWithChildren> = ({
       if (!poktAddress) {
         throw new Error('No POKT wallet connected');
       }
-      const { hash } = await window.pocketNetwork.send('pokt_sendTransaction', [
+      /*
+      const { hash } = await window.keplr.send('pokt_sendTransaction', [
         {
           amount: amount.toString(), // in uPOKT
           from: poktAddress,
@@ -150,12 +153,14 @@ export const PocketWalletProvider: React.FC<React.PropsWithChildren> = ({
         },
       ]);
       return hash;
+        */
+      return amount.toString() + recipient + memo;
     },
     [poktAddress],
   );
 
   const isPoktConnected = useMemo(
-    () => !!poktAddress && !!poktNetwork && poktNetwork === POKT_CHAIN_ID,
+    () => !!poktAddress && !!poktNetwork,
     [poktAddress, poktNetwork],
   );
 

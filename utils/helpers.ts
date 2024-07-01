@@ -1,6 +1,7 @@
 import { CosmosNetworkConfig, EthereumNetworkConfig } from '@/types/config';
 
 import { config } from './config';
+import { COSMOS_CHAIN_DOMAIN } from './cosmos';
 
 export const shortenHex = (hex: string, maxChars: number = 10): string => {
   if (!hex) return '';
@@ -62,6 +63,7 @@ export type NetworkConfig = CosmosNetworkConfig | EthereumNetworkConfig;
 
 const networkConfigs: Record<string, NetworkConfig> = {
   [config.cosmos_network.chain_id]: config.cosmos_network,
+  [COSMOS_CHAIN_DOMAIN.toString()]: config.cosmos_network,
   ...config.ethereum_networks.reduce<Record<string, EthereumNetworkConfig>>(
     (acc, network) => {
       acc[network.chain_id.toString()] = network;

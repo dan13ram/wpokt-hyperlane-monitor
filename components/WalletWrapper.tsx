@@ -7,6 +7,8 @@ import {
   Button,
   ChakraProvider,
   Heading,
+  HStack,
+  Spinner,
   Stack,
   Text,
   VStack,
@@ -14,11 +16,12 @@ import {
 import { Global } from '@emotion/react';
 import { useWeb3Modal } from '@web3modal/wagmi/react';
 import { PropsWithChildren, useLayoutEffect } from 'react';
-import { State, useAccount } from 'wagmi';
+import { formatUnits } from 'viem';
+import { State, useAccount, useChainId } from 'wagmi';
 
 import { WagmiProvider } from '@/contexts/WagmiProvider';
-// import { useBalance } from '@/hooks/useBalance';
-// import { useIsConnected } from '@/hooks/useIsConnected';
+import { useBalance } from '@/hooks/useBalance';
+import { config } from '@/utils/config';
 import { shortenHex } from '@/utils/helpers';
 import {
   globalStyles,
@@ -28,7 +31,9 @@ import {
 } from '@/utils/theme';
 
 import { EthIcon } from './EthIcon';
-import { PoktIcon } from './PoktIcon';
+import { NetworkDisplay } from './NetworkDisplay';
+// import { PocketWalletModal } from './PocketWalletModal';
+// import { PoktIcon } from './PoktIcon';
 
 /*
 const InvalidNetwork: React.FC = () => {
@@ -103,18 +108,16 @@ const InvalidNetwork: React.FC = () => {
 };
 */
 
-const WagmiConnectionManager: React.FC<PropsWithChildren> = ({ children }) => {
+const WalletConnectionManager: React.FC<PropsWithChildren> = ({ children }) => {
   const { address } = useAccount();
 
   const { open } = useWeb3Modal();
 
   // const { poktAddress, connectPocketWallet } = usePocketWallet();
-  //
-  const poktAddress = '';
 
   return (
     <>
-      {(!address || !poktAddress) && (
+      {!address /* || !poktAddress*/ && (
         <VStack w="100%" bg="blue.100" p={6} my={6} borderRadius="md">
           <Alert status="info" w="auto">
             <AlertIcon />
@@ -133,15 +136,15 @@ const WagmiConnectionManager: React.FC<PropsWithChildren> = ({ children }) => {
                 Connect ETH Wallet
               </Button>
             )}
-            {!poktAddress && (
+            {/*!poktAddress && (
               <Button
                 leftIcon={<PoktIcon boxSize="1.25rem" />}
-                // onClick={connectPocketWallet}
+                onClick={connectPocketWallet}
                 colorScheme="blue"
               >
                 Connect POKT Wallet
               </Button>
-            )}
+            )*/}
           </Stack>
         </VStack>
       )}
@@ -152,15 +155,14 @@ const WagmiConnectionManager: React.FC<PropsWithChildren> = ({ children }) => {
 };
 
 const Header: React.FC = () => {
-  // const { balance, loading } = useBalance();
-  // const isConnected = useIsConnected();
+  const { balance, loading } = useBalance();
   const { address } = useAccount();
-
-  // const { poktAddress, poktBalance, isBalanceLoading, isPoktConnected } =
-  //   usePocketWallet();
+  const chainId = useChainId();
 
   const { open } = useWeb3Modal();
 
+  // const { poktAddress, poktBalance, isBalanceLoading, isPoktConnected } =
+  //   usePocketWallet();
   // const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
@@ -180,29 +182,32 @@ const Header: React.FC = () => {
       >
         {address && (
           <VStack>
-            <Button
-              leftIcon={<EthIcon boxSize="1rem" />}
-              bg="gray.700"
-              _hover={{ bg: 'gray.900' }}
-              _active={{ bg: 'gray.900' }}
-              color="white"
-              fontFamily="mono"
-              onClick={() => open()}
-            >
-              <Text mb="-2px">{shortenHex(address, 10)}</Text>
-            </Button>
-            {/*isConnected && (
-              <Text fontSize="sm">
-                Balance:{' '}
+            <HStack>
+              <Button
+                leftIcon={<EthIcon boxSize="1rem" />}
+                bg="gray.700"
+                _hover={{ bg: 'gray.900' }}
+                _active={{ bg: 'gray.900' }}
+                color="white"
+                fontFamily="mono"
+                onClick={() => open()}
+              >
+                <Text mb="-2px">{shortenHex(address, 10)}</Text>
+              </Button>
+              <NetworkDisplay chainId={chainId.toString()} />
+            </HStack>
+            {config.ethereum_networks.map(network => (
+              <Text fontSize="sm" key={network.chain_id}>
+                {network.chain_name} balance:{' '}
                 {loading ? (
                   <Spinner thickness="2px" speed="0.65s" size="xs" />
                 ) : (
                   <Text as="span" fontWeight="bold">
-                    {`${formatUnits(balance, 6)} wPOKT`}
+                    {`${formatUnits(balance[network.chain_id], 6)} wPOKT`}
                   </Text>
                 )}
               </Text>
-            )*/}
+            ))}
           </VStack>
         )}
         {/*poktAddress && (
@@ -230,7 +235,7 @@ const Header: React.FC = () => {
           </VStack>
         )*/}
       </Stack>
-      {/*<PocketWalletModal isOpen={isOpen} onClose={onClose} />*/}
+      {/*<PocketWalletModal isOpen={isOpen} onClose={onClose} /> */}
     </Stack>
   );
 };
@@ -239,7 +244,7 @@ type Props = React.PropsWithChildren<{
   initialState: State | undefined;
 }>;
 
-export const WagmiWrapper: React.FC<Props> = ({ children, initialState }) => {
+export const WalletWrapper: React.FC<Props> = ({ children, initialState }) => {
   useLayoutEffect(() => {
     window.localStorage.setItem('chakra-ui-color-mode', 'light');
   }, []);
@@ -256,7 +261,7 @@ export const WagmiWrapper: React.FC<Props> = ({ children, initialState }) => {
           marginX="auto"
         >
           <Header />
-          <WagmiConnectionManager>{children}</WagmiConnectionManager>
+          <WalletConnectionManager>{children}</WalletConnectionManager>
         </VStack>
       </ChakraProvider>
     </WagmiProvider>

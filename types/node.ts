@@ -1,5 +1,5 @@
 // Import the required dependencies for primitive types and date handling
-import { Long, ObjectId } from 'mongodb';
+import { ObjectId } from 'mongodb';
 import { Hex } from 'viem';
 
 // Define the ChainType type
@@ -9,7 +9,7 @@ export type ChainType = 'ethereum' | 'cosmos';
 export type RunnerServiceStatus = {
   readonly name: string;
   readonly enabled: boolean;
-  readonly blockHeight: Long;
+  readonly blockHeight: number;
   readonly lastRun_at: Date;
   readonly nextRun_at: Date;
 };
@@ -18,7 +18,7 @@ export type RunnerServiceStatus = {
 export type Chain = {
   readonly chain_id: string;
   readonly chain_name: string;
-  readonly chain_domain: Long;
+  readonly chain_domain: number;
   readonly chain_type: ChainType;
 };
 

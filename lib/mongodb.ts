@@ -15,6 +15,7 @@ declare const global: {
 
 const uri = process.env.MONGODB_URI;
 const database = process.env.MONGODB_DATABASE;
+// const options = { promoteLongs: false };
 const options = {};
 
 let clientPromise: Promise<MongoClient>;

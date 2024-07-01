@@ -1,5 +1,5 @@
 import { defaultWagmiConfig } from '@web3modal/wagmi/react/config';
-import { holesky, sepolia } from 'wagmi/chains';
+import { Chain, holesky, sepolia } from 'wagmi/chains';
 
 import { WALLETCONNECT_PROJECT_ID } from '@/utils/constants';
 
@@ -18,3 +18,7 @@ export const wagmiConfig = defaultWagmiConfig({
   projectId,
   metadata,
 });
+
+export const getChainFromChainId = (chainId: number): Chain | undefined => {
+  return chains.find(chain => chain.id === chainId);
+};

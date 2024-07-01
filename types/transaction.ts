@@ -1,5 +1,5 @@
 // Import the required dependencies for primitive types and date handling
-import { Long, ObjectId } from 'mongodb';
+import { ObjectId } from 'mongodb';
 import { Hex } from 'viem';
 
 // Assuming Chain type is imported from a local file
@@ -14,8 +14,8 @@ export type Transaction = {
   readonly hash: Hex;
   readonly from_address: Hex;
   readonly to_address: Hex;
-  readonly block_height: Long;
-  readonly confirmations: Long;
+  readonly block_height: number;
+  readonly confirmations: number;
   readonly chain: Chain;
   readonly status: TransactionStatus;
   readonly created_at: Date;

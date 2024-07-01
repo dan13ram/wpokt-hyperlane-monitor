@@ -5,4 +5,4 @@ import testnetConfig from './defaults/config.testnet.yml';
 
 export const HyperlaneVersion = 3;
 
-export const loadYamlConfig = (): Config => testnetConfig as Config;
+export const yamlConfig = testnetConfig as Config;

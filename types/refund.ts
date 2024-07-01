@@ -1,5 +1,5 @@
 // Import the required dependencies for primitive types and date handling
-import { Long, ObjectId } from 'mongodb';
+import { ObjectId } from 'mongodb';
 import { Hex } from 'viem';
 
 // Assuming Signature type is imported from a local file
@@ -23,7 +23,7 @@ export type Refund = {
   readonly transaction_body: string;
   readonly signatures: Signature[];
   readonly transaction?: ObjectId | null;
-  readonly sequence?: Long | null;
+  readonly sequence?: number | null;
   readonly transaction_hash: Hex;
   readonly status: RefundStatus;
   readonly created_at: Date;

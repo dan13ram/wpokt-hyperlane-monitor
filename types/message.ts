@@ -1,14 +1,14 @@
 // Import the required dependencies for primitive types and date handling
-import { Long, ObjectId } from 'mongodb';
+import { ObjectId } from 'mongodb';
 import { Hex } from 'viem';
 
 // Define the MessageContent type
 export type MessageContent = {
   readonly version: number;
-  readonly nonce: Long;
-  readonly origin_domain: Long;
+  readonly nonce: number;
+  readonly origin_domain: number;
   readonly sender: Hex;
-  readonly destination_domain: Long;
+  readonly destination_domain: number;
   readonly recipient: Hex;
   readonly message_body: MessageBody;
 };
@@ -31,7 +31,7 @@ export type Message = {
   readonly transactionBody: Hex;
   readonly signatures: Signature[];
   readonly transaction?: ObjectId | null;
-  readonly sequence?: Long | null;
+  readonly sequence?: number | null;
   readonly transaction_hash: Hex;
   readonly status: MessageStatus;
   readonly created_at: Date;

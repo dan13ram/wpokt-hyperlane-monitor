@@ -118,6 +118,8 @@ export const sendPOKT = async (
   return tx;
 };
 
-export const CHAIN_DOMAIN = getChainDomain(config.cosmos_network.chain_id);
+export const COSMOS_CHAIN_DOMAIN = getChainDomain(
+  config.cosmos_network.chain_id,
+);
 
-export const TX_FEE = BigInt(config.cosmos_network.tx_fee);
+export const COSMOS_TX_FEE = BigInt(config.cosmos_network.tx_fee);
